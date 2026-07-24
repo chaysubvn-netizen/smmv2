@@ -105,6 +105,23 @@ class ApiAdminController extends Controller
         ])));
     }
 
+    private function applyResourceDomain($query, Model $model, string $resource, Request $request): void
+    {
+        if (!Schema::hasColumn($model->getTable(), 'domain')) {
+            return;
+        }
+
+        if ($resource === 'services') {
+            $domains = $this->serviceDomains($request);
+            $query->where(function ($builder) use ($domains) {
+                $builder->whereIn('domain', $domains)->orWhereNull('domain')->orWhere('domain', '');
+            });
+            return;
+        }
+
+        $query->where('domain', $this->domain($request));
+    }
+
     public function dashboard(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -251,7 +268,7 @@ class ApiAdminController extends Controller
         $model = $this->resourceModel($resource);
         $columns = $this->resourceColumns($model);
         $query = $model->newQuery();
-        if (in_array('domain', $columns, true)) $query->where('domain', $this->domain($request));
+        $this->applyResourceDomain($query, $model, $resource, $request);
         if ($resource === 'rate-updates') $query->with('service:id,name');
 
         $search = trim((string) $request->input('search', ''));
@@ -315,7 +332,7 @@ class ApiAdminController extends Controller
         abort_if(in_array($resource, self::READ_ONLY, true), 405, 'Module này chỉ cho phép xem.');
         $model = $this->resourceModel($resource);
         $query = $model->newQuery();
-        if (Schema::hasColumn($model->getTable(), 'domain')) $query->where('domain', $this->domain($request));
+        $this->applyResourceDomain($query, $model, $resource, $request);
         $item = $query->findOrFail($id);
         $data = $request->validate(['data' => ['required', 'array']])['data'];
         $data = array_intersect_key($data, array_flip($model->getFillable()));
@@ -376,7 +393,7 @@ class ApiAdminController extends Controller
         abort_if(in_array($resource, self::SINGLETON, true), 405, 'Không thể xóa cấu hình hệ thống.');
         $model = $this->resourceModel($resource);
         $query = $model->newQuery();
-        if (Schema::hasColumn($model->getTable(), 'domain')) $query->where('domain', $this->domain($request));
+        $this->applyResourceDomain($query, $model, $resource, $request);
         $item = $query->findOrFail($id);
         $item->delete();
         return response()->json(['status' => true, 'message' => 'Đã xóa dữ liệu.']);
