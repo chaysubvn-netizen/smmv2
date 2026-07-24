@@ -97,7 +97,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
 
   if (!ready) return <div className={styles.loading}><Spin size="large" /></div>;
 
-  const logoUrl = config?.logo ? (config.logo.startsWith('http') ? config.logo : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace('/api', '') + config.logo) : '';
+  const logoUrl = config?.logo ? (config.logo.startsWith('http') ? config.logo : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '') + config.logo) : '';
 
   return <Layout className={styles.root}>
     <Sider className={styles.sider} width={260} collapsedWidth={mobile ? 0 : 80} collapsed={collapsed} breakpoint="md" onBreakpoint={(value) => { setMobile(value); setCollapsed(value); }} theme="dark">
