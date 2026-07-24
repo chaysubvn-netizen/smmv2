@@ -456,6 +456,8 @@ export default function DashboardPage() {
     setNoticeOpen(false);
   };
 
+  const serviceContent = selectedService?.note || selectedService?.description || '';
+
   return (
     <ClientLayout>
       {loading ? (
@@ -775,7 +777,7 @@ export default function DashboardPage() {
                   </Row>
 
                   {/* THÔNG TIN CHI TIẾT DỊCH VỤ */}
-                  {selectedService && selectedService.description && (
+                  {selectedService && serviceContent && (
                     <div className="mb-6 rounded-lg border border-blue-200 bg-[#f2f9ff] p-4 text-[13px] text-gray-700">
                       <div 
                         className={`overflow-hidden transition-all duration-300 relative ${!isContentExpanded ? 'max-h-[72px]' : ''}`}
@@ -783,7 +785,7 @@ export default function DashboardPage() {
                         <div 
                           ref={contentRef}
                           className="leading-relaxed whitespace-pre-line break-words [&>ul]:list-none [&>ul>li]:relative [&>ul>li]:pl-4 [&>ul>li::before]:content-[''] [&>ul>li::before]:absolute [&>ul>li::before]:w-1.5 [&>ul>li::before]:h-1.5 [&>ul>li::before]:bg-blue-400 [&>ul>li::before]:rounded-full [&>ul>li::before]:left-0 [&>ul>li::before]:top-2 [&>p]:mb-2 [&_img]:max-w-full [&_img]:rounded-md"
-                          dangerouslySetInnerHTML={{ __html: selectedService.description }}
+                          dangerouslySetInnerHTML={{ __html: serviceContent }}
                         />
                         {!isContentExpanded && showContentToggle && (
                           <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#f2f9ff] to-transparent" />
