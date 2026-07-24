@@ -379,7 +379,7 @@ class OrderClientController extends Controller
             'amount' => $totalPayment,
             'description' => "Đơn hàng #" . $order->id,
             'status' => 'success',
-            'domain' => $this->siteHost($request)
+            'domain' => $order->domain
         ]);
 
         $user->balance -= $totalPayment;
