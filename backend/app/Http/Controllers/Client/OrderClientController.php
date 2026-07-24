@@ -746,7 +746,9 @@ class OrderClientController extends Controller
                 }
             }
 
-            $isMainSite = env("MAIN_SITE") == $this->siteHost($request);
+            $hasLocalProvider = $service->mode === 'option'
+                && ApiProvider::whereKey($service->provider)->where('status', 'active')->exists();
+            $isMainSite = env('MAIN_SITE') === $this->siteHost($request) || $hasLocalProvider;
 
             if ($isMainSite) {
                 $result = $this->handleMainSiteOrder($user, $service, $request, $validation);
