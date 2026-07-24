@@ -1504,7 +1504,7 @@ class ApiAdminController extends Controller
         Transaction::create([
             'user_id' => $user->id, 'transaction_code' => \Illuminate\Support\Str::upper(\Illuminate\Support\Str::random(10)),
             'type' => $data['action'], 'balance_before' => $before, 'balance_after' => $after, 'amount' => $amount,
-            'description' => $data['reason'] ?: ($data['action'] === 'add' ? 'Cộng tiền tài khoản' : 'Trừ tiền tài khoản'),
+            'description' => trim((string) ($data['reason'] ?? '')) ?: ($data['action'] === 'add' ? 'Cộng tiền tài khoản' : 'Trừ tiền tài khoản'),
             'status' => 'success', 'domain' => $this->domain($request),
         ]);
         if ($data['action'] === 'add') $user->upgradeLevel($user->total_deposit);
