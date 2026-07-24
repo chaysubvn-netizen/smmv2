@@ -12,6 +12,7 @@ const api = axios.create({
 // Thêm interceptor để luôn đính kèm token vào request
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
+    config.headers['X-Site-Host'] = window.location.hostname;
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
