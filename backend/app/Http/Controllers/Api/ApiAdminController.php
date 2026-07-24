@@ -87,6 +87,24 @@ class ApiAdminController extends Controller
         return str_starts_with($host, 'api.') ? substr($host, 4) : $host;
     }
 
+    private function serviceDomains(Request $request): array
+    {
+        $domain = $this->domain($request);
+        $configured = trim((string) env('MAIN_SITE', ''));
+        $configuredHost = parse_url(
+            str_contains($configured, '://') ? $configured : 'https://' . ltrim($configured, '/'),
+            PHP_URL_HOST
+        );
+
+        return array_values(array_unique(array_filter([
+            $domain,
+            'api.' . $domain,
+            $configured,
+            $configuredHost,
+            $configuredHost && str_starts_with($configuredHost, 'api.') ? substr($configuredHost, 4) : $configuredHost,
+        ])));
+    }
+
     public function dashboard(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
@@ -1028,9 +1046,11 @@ class ApiAdminController extends Controller
     public function services(Request $request): JsonResponse
     {
         $this->authorizeAdmin($request);
-        $domain = $this->domain($request);
+        $domains = $this->serviceDomains($request);
         $query = Service::with(['category:id,name,icon,platform_id', 'apiProvider:id,name,currency,exchange_rate'])
-            ->where('domain', $domain);
+            ->where(function ($builder) use ($domains) {
+                $builder->whereIn('domain', $domains)->orWhereNull('domain')->orWhere('domain', '');
+            });
         if ($request->filled('category_id')) $query->where('category_id', (int) $request->category_id);
         if ($request->filled('status')) $query->where('status', $request->status);
         if ($request->filled('search')) {
@@ -1042,7 +1062,9 @@ class ApiAdminController extends Controller
             ? max(1, (clone $query)->count())
             : min(1000, max(10, (int) $requestedPerPage));
         $page = $query->orderBy('sort_order')->orderByDesc('id')->paginate($perPage);
-        $base = Service::where('domain', $domain);
+        $base = Service::where(function ($builder) use ($domains) {
+            $builder->whereIn('domain', $domains)->orWhereNull('domain')->orWhere('domain', '');
+        });
         return response()->json(['status' => true, 'data' => $page, 'meta' => [
             'total' => (clone $base)->count(),
             'active' => (clone $base)->where('status', 'active')->count(),
