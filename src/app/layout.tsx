@@ -1,28 +1,27 @@
 import { headers } from 'next/headers';
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import Script from "next/script";
 import AntdAppProvider from '@/components/AntdAppProvider';
 import GlobalCustomScripts from '@/components/GlobalCustomScripts';
 import "./globals.css";
 
-export async function generateMetadata(
-  _parent: ResolvingMetadata
-): Promise<Metadata> {
-  const headersList = await headers();
-  const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
+export async function generateMetadata(): Promise<Metadata> {
   const metadataBase = new URL('https://minsmm.net/');
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+    const apiUrl = process.env.API_URL || `${metadataBase.origin}/api`;
     const assetUrl = (value?: string | null) => value ? (value.startsWith('http') ? value : `${apiUrl.replace(/\/api\/?$/, '')}${value.startsWith('/') ? '' : '/'}${value}`) : undefined;
     const res = await fetch(`${apiUrl}/client/config`, {
       headers: {
-        'Host': host,
         'Accept': 'application/json'
       },
       next: { revalidate: 60 } // Cache for 60 seconds
     });
-    
+
+    if (!res.ok) {
+      throw new Error(`Config API returned ${res.status}`);
+    }
+
     const json = await res.json();
     
     if (json.status && json.data) {
