@@ -1,0 +1,66 @@
+.page { color: #1d2634; }
+.hero, .card, .tabs { background: #fff; border: 1px solid #e7e9ee; border-radius: 10px; box-shadow: 0 2px 8px rgba(22, 32, 50, .04); }
+.hero { overflow: hidden; margin-bottom: 22px; }
+.cover { height: 176px; background: linear-gradient(120deg, rgba(55, 88, 249, .82), rgba(88, 181, 255, .48)), url('/cmsbvq/template/frontend/images/application/img-cal-bg.jpg') center/cover; }
+.heroBody { min-height: 104px; padding: 0 25px 18px; display: flex; align-items: flex-end; gap: 20px; }
+.avatar, .smallAvatar { display: grid; place-items: center; color: #fff; font-weight: 700; background: linear-gradient(135deg, #6659e8, #3b82f6); border-radius: 50%; }
+.avatar { width: 112px; height: 112px; border: 5px solid #fff; margin-top: -48px; font-size: 30px; box-shadow: 0 3px 12px rgba(0,0,0,.12); flex: 0 0 auto; }
+.heroText { flex: 1; padding-bottom: 4px; }
+.heroText h1, .profileCard h2 { margin: 0 0 4px; font-size: 20px; font-weight: 650; }
+.heroText p, .profileCard p { margin: 0; color: #6f7785; }
+.depositButton { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; color: #fff !important; background: var(--client-primary); border-radius: 6px; font-weight: 600; text-decoration: none; }
+.tabs { display: flex; padding: 0 20px; margin-bottom: 22px; }
+.tabs button { position: relative; display: flex; align-items: center; gap: 8px; padding: 18px 20px; border: 0; background: none; color: #687181; cursor: pointer; font-weight: 600; }
+.tabs button::after { content: ''; position: absolute; height: 2px; left: 12px; right: 12px; bottom: 0; background: transparent; }
+.tabs .activeTab { color: var(--client-primary); }
+.tabs .activeTab::after { background: var(--client-primary); }
+.accountGrid { display: grid; grid-template-columns: minmax(250px, 310px) 1fr; gap: 22px; align-items: start; }
+.sidebarCards, .mainCards { display: grid; gap: 22px; }
+.card { overflow: hidden; }
+.profileCard { position: relative; padding: 30px 24px 25px; text-align: center; }
+.badge { position: absolute; right: 18px; top: 17px; padding: 4px 9px; border-radius: 5px; color: var(--client-primary); background: #edf3ff; font-size: 11px; font-weight: 700; text-transform: capitalize; }
+.smallAvatar { width: 72px; height: 72px; margin: 4px auto 12px; font-size: 20px; }
+.dashedLine { margin: 20px 0; border-top: 1px dashed #d7dce4; }
+.contactList { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; text-align: left; }
+.contactList li { display: flex; gap: 11px; align-items: center; color: #3f4754; min-width: 0; }
+.contactList li span:last-child { overflow-wrap: anywhere; }
+.contactList svg { color: #657083; font-size: 16px; }
+.cardHeader { padding: 17px 21px; border-bottom: 1px solid #edf0f4; }
+.cardHeader h2 { margin: 0; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .2px; }
+.telegramHeader { background: linear-gradient(100deg, #eef3ff, #fff); color: #3569d4; border-bottom: 0; }
+.balanceList { padding: 18px 21px; display: grid; gap: 18px; }
+.balanceItem { display: flex; align-items: center; gap: 13px; }
+.balanceIcon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; color: var(--client-primary); background: #edf3ff; flex: 0 0 auto; }
+.balanceItem strong, .balanceItem small { display: block; }
+.balanceItem strong { font-size: 14px; }
+.balanceItem small { color: #78808d; margin-top: 2px; }
+.instructions { margin: 0; padding: 22px 28px 22px 43px; display: grid; gap: 11px; color: #4f5867; }
+.instructions a, .instructions button { color: var(--client-primary); font-weight: 650; }
+.instructions button { border: 0; background: none; padding: 0; cursor: pointer; overflow-wrap: anywhere; }
+.linkedStatus, .unlinkedStatus { display: inline-block; padding: 4px 9px; border-radius: 5px; font-size: 12px; font-weight: 700; }
+.linkedStatus { color: #198754; background: #eaf8f0; }
+.unlinkedStatus { color: #d97706; background: #fff6df; }
+.telegramLoading { padding: 24px; color: #78808d; }
+.formBody { padding: 22px 22px 18px; }
+.formGrid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 22px; }
+.formActions { display: flex; justify-content: flex-end; padding-top: 4px; }
+.apiRow { display: flex; gap: 10px; padding: 22px; }
+.securityGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+.twoFactorBody { padding: 28px 24px; text-align: center; }
+.shield { display: grid; place-items: center; margin: 0 auto 15px; width: 58px; height: 58px; border-radius: 18px; color: var(--client-primary); background: #edf3ff; font-size: 29px; }
+.twoFactorBody h3 { margin: 0 0 8px; font-size: 17px; }
+.twoFactorBody p { max-width: 430px; margin: 0 auto 20px; color: #6f7785; line-height: 1.6; }
+.twoFactorBody small { display: block; margin-top: 12px; color: #9299a5; }
+.authChoices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+.authChoices button { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 66px; border: 1px solid #dfe4eb; border-radius: 8px; background: #fff; color: #414957; font-weight: 600; }
+.googleMark { color: #4285f4; font-size: 21px; font-weight: 800; }
+.setupBox { margin: 0 auto 20px; }
+.setupBox img { display: block; width: 210px; height: 210px; margin: 0 auto 10px; }
+.setupBox p { margin-bottom: 8px; }
+.secret { border: 0; background: #edf3ff; color: #3569d4; border-radius: 6px; padding: 8px 12px; font-family: monospace; font-weight: 700; cursor: pointer; }
+.otpForm { display: flex; max-width: 430px; gap: 10px; margin: 0 auto; }
+.otpForm input { text-align: center; letter-spacing: 4px; font-weight: 700; }
+.telegramHint, .enabledMethod { margin: 0 auto 14px !important; color: #526173 !important; }
+.sendAgain { margin-bottom: 14px; }
+@media (max-width: 900px) { .accountGrid, .securityGrid { grid-template-columns: 1fr; } .sidebarCards { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .cover { height: 125px; } .heroBody { align-items: center; flex-wrap: wrap; padding: 0 18px 18px; gap: 12px; } .avatar { width: 84px; height: 84px; margin-top: -34px; border-width: 4px; font-size: 23px; } .heroText { min-width: calc(100% - 105px); } .depositButton { margin-left: auto; } .tabs { padding: 0 5px; } .tabs button { flex: 1; justify-content: center; padding-inline: 8px; } .sidebarCards, .formGrid, .authChoices { grid-template-columns: 1fr; } .apiRow { flex-direction: column; } }

@@ -1,0 +1,28 @@
+.layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr); gap: 24px; align-items: start; }
+.mainCard, .sideCard { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 5px 18px rgba(15, 23, 42, .06); }
+.mainCard { padding: 25px; }
+.mainCard h1 { display: flex; gap: 9px; align-items: center; margin: 0 0 18px; color: #1687f8; font-size: 16px; }
+.mainCard label { display: block; margin: 13px 0 8px; color: #172033; font-weight: 650; font-size: 13px; }
+.orderInput { min-height: 285px !important; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.7; resize: vertical; }
+.inputMeta { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #576174; }
+.inputMeta button { border: 0; background: none; color: #1687f8; cursor: pointer; }
+.parseErrors { margin-top: 10px; padding: 9px 12px; color: #dc2626; background: #fff1f2; border-radius: 7px; font-size: 12px; }
+.submit { margin-top: 16px; background: #0ea5e9; }
+.progressSection { margin-top: 16px; padding-top: 15px; border-top: 1px solid #d9dee7; }
+.progressSection h2 { margin: 0 0 8px; font-size: 14px; font-weight: 500; }
+.counters { display: flex; justify-content: space-between; margin: 4px 0 8px; font-size: 11px; color: #596275; }
+.success { color: #10b981; }.failed { color: #ef4444; }
+.logs { max-height: 230px; overflow: auto; padding: 9px; border: 1px solid #dce2ea; border-radius: 7px; background: #f8fafc; color: #667085; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+.logs > div { display: flex; gap: 7px; padding: 5px; border-bottom: 1px solid #edf0f4; }
+.logSuccess { color: #059669; }.logFailed { color: #dc2626; }
+.sidebar { display: grid; gap: 16px; }
+.sideCard { padding: 24px; }
+.sideTitle { display: flex; gap: 14px; align-items: center; }
+.sideTitle h2 { margin: 0; color: #1687f8; font-size: 15px; font-weight: 600; }
+.sideTitle p { margin: 3px 0 0; color: #7b8492; font-size: 11px; }
+.bulbIcon { display: grid; place-items: center; width: 43px; height: 43px; border-radius: 10px; font-size: 20px; flex: 0 0 auto; }
+.bulbIcon { color: #f59e0b; background: #fff8e8; }.bulbIcon + h2 { color: #f59e0b; }
+.sideCard pre { margin-top: 15px; padding: 11px; border: 1px solid #d8dee8; border-radius: 7px; background: #f8fafc; color: #4d596a; font-size: 11px; white-space: pre-wrap; }
+.sideCard ul { margin: 17px 0 0; padding-left: 18px; display: grid; gap: 9px; color: #4d596a; font-size: 12px; line-height: 1.5; }
+@media (max-width: 990px) { .layout { grid-template-columns: 1fr; }.sidebar { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .mainCard, .sideCard { padding: 16px; }.sidebar { grid-template-columns: 1fr; }.counters { flex-wrap: wrap; gap: 8px; } }

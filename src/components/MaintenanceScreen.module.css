@@ -1,0 +1,16 @@
+.page { position: relative; min-height: 100vh; display: grid; place-items: center; overflow: hidden; padding: 24px; background: radial-gradient(circle at 50% 15%, #eef3ff 0, #f7f9fc 43%, #edf1f7 100%); }
+.glow { position: absolute; top: 8%; left: 50%; width: 430px; height: 430px; border-radius: 50%; background: rgba(70,128,255,.12); filter: blur(70px); transform: translateX(-50%); }
+.card { position: relative; z-index: 1; width: min(100%, 610px); padding: 48px 46px 40px; border: 1px solid rgba(255,255,255,.85); border-radius: 22px; background: rgba(255,255,255,.9); box-shadow: 0 24px 70px rgba(39,55,84,.12); text-align: center; backdrop-filter: blur(18px); }
+.logo { display: block; max-width: 180px; max-height: 48px; margin: 0 auto 28px; object-fit: contain; }
+.card :global(.ant-image) { display: block; width: fit-content; margin: 0 auto 28px; }
+.card :global(.ant-image) .logo { margin: 0; }
+.icon { width: 78px; height: 78px; display: grid; place-items: center; margin: 0 auto 20px; border-radius: 23px; color: #fff; background: linear-gradient(145deg, #6d8eff, #3f6fe9); box-shadow: 0 14px 30px rgba(70,112,232,.28); font-size: 35px; }
+.badge { display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px; color: #b76b0a; background: #fff5df; font-size: 11px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
+.card h1 { margin: 17px 0 11px; color: #202a3a; font-size: clamp(27px, 5vw, 38px); letter-spacing: -.8px; }
+.card p { max-width: 495px; margin: 0 auto; color: #6f7b8f; font-size: 14px; line-height: 1.75; }
+.progress { height: 5px; overflow: hidden; margin: 29px auto 14px; border-radius: 10px; background: #e8edf5; }
+.progress span { display: block; width: 42%; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #4778ef, #8da8ff); animation: loading 1.7s ease-in-out infinite alternate; }
+.card small { display: block; margin-bottom: 24px; color: #98a1af; }
+.card button { color: #5c6a7e; }
+@keyframes loading { from { transform: translateX(-20%); } to { transform: translateX(155%); } }
+@media (max-width: 560px) { .card { padding: 38px 23px 30px; border-radius: 17px; }.icon { width: 68px; height: 68px; font-size: 29px; } }

@@ -1,0 +1,23 @@
+.page { max-width: 1600px; margin: 0 auto; }
+.heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.heading h2 { margin: 0 0 3px !important; font-size: 23px !important; }
+.card { overflow: hidden; border: 1px solid #e1e7ef; border-radius: 12px; box-shadow: 0 5px 18px rgba(15, 23, 42, .045); }
+.card :global(.ant-card-head) { min-height: 58px; }
+.card :global(.ant-card-head-title) { color: #17233b; font-size: 16px; }
+.card :global(.ant-table-thead > tr > th) { height: 50px; padding: 0 12px; color: #18243b; background: #f5f7f9; border-bottom: 1px solid #ccd5df; font-size: 11px; font-weight: 750; text-transform: uppercase; }
+.card :global(.ant-table-tbody > tr > td) { padding: 10px 12px; color: #26344d; font-size: 12px; }
+.card :global(.ant-tag) { margin: 0; border: 0; border-radius: 6px; font-size: 10px; line-height: 21px; }
+.filters { display: grid; grid-template-columns: minmax(260px, 460px) 190px auto; align-items: center; gap: 10px; margin-bottom: 16px; }
+.filters > button { width: fit-content; min-width: 96px; }
+.cover { border-radius: 7px; object-fit: cover; }
+.noImage { display: grid; width: 100px; height: 58px; place-items: center; border: 1px dashed #d4dce6; border-radius: 7px; color: #98a2b3; background: #f8fafc; font-size: 10px; }
+.titleLink { padding: 0; border: 0; color: #008ffb; background: transparent; text-align: left; cursor: pointer; }
+.titleLink:hover { text-decoration: underline; }
+.editor { min-height: 210px !important; font-family: inherit; line-height: 1.65; resize: vertical; }
+.currentImage { display: flex; align-items: flex-start; gap: 12px; margin: -10px 0 18px; }
+.currentImage img { border-radius: 7px; object-fit: cover; }
+.detailCover { width: 100% !important; max-height: 360px; border-radius: 10px; object-fit: cover; }
+.detailMeta { display: flex; align-items: center; gap: 12px; margin: 15px 0; color: #667085; font-size: 12px; }
+.content { color: #26344d; line-height: 1.75; overflow-wrap: anywhere; }
+.content img { max-width: 100%; height: auto; }
+@media (max-width: 720px) { .filters { grid-template-columns: 1fr; } .filters > button { width: fit-content; justify-self: start; } }

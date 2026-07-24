@@ -3,6 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --client-primary: var(--client-primary);
+  --client-primary-rgb: 22, 119, 255;
+  --client-primary-text: #ffffff;
+  --client-link: var(--client-primary);
+  --client-link-hover: #0958d9;
+  --client-primary-soft: color-mix(in srgb, var(--client-primary) 10%, white);
+  --client-sidebar: #10131a;
+  --client-sidebar-text: #e7eaf0;
 }
 
 @theme inline {
@@ -12,15 +20,32 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.pc-container a:not(.ant-btn):not(.pc-link) { color: var(--client-link); }
+.pc-container a:not(.ant-btn):not(.pc-link):hover { color: var(--client-link-hover); }
+.pc-container .text-primary { color: var(--client-primary) !important; }
+.pc-container .bg-primary { background-color: var(--client-primary) !important; }
+.pc-container .border-primary { border-color: var(--client-primary) !important; }
+.pc-container .ant-pagination-item-active { border-color: var(--client-primary); }
+/* Giữ độ sáng ổn định khi mở mọi hộp thoại Ant Design. */
+.ant-modal-root .ant-modal-mask {
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.ant-modal-root .ant-modal-content {
+  background: #fff;
+  box-shadow: 0 20px 55px rgba(2, 6, 18, 0.24) !important;
+}
+
+.ant-modal-root .ant-modal-header,
+.ant-modal-root .ant-modal-footer {
+  background: #fff;
+}
+.svc-badge{display:inline-flex;align-items:center;border:1px solid;border-radius:4px;padding:2px 5px;font-size:10px;line-height:1;color:#64748b;background:#fff;white-space:nowrap}.svc-badge-red{color:#ef4444;border-color:#fca5a5}.svc-badge-green{color:#10b981;border-color:#6ee7b7}.svc-badge-cyan{color:#06b6d4;border-color:#67e8f9}.svc-badge-blue{color:#3b82f6;border-color:#93c5fd}.svc-badge-gold{color:#d97706;border-color:#fcd34d}.svc-badge-orange{color:#f97316;border-color:#fdba74}.svc-badge-purple,.svc-badge-geekblue{color:#8b5cf6;border-color:#c4b5fd}

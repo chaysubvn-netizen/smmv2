@@ -1,0 +1,14 @@
+.root { min-height: 100vh; background: #f4f6fa; }
+.sider { position: fixed !important; inset: 0 auto 0 0; z-index: 30; overflow: auto; box-shadow: 4px 0 18px rgba(15, 23, 42, .08); }
+.brand { display: flex; height: 64px; align-items: center; gap: 11px; padding: 0 20px; color: #fff; font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+.brandIcon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: #1677ff; }
+.main { min-height: 100vh; margin-left: 260px; transition: margin .2s ease; }
+.collapsedMain { margin-left: 80px; }
+.header { position: sticky; top: 0; z-index: 20; display: flex; height: 64px; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid #e8edf4; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); }
+.headerLeft, .headerRight { display: flex; align-items: center; gap: 12px; }
+.trigger { font-size: 18px; }
+.user { display: flex; flex-direction: column; line-height: 1.25; }
+.user small { color: #94a3b8; }
+.content { padding: 24px; }
+.loading { min-height: 100vh; display: grid; place-items: center; }
+@media (max-width: 800px) { .sider { position: fixed !important; } .main, .collapsedMain { margin-left: 0; } .content { padding: 16px 12px; } .user { display: none; } }

@@ -1,0 +1,17 @@
+.page { max-width: 1600px; margin: 0 auto; }
+.heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.heading h2 { margin: 0 0 3px !important; font-size: 23px !important; }
+.card { overflow: hidden; border: 1px solid #e1e7ef; border-radius: 12px; box-shadow: 0 5px 18px rgba(15, 23, 42, .045); }
+.card :global(.ant-card-head) { min-height: 58px; }
+.card :global(.ant-card-head-title) { color: #17233b; font-size: 16px; }
+.card :global(.ant-table-thead > tr > th) { height: 50px; padding: 0 12px; color: #18243b; background: #f5f7f9; border-bottom: 1px solid #ccd5df; font-size: 11px; font-weight: 750; text-transform: uppercase; }
+.card :global(.ant-table-tbody > tr > td) { padding: 12px; color: #26344d; font-size: 12px; }
+.card :global(.ant-tag) { margin: 0; border: 0; border-radius: 6px; font-size: 10px; line-height: 22px; }
+.filters { display: grid; grid-template-columns: minmax(240px, 1.4fr) 145px 170px minmax(235px, 1fr) auto auto; gap: 10px; margin-bottom: 16px; }
+.code { color: #163b72; font-weight: 600; overflow-wrap: anywhere; }
+.add { color: #00bd84; }
+.subtract { color: #f04438; }
+.balance { color: #00a978; font-weight: 600; }
+.note { min-width: 230px; max-width: 360px; color: #667085; line-height: 1.5; white-space: normal; }
+@media (max-width: 1100px) { .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .filters { grid-template-columns: 1fr; } .filters > button { width: fit-content; min-width: 96px; } }

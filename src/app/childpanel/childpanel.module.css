@@ -1,0 +1,334 @@
+.page {
+  padding: 4px;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.heading h3 {
+  margin: 0 0 4px !important;
+}
+.feeCard,
+.tableCard {
+  border-radius: 14px;
+  box-shadow: 0 5px 22px rgba(27, 39, 75, 0.05);
+}
+.feeCard {
+  margin-bottom: 18px;
+}
+.feeCard :global(.ant-card-body) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.feeCard :global(.ant-card-body) > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.feeCard :global(.ant-card-body) > div:first-child > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--client-primary-soft);
+  color: var(--client-primary);
+  font-size: 20px;
+}
+.feeCard :global(.ant-card-body) > div:first-child > span:last-child,
+.feeCard :global(.ant-card-body) > div:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.feeCard b {
+  font-size: 20px;
+  color: var(--client-primary);
+}
+.tableCard :global(.ant-table-thead th) {
+  white-space: nowrap;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.keyBox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.keyBox > span {
+  flex: 1;
+  padding: 10px;
+  overflow-wrap: anywhere;
+}
+
+/* WIZARD STYLES */
+.wizardHeaderCard {
+  background: #fff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.wizardHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.wizardCrown {
+  font-size: 32px;
+  color: var(--client-primary);
+  background: var(--client-primary-soft);
+  padding: 12px;
+  border-radius: 16px;
+}
+.wizardHeaderLeft h5 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+.wizardHeaderLeft p {
+  margin: 0;
+  color: #64748b;
+}
+.wizardHeaderRight p {
+  margin: 0 0 4px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: right;
+}
+.wizardHeaderRight h4 {
+  margin: 0;
+  color: var(--client-primary);
+  font-size: 20px;
+}
+
+.wizardStepsCard {
+  border-radius: 14px;
+  box-shadow: 0 5px 22px rgba(27, 39, 75, 0.05);
+  margin-bottom: 24px;
+}
+.wizardContentCard {
+  border-radius: 14px;
+  border: 1px dashed #cbd5e1;
+}
+
+.stepTitle {
+  font-size: 16px;
+  font-weight: 600;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.domainRequirements {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.reqCol h6 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+.reqCol ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.reqCol li {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.iconSuccess {
+  color: #10b981;
+}
+.tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.domainCheck h6 {
+  margin: 0 0 12px;
+  font-size: 15px;
+}
+.required {
+  color: #ef4444;
+}
+.checkInput {
+  display: flex;
+  gap: 12px;
+  max-width: 600px;
+}
+
+.stepFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+.stepFooterSpace {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+.stepFooterCenter {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.confirmBox {
+  margin-bottom: 24px;
+}
+.confirmBox h6 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+.infoAlert {
+  border: 1px dashed #38bdf8 !important;
+  margin-bottom: 24px;
+}
+.infoAlert ol {
+  padding-left: 20px;
+  margin: 12px 0 0;
+}
+.infoAlert li {
+  margin-bottom: 8px;
+}
+
+.successHead {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.successIconLg {
+  font-size: 64px;
+  color: #10b981;
+  margin-bottom: 16px;
+}
+.successHead h4 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+.successHead p {
+  color: #64748b;
+  margin: 0;
+}
+
+.nsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+.nsBox {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 250px;
+  background: #f8fafc;
+}
+.nsInner p {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+.nsInner span {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.guideBoxes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.guideBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px dashed transparent;
+}
+.guideBoxBlue {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+.guideBoxOrange {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+.guideBoxGreen {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.guideNum {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.guideBoxBlue .guideNum {
+  background: #3b82f6;
+  color: #fff;
+}
+.guideBoxOrange .guideNum {
+  background: #f97316;
+  color: #fff;
+}
+.guideBoxGreen .guideNum {
+  background: #22c55e;
+  color: #fff;
+}
+.guideBox h6 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+.guideBox p {
+  margin: 0;
+  color: #475569;
+  font-size: 13px;
+}
+.guideBox code {
+  display: block;
+  margin-top: 8px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+@media(max-width:700px){
+  .heading{align-items:flex-start;flex-direction:column}
+  .feeCard :global(.ant-card-body){align-items:flex-start;flex-direction:column;gap:18px}
+  .wizardHeaderCard{flex-direction:column;align-items:flex-start;gap:16px}
+  .wizardHeaderRight{text-align:left}
+  .domainRequirements{grid-template-columns:1fr}
+  .nsContainer{flex-direction:column;align-items:center}
+}

@@ -1,0 +1,41 @@
+.page { min-height: calc(100vh - 80px); padding: 24px; background: #f7f8fa; }
+.container { width: 100%; max-width: 1440px; margin: 0 auto; }
+.hero { padding: 30px 20px 34px; margin-bottom: 24px; text-align: center; border: 1px solid #d9ddff; border-radius: 14px; background: #fff; }
+.hero h2 { margin: 0 0 10px !important; color: #111827; font-size: 34px !important; font-weight: 800 !important; }
+.hero h2 :global(.anticon) { margin-right: 7px; color: #7c76ff; font-size: 27px; }
+.hero > span { color: #475569; font-size: 17px; line-height: 1.65; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.card { height: 100%; overflow: hidden; border: 1px solid #dfe3e8; border-radius: 12px; background: #fff; box-shadow: 0 4px 12px rgba(15, 23, 42, .09); transition: transform .2s ease, box-shadow .2s ease; }
+.card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(15, 23, 42, .1); }
+.imageLink { display: block; height: 260px; overflow: hidden; background: #eef2f7; }
+.imageLink img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
+.card:hover img { transform: scale(1.035); }
+.placeholder { display: grid; width: 100%; height: 100%; place-items: center; color: #94a3b8; font-size: 42px; }
+.body { display: flex; min-height: 225px; padding: 22px 22px 18px; flex-direction: column; }
+.title { display: -webkit-box; min-height: 58px; margin: 0 0 8px; overflow: hidden; color: #111827; font-size: 19px; font-weight: 750; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.excerpt { display: -webkit-box; margin: 0 0 16px; overflow: hidden; color: #64748b; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.cardFooter { display: flex; align-items: flex-start; margin-top: auto; padding-top: 15px; flex-direction: column; gap: 14px; border-top: 1px solid #e5e7eb; }
+.cardFooter time { color: #64748b; font-size: 12px; }
+.more { display: inline-flex; align-items: center; gap: 8px; color: #7c76ff; font-weight: 700; }
+.loading, .empty { min-height: 320px; display: grid; place-items: center; }
+.detailGrid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(310px, 1fr); align-items: start; gap: 22px; }
+.article { overflow: hidden; border: 1px solid #dfe3e8; border-radius: 14px; background: #fff; box-shadow: 0 5px 20px rgba(15, 23, 42, .07); }
+.articleBody { padding: 26px 30px 34px; }
+.articleHeader { padding-bottom: 20px; margin-bottom: 22px; border-bottom: 1px solid #edf1f6; }
+.articleHeader h2 { margin: 12px 0 6px !important; }
+.cover { display: block; width: 100%; max-height: 610px; object-fit: cover; }
+.content { color: #334155; font-size: 15px; line-height: 1.75; overflow-wrap: anywhere; }
+.content img { max-width: 100%; height: auto; }
+.content iframe { max-width: 100%; }
+.relatedCard { padding: 26px 24px 24px; border: 1px solid #dfe3e8; border-radius: 14px; background: #fff; box-shadow: 0 5px 20px rgba(15, 23, 42, .07); }
+.relatedCard h4 { margin: 4px 0 24px !important; text-align: center; font-weight: 750 !important; }
+.relatedList { display: grid; }
+.relatedItem { display: flex; align-items: center; gap: 12px; padding: 14px 8px; color: #111827; border-bottom: 1px solid #e5e7eb; }
+.relatedImage { display: grid; width: 80px; height: 80px; flex: 0 0 80px; place-items: center; overflow: hidden; color: #7c76ff; border-radius: 9px; background: #f1f3f7; font-size: 25px; }
+.relatedImage img { width: 100%; height: 100%; object-fit: cover; }
+.relatedInfo { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+.relatedInfo strong { display: -webkit-box; overflow: hidden; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.relatedInfo small { color: #64748b; }
+.allPosts { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 24px; padding: 10px 14px; color: #111827; border-radius: 8px; background: #f3f4f6; }
+@media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .detailGrid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .page { padding: 16px 12px; } .hero { padding: 24px 14px; } .hero h2 { font-size: 26px !important; } .hero > span { font-size: 14px; } .desktopBreak { display: none; } .grid { grid-template-columns: 1fr; } .imageLink { height: 220px; } .articleBody { padding: 18px 15px 26px; } .relatedCard { padding: 20px 14px; } }

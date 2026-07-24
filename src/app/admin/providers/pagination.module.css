@@ -1,0 +1,43 @@
+.compactPagination :global(.ant-pagination) {
+  align-items: center;
+  gap: 6px;
+  margin: 16px 20px;
+}
+
+.compactPagination :global(.ant-pagination-item),
+.compactPagination :global(.ant-pagination-prev),
+.compactPagination :global(.ant-pagination-next) {
+  min-width: 34px;
+  height: 34px;
+  margin: 0;
+  border-radius: 9px;
+  line-height: 32px;
+}
+
+.compactPagination :global(.ant-pagination-item) {
+  border-color: #dfe6ef;
+}
+
+.compactPagination :global(.ant-pagination-item-active) {
+  border-color: #1677ff;
+  background: #eef5ff;
+  box-shadow: 0 2px 7px rgba(22, 119, 255, 0.12);
+}
+
+.compactPagination :global(.ant-pagination-options) {
+  margin-inline-start: 6px;
+}
+
+.compactPagination :global(.ant-pagination-options .ant-select-selector) {
+  height: 34px !important;
+  padding: 0 11px !important;
+  border-color: #dfe6ef !important;
+  border-radius: 9px !important;
+  background: #f8fafc !important;
+}
+
+.compactPagination :global(.ant-pagination-options .ant-select-selection-item) {
+  color: #536174;
+  font-size: 12px;
+  line-height: 32px !important;
+}

@@ -1,0 +1,248 @@
+.page {
+  padding: 24px;
+}
+.heading {
+  margin-bottom: 24px;
+}
+.heading h2 {
+  margin: 0 0 4px !important;
+  font-size: 24px;
+  font-weight: 600;
+}
+.heading span {
+  color: #64748b;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.statCard {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+.statCard :global(.ant-card-body) {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+.statIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+.iconPrimary { background: #e0e7ff; color: #4f46e5; }
+.iconSuccess { background: #dcfce7; color: #16a34a; }
+.iconWarning { background: #fef9c3; color: #ca8a04; }
+.iconInfo { background: #e0f2fe; color: #0284c7; }
+
+.statContent {
+  flex-grow: 1;
+}
+.statTitle {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+.statValue {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.statSub {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.mainCard {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.filterBar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.filterSearch {
+  flex-grow: 1;
+  max-width: 300px;
+}
+.filterSelect {
+  width: 160px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.domainCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.domainIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.domainName {
+  font-weight: 600;
+  margin-bottom: 2px;
+  font-size: 14px;
+}
+.domainParent {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.internalStats {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.internalStatBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  text-align: center;
+  min-width: 65px;
+}
+.internalStatBox strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.internalStatBox span {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.settingsForm {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.guideBox {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+}
+.guideIcon {
+  font-size: 24px;
+  color: #0ea5e9;
+}
+.guideContent h4 {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.guideContent ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #475569;
+  font-size: 13px;
+}
+.guideContent li {
+  margin-bottom: 4px;
+}
+
+.configCard {
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+.configHeader {
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.configBody {
+  padding: 20px;
+}
+
+.statsModalRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.smStatBox {
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+.smStatBox h4 {
+  margin: 8px 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.smStatBox p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+.smStatIcon {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+@media(max-width:1100px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media(max-width:768px) {
+  .statsRow {
+    grid-template-columns: 1fr;
+  }
+  .filterBar {
+    flex-direction: column;
+  }
+  .filterSelect {
+    width: 100%;
+  }
+  .statsModalRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

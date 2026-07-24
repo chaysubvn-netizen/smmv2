@@ -1,0 +1,17 @@
+.page { max-width: 1600px; margin: 0 auto; }
+.card { overflow: hidden; border: 1px solid #e1e7ef; border-radius: 12px; box-shadow: 0 5px 18px rgba(15, 23, 42, .045); }
+.card :global(.ant-card-body) { padding: 0; }
+.cardHeader { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid #e7ecf2; }
+.cardHeader h4 { margin: 0 0 2px !important; color: #17233b; font-size: 17px !important; }
+.cardHeader :global(.ant-typography-secondary) { font-size: 12px; }
+.actions { display: flex; gap: 10px; }
+.actions :global(.ant-btn) { height: 36px; border-radius: 8px; }
+.deleteAll { border-color: transparent !important; background: #fff0f0 !important; }
+.card :global(.ant-table-thead > tr > th) { height: 50px; padding: 0 12px; color: #18243b; background: #f7f9fb; border-bottom: 1px solid #ccd5df; font-size: 11px; font-weight: 750; letter-spacing: .02em; text-transform: uppercase; }
+.card :global(.ant-table-tbody > tr > td) { height: 54px; padding: 10px 12px; color: #26344d; border-bottom: 1px solid #edf1f5; font-size: 12px; }
+.card :global(.ant-table-tbody > tr:hover > td) { background: #f8fbff !important; }
+.service { color: #008cff !important; font-size: 12px; font-weight: 500; }
+.deleteRow { width: 30px; height: 30px; border-radius: 7px; }
+.card :global(.ant-tag) { min-width: 42px; margin: 0; border: 0; border-radius: 6px; font-size: 10px; font-weight: 650; line-height: 22px; text-align: center; }
+.card :global(.ant-pagination) { margin: 16px 20px; }
+@media (max-width: 700px) { .cardHeader { align-items: flex-start; flex-direction: column; }.actions { width: 100%; }.actions :global(.ant-btn) { flex: 1; } }

@@ -1,0 +1,74 @@
+.summaryCards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.summaryCards :global(.ant-card) {
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08);
+}
+
+.summaryCards :global(.ant-card-body) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.summaryCards small {
+  display: block;
+  margin-bottom: 4px;
+  color: #6f7b8e;
+  font-size: 12px;
+}
+
+.summaryCards b {
+  display: block;
+  color: #152033;
+  font-size: 20px;
+}
+
+.summaryCards :global(.ant-card:last-child) b {
+  color: #08a878;
+}
+
+.summaryIcon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  place-items: center;
+  border-radius: 13px;
+  color: #4f7ff0;
+  background: #edf4ff;
+  font-size: 20px;
+}
+
+.summaryActive,
+.summaryBalance {
+  color: #08a878;
+  background: #d9f9ea;
+}
+
+.summaryPaused {
+  color: #ee5360;
+  background: #ffe4e6;
+}
+
+.providerFavicon {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+@media (max-width: 1050px) {
+  .summaryCards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 700px) {
+  .summaryCards { grid-template-columns: 1fr; }
+}

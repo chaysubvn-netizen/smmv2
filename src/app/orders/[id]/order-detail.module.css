@@ -1,0 +1,28 @@
+.page { padding: 4px; }
+.back { display: inline-flex; gap: 8px; align-items: center; margin-bottom: 14px; color: var(--client-primary); }
+.layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr); gap: 22px; align-items: start; }
+.mainCard, .supportCard { border: 0; box-shadow: 0 1px 4px rgb(15 23 42 / 9%); }
+.service { color: #0969ff; font-size: 16px; }
+.infoGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 60px; padding: 18px 0 26px; }
+.infoGrid > div { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.infoGrid :global(.ant-typography-secondary) { font-size: 11px; font-weight: 700; }
+.infoGrid a { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.full { grid-column: 1 / -1; }
+.cost { color: #ff4d4f; font-size: 16px; }
+.progressSection { border-top: 1px solid #eef0f3; padding-top: 18px; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin: 22px 0 26px; }
+.stats > div { background: #fafafa; border-radius: 8px; padding: 16px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+.stats b { font-size: 23px; color: #111827; }
+.stats span { color: #98a0ad; font-size: 12px; }
+.stats .remaining { color: var(--client-primary); }
+.progress { position: relative; display: flex; align-items: center; gap: 8px; height: 16px; color: #52c41a; }
+.progress::before { content: ''; height: 8px; flex: 1; background: #e8edf2; border-radius: 99px; grid-area: 1 / 1; }
+.progress i { position: absolute; max-width: calc(100% - 54px); height: 8px; border-radius: 99px; background: linear-gradient(90deg, #1296db, #7acb59); }
+.notes { color: #596273; line-height: 1.7; min-height: 350px; }
+.notes p { white-space: pre-line; }
+.supportBox { border-top: 1px dashed #e5e7eb; padding-top: 20px; }
+.supportBox p { color: #7b8493; font-size: 13px; line-height: 1.6; }
+.formActions { display: flex; justify-content: flex-end; gap: 8px; }
+.loading { min-height: 55vh; display: grid; place-items: center; }
+@media (max-width: 992px) { .layout { grid-template-columns: 1fr; } .notes { min-height: auto; } }
+@media (max-width: 600px) { .infoGrid { grid-template-columns: 1fr; gap: 18px; } .full { grid-column: auto; } .stats { grid-template-columns: 1fr; gap: 10px; } }

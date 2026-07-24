@@ -1,0 +1,15 @@
+.dualBalance {
+  gap: 2px;
+}
+
+.dualBalance strong {
+  color: #344157;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.dualBalance span {
+  margin-top: 2px;
+  font-size: 9px;
+  white-space: nowrap;
+}
