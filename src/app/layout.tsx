@@ -8,12 +8,13 @@ import "./globals.css";
 export async function generateMetadata(
   _parent: ResolvingMetadata
 ): Promise<Metadata> {
+  const headersList = await headers();
+  const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
+  const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
+  const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
   let metadataBase = new URL('http://localhost:3000');
+
   try {
-    const headersList = await headers();
-    const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
-    const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
-    const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
     metadataBase = new URL(`${protocol}://${host}`);
     
     // Call the Laravel API, sending the host header so it can resolve the domain
@@ -72,13 +73,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
+  const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
+  const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
+  const siteUrl = `${protocol}://${host}`;
   let jsonLd: Record<string, unknown> | null = null;
+
   try {
-    const headersList = await headers();
-    const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
-    const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
-    const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
-    const siteUrl = `${protocol}://${host}`;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
     const assetUrl = (value?: string | null) => value
       ? (value.startsWith('http') ? value : `${apiUrl.replace(/\/api\/?$/, '')}${value.startsWith('/') ? '' : '/'}${value}`)
