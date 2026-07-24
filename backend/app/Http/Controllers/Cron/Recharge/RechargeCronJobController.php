@@ -207,7 +207,10 @@ class RechargeCronJobController extends Controller
                 'amount_processor' => fn ($amount) => $amount,
             ];
             $pendingRecharge = null;
-            if (preg_match_all('/([A-Z0-9]{8})/', strtoupper($mapped['description']), $matches)) {
+            $ocbSearchText = strtoupper(
+                $mapped['description'].' '.json_encode($element, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+            );
+            if (preg_match_all('/([A-Z0-9]{8})/', $ocbSearchText, $matches)) {
                 $pendingRecharge = Recharge::whereIn('transaction_id', array_unique($matches[1]))
                     ->where('status', 'waiting')
                     ->first();
@@ -328,7 +331,10 @@ class RechargeCronJobController extends Controller
 
         // Ưu tiên tìm theo mã giao dịch mới (8 ký tự in hoa/số)
         // Dùng preg_match_all để tìm tất cả các chuỗi có thể là mã giao dịch
-        if (preg_match_all('/([A-Z0-9]{8})/', $description, $matches)) {
+        $rechargeSearchText = strtoupper(
+            $description.' '.json_encode($item, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        );
+        if (preg_match_all('/([A-Z0-9]{8})/', $rechargeSearchText, $matches)) {
             foreach ($matches[1] as $code) {
                 Log::info('OCB recharge lookup', ['code' => $code, 'host' => $this->siteHost($request), 'rows' => Recharge::where('transaction_id', $code)->get(['id', 'transaction_id', 'status', 'domain'])->toArray()]);
                 $recharge = Recharge::where('transaction_id', $code)
