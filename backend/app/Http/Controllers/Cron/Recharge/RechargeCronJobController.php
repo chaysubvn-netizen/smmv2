@@ -180,6 +180,8 @@ class RechargeCronJobController extends Controller
                 'message' => $lsgd['msg'] ?? $lsgd['message'] ?? 'OCB history request failed.',
             ];
         }
+        $matchedRecharges = 0;
+        $creditedRecharges = 0;
         foreach ($elements as $element) {
             $attrs = $element['attributes'] ?? $element;
             Log::info('OCB transaction received', ['element' => $element]);
@@ -194,10 +196,29 @@ class RechargeCronJobController extends Controller
                 'method' => 'OCB',
                 'amount_processor' => fn ($amount) => $amount,
             ];
+            $pendingRecharge = null;
+            if (preg_match_all('/([A-Z0-9]{8})/', strtoupper($mapped['description']), $matches)) {
+                $pendingRecharge = Recharge::whereIn('transaction_id', array_unique($matches[1]))
+                    ->where('status', 'waiting')
+                    ->first();
+                if ($pendingRecharge) {
+                    $matchedRecharges++;
+                }
+            }
             $this->processTransaction($request, $mapped, $apiConfig, $transferCode, $promotion_min);
+            if ($pendingRecharge?->fresh()?->status === 'completed') {
+                $creditedRecharges++;
+            }
         }
 
-        return ['status' => 'success', 'bank' => 'ocb', 'message' => 'Đã kiểm tra API OCB gốc.', 'transactions_received' => count($elements)];
+        return [
+            'status' => 'success',
+            'bank' => 'ocb',
+            'message' => 'Đã kiểm tra API OCB gốc.',
+            'transactions_received' => count($elements),
+            'matched_recharges' => $matchedRecharges,
+            'credited_recharges' => $creditedRecharges,
+        ];
     }
 
     private function ocbElements(array $payload): array
@@ -439,6 +460,7 @@ class RechargeCronJobController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error("New System Recharge error: " . $e->getMessage() . " -- TXN: " . $transactionNumber);
+            throw $e;
         }
     }
 
