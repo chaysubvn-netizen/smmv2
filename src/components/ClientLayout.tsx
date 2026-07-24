@@ -47,6 +47,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
   const [user, setUser] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [currencies, setCurrencies] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [config, setConfig] = useState<any>(null);
@@ -632,11 +633,21 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
                   onOpen={() => void fetchCurrencies()}
                 />
               </li>
-              <li className="dropdown pc-h-item header-user-profile">
-                <a className="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+              <li className={`dropdown pc-h-item header-user-profile ${isProfileOpen ? 'show' : ''}`}>
+                <a
+                  className="pc-head-link dropdown-toggle arrow-none me-0"
+                  href="#"
+                  role="button"
+                  aria-haspopup="true"
+                  aria-expanded={isProfileOpen}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setIsProfileOpen((open) => !open);
+                  }}
+                >
                   <img src={`https://ui-avatars.com/api/?background=random&name=${user?.username || 'User'}`} alt="user-image" className="user-avtar rounded-circle" width="40" style={{ position: 'relative', zIndex: 2 }} />
                 </a>
-                <div className="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown rounded-3 bg-gradient-1" style={{ minWidth: 340 }}>
+                <div className={`dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown rounded-3 bg-gradient-1 ${isProfileOpen ? 'show' : ''}`} style={{ minWidth: 340 }}>
                   <div className="dropdown-body p-3">
                     <div className="position-relative">
                       <div className="d-flex mb-1">
