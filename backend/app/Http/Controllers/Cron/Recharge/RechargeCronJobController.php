@@ -16,14 +16,20 @@ use Illuminate\Support\Facades\Log;
 
 class RechargeCronJobController extends Controller
 {
-   
+    private function siteHost(Request $request): string
+    {
+        $host = strtolower(trim((string) $request->header('X-Site-Host', $request->getHost())));
+        $host = preg_replace('/:\d+$/', '', $host) ?: $request->getHost();
+
+        return str_starts_with($host, 'api.') ? substr($host, 4) : $host;
+    }
 
     public function bank(Request $request)
     {
         // Cleanup expired recharges
         Recharge::where('status', 'waiting')
             ->where('expired_at', '<', now())
-            ->where('domain', request()->getHost())
+            ->where('domain', $this->siteHost($request))
             ->update(['status' => 'failed']);
 
         $bank = strtolower($request->get('bank'));
@@ -251,7 +257,7 @@ class RechargeCronJobController extends Controller
         // Dùng preg_match_all để tìm tất cả các chuỗi có thể là mã giao dịch
         if (preg_match_all('/([A-Z0-9]{8})/', $description, $matches)) {
             foreach ($matches[1] as $code) {
-                Log::info('OCB recharge lookup', ['code' => $code, 'host' => $request->getHost(), 'rows' => Recharge::where('transaction_id', $code)->get(['id', 'transaction_id', 'status', 'domain'])->toArray()]);
+                Log::info('OCB recharge lookup', ['code' => $code, 'host' => $this->siteHost($request), 'rows' => Recharge::where('transaction_id', $code)->get(['id', 'transaction_id', 'status', 'domain'])->toArray()]);
                 $recharge = Recharge::where('transaction_id', $code)
                     ->where('status', 'waiting')
                     ->first();
@@ -272,7 +278,7 @@ class RechargeCronJobController extends Controller
             return;
         }
 
-        $user = User::where('id', $idUser)->where('domain', $request->getHost())->first();
+        $user = User::where('id', $idUser)->where('domain', $this->siteHost($request))->first();
         if (!$user) {
             return;
         }
@@ -338,7 +344,7 @@ class RechargeCronJobController extends Controller
 
             // Kiểm tra xem transactionNumber này đã được xử lý chưa (tránh trùng lặp từ phía bank API)
             $txnExists = Transaction::where('description', 'like', "%$transactionNumber%")
-                ->where('domain', $request->getHost())
+                ->where('domain', $this->siteHost($request))
                 ->exists();
 
             if ($txnExists) {
@@ -353,7 +359,7 @@ class RechargeCronJobController extends Controller
             }
 
             $amountUsd = convert_currency($amount, 'USD');
-            $bonusData = $this->calculateBonus($amount, $amountUsd);
+            $bonusData = $this->calculateBonus($request, $amount, $amountUsd);
 
             $bonusAmount = $bonusData['bonusAmount'];
             $realAmount  = $amount + $bonusAmount;
@@ -383,7 +389,7 @@ class RechargeCronJobController extends Controller
                 'amount' => $realAmount,
                 'description' => "Nạp tiền hóa đơn #{$recharge->transaction_id} qua $method - Mã GD Bank: $transactionNumber",
                 'status' => 'success',
-                'domain' => $request->getHost()
+                'domain' => $this->siteHost($request)
             ]);
 
             // Hoa hồng
@@ -437,7 +443,7 @@ class RechargeCronJobController extends Controller
         try {
             // Kiểm tra đã tồn tại trong recharges với khóa FOR UPDATE để tránh race condition
             $exists = Recharge::where('transaction_id', $transactionNumber)
-                ->where('domain', $request->getHost())
+                ->where('domain', $this->siteHost($request))
                 ->lockForUpdate()
                 ->exists();
 
@@ -448,7 +454,7 @@ class RechargeCronJobController extends Controller
 
             // Double-check trong bảng transactions (phòng trường hợp dùng transaction_code tương ứng)
             $txnExists = Transaction::where('description', 'like', "%$transactionNumber%")
-                ->where('domain', $request->getHost())
+                ->where('domain', $this->siteHost($request))
                 ->lockForUpdate()
                 ->exists();
 
@@ -458,7 +464,7 @@ class RechargeCronJobController extends Controller
             }
 
             $amountUsd = convert_currency($amount, 'USD');
-            $bonusData = $this->calculateBonus($amount, $amountUsd);
+            $bonusData = $this->calculateBonus($request, $amount, $amountUsd);
 
             $bonusAmount = $bonusData['bonusAmount'];
             $realAmount  = $amount + $bonusAmount;
@@ -475,7 +481,7 @@ class RechargeCronJobController extends Controller
                 'bonus' => $bonusAmount,
                 'description' => "Nạp tiền qua ngân hàng $method - $transactionNumber - Bonus: {$bonusAmount}",
                 'status' => 'completed',
-                'domain' => $request->getHost()
+                'domain' => $this->siteHost($request)
             ]);
 
             // Cập nhật số dư user
@@ -495,7 +501,7 @@ class RechargeCronJobController extends Controller
                 'amount' => $realAmount,
                 'description' => "Nạp tiền qua ngân hàng $method - $transactionNumber - Bonus: {$bonusAmount}",
                 'status' => 'success',
-                'domain' => $request->getHost()
+                'domain' => $this->siteHost($request)
             ]);
 
             // Xử lý hoa hồng giới thiệu trong cùng transaction (atomic)
@@ -515,9 +521,9 @@ class RechargeCronJobController extends Controller
         }
     }
 
-    protected function calculateBonus($amount, $amountUsd)
+    protected function calculateBonus(Request $request, $amount, $amountUsd)
     {
-        $bonuses = RechargeBonus::where('domain', request()->getHost())
+        $bonuses = RechargeBonus::where('domain', $this->siteHost($request))
             ->where('type', 'banking')
             ->where('status', 'active')
             ->get();
@@ -577,7 +583,7 @@ class RechargeCronJobController extends Controller
             'amount' => $commission,
             'description' => "Hoa hồng giới thiệu nạp tiền qua ngân hàng - $transactionNumber",
             'status' => 'success',
-            'domain' => $request->getHost()
+            'domain' => $this->siteHost($request)
         ]);
 
         // Cập nhật AffiliateRef thống kê (tăng total_deposit và commission)
@@ -589,7 +595,7 @@ class RechargeCronJobController extends Controller
     public function senderTelegram(Request $request, $user, $recharge, $bank)
     {
         $text = "💰 <b>THÔNG BÁO NẠP TIỀN THÀNH CÔNG</b> 💰\n";
-        $text .= "🌐 <b>Website:</b> " . htmlspecialchars($request->getHost()) . "\n";
+        $text .= "🌐 <b>Website:</b> " . htmlspecialchars($this->siteHost($request)) . "\n";
         $text .= "🏦 <b>Ngân hàng:</b> $bank\n";
         $text .= "👤 <b>Tên tài khoản:</b> " . htmlspecialchars($user->username) . "\n";
         $text .= "💵 <b>Số tiền:</b> " . number_format($recharge->real_amount) . " VNĐ\n";
