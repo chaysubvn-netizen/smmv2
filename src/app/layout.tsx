@@ -12,12 +12,9 @@ export async function generateMetadata(
   const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
   const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
   const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
-  let metadataBase = new URL('http://localhost:3000');
+  const metadataBase = new URL(`${protocol}://${host}`);
 
   try {
-    metadataBase = new URL(`${protocol}://${host}`);
-    
-    // Call the Laravel API, sending the host header so it can resolve the domain
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
     const assetUrl = (value?: string | null) => value ? (value.startsWith('http') ? value : `${apiUrl.replace(/\/api\/?$/, '')}${value.startsWith('/') ? '' : '/'}${value}`) : undefined;
     const res = await fetch(`${apiUrl}/client/config`, {
