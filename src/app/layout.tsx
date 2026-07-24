@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const metadataBase = new URL('https://minsmm.net/');
 
   try {
-    const apiUrl = process.env.API_URL || `${metadataBase.origin}/api`;
+    const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || `${metadataBase.origin}/api`;
     const assetUrl = (value?: string | null) => value ? (value.startsWith('http') ? value : `${apiUrl.replace(/\/api\/?$/, '')}${value.startsWith('/') ? '' : '/'}${value}`) : undefined;
     const res = await fetch(`${apiUrl}/client/config`, {
       headers: {
