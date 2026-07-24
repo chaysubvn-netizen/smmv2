@@ -129,14 +129,24 @@ class RechargeCronJobController extends Controller
             ? $response
             : ($response[$apiConfig['data_key']] ?? []);
 
+        $matchedRecharges = 0;
+        $creditedRecharges = 0;
         foreach ($items as $item) {
-            $this->processTransaction($request, $item, $apiConfig, $transferCode, $promotion_min);
+            $outcome = $this->processTransaction($request, $item, $apiConfig, $transferCode, $promotion_min);
+            if (in_array($outcome, ['matched', 'credited'], true)) {
+                $matchedRecharges++;
+            }
+            if ($outcome === 'credited') {
+                $creditedRecharges++;
+            }
         }
         return response()->json([
             'status' => 'success',
             'bank' => $bank,
             'message' => 'Đã kiểm tra '.$apiConfig['method'].'.',
             'transactions_received' => count($items),
+            'matched_recharges' => $matchedRecharges,
+            'credited_recharges' => $creditedRecharges,
         ]);
     }
 
@@ -294,8 +304,16 @@ class RechargeCronJobController extends Controller
         if ($rawAmount !== null && str_contains((string)$rawAmount, '-')) {
             return;
         }
-        $transactionNumber = $item['transactionNumber'] ?? $item['reference'] ?? $item['refNo'] ?? $item['Reference'] ?? $item['trxId'] ?? $item['TransactionNo'] ?? $item['magiaodich'] ?? null;
-        $description = strtoupper($item['description'] ?? $item['Description'] ?? $item['remark'] ?? $item['Remark'] ?? $item['noidung'] ?? '');
+        $transactionNumber = $item['transactionNumber'] ?? $item['transactionID'] ?? $item['transactionId']
+            ?? $item['reference'] ?? $item['referenceNumber'] ?? $item['refNo'] ?? $item['Reference']
+            ?? $item['trxId'] ?? $item['transId'] ?? $item['TransactionNo'] ?? $item['magiaodich'] ?? $item['id'] ?? null;
+        $descriptionValue = $item['description'] ?? $item['Description'] ?? $item['remark'] ?? $item['Remark']
+            ?? $item['noidung'] ?? $item['content'] ?? $item['transactionContent'] ?? $item['transactionDescription']
+            ?? $item['memo'] ?? $item['message'] ?? '';
+        if (is_array($descriptionValue)) {
+            $descriptionValue = $descriptionValue['value'] ?? $descriptionValue['content'] ?? $descriptionValue['description'] ?? '';
+        }
+        $description = strtoupper((string) $descriptionValue);
         $descriptionLower = strtolower($description);
 
         if (isset($apiConfig['amount_processor']) && $rawAmount !== null) {
@@ -320,7 +338,7 @@ class RechargeCronJobController extends Controller
                 if ($recharge) {
                     Log::info('OCB recharge matched', ['code' => $code, 'recharge_id' => $recharge->id, 'domain' => $recharge->domain]);
                     $this->handleNewSystemTransaction($request, $recharge, $amount, $transactionNumber, $apiConfig['method']);
-                    return;
+                    return $recharge->fresh()?->status === 'completed' ? 'credited' : 'matched';
                 }
             }
         }
