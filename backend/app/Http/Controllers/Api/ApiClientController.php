@@ -42,6 +42,14 @@ use Illuminate\Support\Str;
 
 class ApiClientController extends Controller
 {
+    private function siteHost(Request $request): string
+    {
+        $host = strtolower(trim((string) $request->header('X-Site-Host', $request->getHost())));
+        $host = preg_replace('/:\d+$/', '', $host) ?: $request->getHost();
+
+        return str_starts_with($host, 'api.') ? substr($host, 4) : $host;
+    }
+
     public function getProducts(Request $request)
     {
         $user = $request->user();
@@ -165,7 +173,7 @@ class ApiClientController extends Controller
     {
         $user = $request->user();
         $updates = RateUpdate::with(['service.category.platform'])
-            ->where('domain', $request->getHost())
+            ->where('domain', $this->siteHost($request))
             ->whereHas('service')
             ->orderByDesc('id')
             ->paginate(min(50, max(10, (int) $request->input('per_page', 20))));
@@ -505,11 +513,7 @@ class ApiClientController extends Controller
 
     public function getServices(Request $request)
     {
-        $domain = strtolower(trim((string) $request->header('X-Site-Host', $request->getHost())));
-        $domain = preg_replace('/:\d+$/', '', $domain) ?: $request->getHost();
-        if (str_starts_with($domain, 'api.')) {
-            $domain = substr($domain, 4);
-        }
+        $domain = $this->siteHost($request);
         
         $categoryId = $request->input('category_id');
         $query = Service::with('category.platform')
