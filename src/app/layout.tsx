@@ -10,9 +10,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const headersList = await headers();
   const host = (headersList.get('x-forwarded-host') || headersList.get('host') || 'localhost:3000').split(',')[0].trim();
-  const forwardedProtocol = (headersList.get('x-forwarded-proto') || '').split(',')[0].trim();
-  const protocol = forwardedProtocol || (/^(localhost|127\.0\.0\.1)(:|$)/.test(host) ? 'http' : 'https');
-  const metadataBase = new URL(`${protocol}://${host}`);
+  const metadataBase = new URL('https://minsmm.net/');
 
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
