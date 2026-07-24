@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import ClientLayout from '@/components/ClientLayout';
 import { Table, Typography, Card, Spin, Tag, Input, Row, Col, Badge, Button, Select, Space } from 'antd';import { message } from '@/lib/antd-message';
-import { AppstoreOutlined, CrownOutlined, DeleteOutlined, FacebookFilled, GlobalOutlined, GoogleOutlined, InstagramOutlined, PlayCircleFilled, SafetyCertificateOutlined, SendOutlined, ShopOutlined, TeamOutlined, TrophyOutlined, WalletOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, CrownOutlined, DeleteOutlined, FacebookFilled, GlobalOutlined, GoogleOutlined, InstagramOutlined, PlayCircleFilled, SendOutlined, ShopOutlined, TeamOutlined, TrophyOutlined, WalletOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 
@@ -191,16 +191,6 @@ export default function ServicesPage() {
   const renderRankCards = () => {
     const ranks = [
       {
-        id: 'member',
-        title: 'Khách lẻ',
-        subtitle: 'Cấp bậc Khách lẻ - Cấp bậc cơ bản',
-        priceText: 'Giá Khách lẻ',
-        priceSub: 'Áp dụng giá tiêu chuẩn',
-        minDeposit: '0 ₫',
-        icon: <SafetyCertificateOutlined style={{ fontSize: '32px', color: '#3b82f6' }} />,
-        borderColor: '#bfdbfe'
-      },
-      {
         id: 'silver',
         title: 'Cộng tác viên',
         subtitle: `Cấp bậc Cộng tác viên - Nạp từ ${formatCurrency(config?.ranks?.silver || 0)}`,
@@ -229,13 +219,23 @@ export default function ServicesPage() {
         minDeposit: formatCurrency(config?.ranks?.platinum || config?.ranks?.diamond || 0),
         icon: <CrownOutlined style={{ fontSize: '32px', color: '#7c3aed' }} />,
         borderColor: '#c4b5fd'
+      },
+      {
+        id: 'diamond',
+        title: 'Kim cương',
+        subtitle: `Cấp bậc Kim cương - Nạp từ ${formatCurrency(config?.ranks?.diamond || 0)}`,
+        priceText: 'Giá Kim cương',
+        priceSub: 'Ưu đãi cao nhất',
+        minDeposit: formatCurrency(config?.ranks?.diamond || 0),
+        icon: <CrownOutlined style={{ fontSize: '32px', color: '#06b6d4' }} />,
+        borderColor: '#67e8f9'
       }
     ];
 
     return (
       <Row gutter={[16, 16]} className="mb-6">
         {ranks.map((rank) => {
-          const isCurrent = user?.level === rank.id || (rank.id === 'member' && (!user || !user.level));
+          const isCurrent = user?.level === rank.id;
           
           return (
             <Col xs={24} sm={12} lg={6} key={rank.id}>
