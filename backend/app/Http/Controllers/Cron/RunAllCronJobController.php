@@ -148,7 +148,7 @@ class RunAllCronJobController extends Controller
         foreach (ApiProvider::where('status', 'active')->get() as $provider) {
             $providerRequest = clone $request;
             $providerRequest->merge(['provider_id' => $provider->id]);
-            $meta = fn (string $type, int $interval, $callback) => ['type' => $type, 'interval' => $interval, 'provider' => $provider->name, 'callback' => $callback];
+            $meta = fn (string $type, int $interval, $callback) => ['type' => $type, 'interval' => 60, 'provider' => $provider->name, 'callback' => $callback];
             $jobs["status.{$provider->id}"] = $meta('status', 60, fn () => $order->index($providerRequest));
             $jobs["scheduled.{$provider->id}"] = $meta('scheduled', 60, fn () => $order->schedule($providerRequest));
             $jobs["dripfeed.{$provider->id}"] = $meta('dripfeed', 60, fn () => $order->dripfeed($providerRequest));
@@ -157,17 +157,17 @@ class RunAllCronJobController extends Controller
         }
 
         return $jobs + [
-            'average-completion-time' => ['interval' => 3600, 'callback' => fn () => $service->updateAvgTime($request)],
-            'sync-child-panel-services' => ['interval' => 600, 'callback' => fn () => $service->updateService($request)],
-            'deposit-usdt' => ['interval' => 20, 'callback' => fn () => app(RechargeUsdtCronJobController::class)->index($request)],
-            'deposit-ocb' => ['interval' => 20, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'ocb']))],
-            'deposit-acb' => ['interval' => 20, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'acb']))],
-            'deposit-mbbank' => ['interval' => 20, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'mbbank']))],
-            'deposit-vcb' => ['interval' => 20, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'vcb']))],
-            'deposit-viettinbank' => ['interval' => 20, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'viettinbank']))],
-            'deposit-binance' => ['interval' => 20, 'callback' => fn () => app(BinanceCronJobController::class)->index($request)],
-            'deposit-trc20' => ['interval' => 20, 'callback' => fn () => app(Trc20CronJobController::class)->index($request)],
-            'login-notifications' => ['interval' => 15, 'callback' => fn () => app(FbTokenCronController::class)->index($request)],
+            'average-completion-time' => ['interval' => 60, 'callback' => fn () => $service->updateAvgTime($request)],
+            'sync-child-panel-services' => ['interval' => 60, 'callback' => fn () => $service->updateService($request)],
+            'deposit-usdt' => ['interval' => 60, 'callback' => fn () => app(RechargeUsdtCronJobController::class)->index($request)],
+            'deposit-ocb' => ['interval' => 60, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'ocb']))],
+            'deposit-acb' => ['interval' => 60, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'acb']))],
+            'deposit-mbbank' => ['interval' => 60, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'mbbank']))],
+            'deposit-vcb' => ['interval' => 60, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'vcb']))],
+            'deposit-viettinbank' => ['interval' => 60, 'callback' => fn () => app(RechargeCronJobController::class)->bank((clone $request)->merge(['bank' => 'viettinbank']))],
+            'deposit-binance' => ['interval' => 60, 'callback' => fn () => app(BinanceCronJobController::class)->index($request)],
+            'deposit-trc20' => ['interval' => 60, 'callback' => fn () => app(Trc20CronJobController::class)->index($request)],
+            'login-notifications' => ['interval' => 60, 'callback' => fn () => app(FbTokenCronController::class)->index($request)],
             'system-auto-update' => ['interval' => 60, 'callback' => fn () => $system->autoUpdate()],
             'system-schedule' => ['interval' => 60, 'callback' => fn () => $system->index($request)],
         ];
