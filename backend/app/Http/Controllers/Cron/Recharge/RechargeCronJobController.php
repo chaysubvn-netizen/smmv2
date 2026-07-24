@@ -192,6 +192,10 @@ class RechargeCronJobController extends Controller
         }
         $matchedRecharges = 0;
         $creditedRecharges = 0;
+        $waitingRecharges = Recharge::where('status', 'waiting')
+            ->where('domain', $this->siteHost($request))
+            ->get()
+            ->keyBy(fn (Recharge $recharge) => strtoupper((string) $recharge->transaction_id));
         foreach ($elements as $element) {
             $attrs = $element['attributes'] ?? $element;
             Log::info('OCB transaction received', ['element' => $element]);
@@ -210,15 +214,32 @@ class RechargeCronJobController extends Controller
             $ocbSearchText = strtoupper(
                 $mapped['description'].' '.json_encode($element, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             );
-            if (preg_match_all('/([A-Z0-9]{8})/', $ocbSearchText, $matches)) {
-                $pendingRecharge = Recharge::whereIn('transaction_id', array_unique($matches[1]))
-                    ->where('status', 'waiting')
-                    ->first();
-                if ($pendingRecharge) {
+            foreach ($waitingRecharges as $code => $waitingRecharge) {
+                if ($code !== '' && str_contains($ocbSearchText, $code)) {
+                    $pendingRecharge = $waitingRecharge;
                     $matchedRecharges++;
+                    break;
                 }
             }
             $this->processTransaction($request, $mapped, $apiConfig, $transferCode, $promotion_min);
+            if ($pendingRecharge?->fresh()?->status === 'waiting') {
+                $type = strtoupper((string) $mapped['type']);
+                $amount = $this->normalizeAmount($mapped['amount']);
+                $isCredit = !in_array($type, ['D', 'DR', 'DBIT', 'DEBIT'], true)
+                    && !str_contains($type, 'DEBIT')
+                    && !empty($mapped['transactionNumber'])
+                    && $amount !== null
+                    && $amount > 0;
+                if ($isCredit) {
+                    $this->handleNewSystemTransaction(
+                        $request,
+                        $pendingRecharge,
+                        $amount,
+                        $mapped['transactionNumber'],
+                        'OCB'
+                    );
+                }
+            }
             if ($pendingRecharge?->fresh()?->status === 'completed') {
                 $creditedRecharges++;
             }
