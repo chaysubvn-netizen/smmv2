@@ -50,6 +50,24 @@ class ApiClientController extends Controller
         return str_starts_with($host, 'api.') ? substr($host, 4) : $host;
     }
 
+    private function serviceDomains(Request $request): array
+    {
+        $domain = $this->siteHost($request);
+        $configured = trim((string) env('MAIN_SITE', ''));
+        $configuredHost = parse_url(
+            str_contains($configured, '://') ? $configured : 'https://' . ltrim($configured, '/'),
+            PHP_URL_HOST
+        );
+
+        return array_values(array_unique(array_filter([
+            $domain,
+            'api.' . $domain,
+            $configured,
+            $configuredHost,
+            $configuredHost && str_starts_with($configuredHost, 'api.') ? substr($configuredHost, 4) : $configuredHost,
+        ])));
+    }
+
     public function getProducts(Request $request)
     {
         $user = $request->user();
@@ -513,12 +531,14 @@ class ApiClientController extends Controller
 
     public function getServices(Request $request)
     {
-        $domain = $this->siteHost($request);
+        $domains = $this->serviceDomains($request);
         
         $categoryId = $request->input('category_id');
         $query = Service::with('category.platform')
             ->where('status', 'active')
-            ->where('domain', $domain);
+            ->where(function ($builder) use ($domains) {
+                $builder->whereIn('domain', $domains)->orWhereNull('domain')->orWhere('domain', '');
+            });
         
         if ($categoryId) {
             $query->where('category_id', $categoryId);
