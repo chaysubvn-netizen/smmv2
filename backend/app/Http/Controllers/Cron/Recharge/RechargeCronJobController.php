@@ -162,8 +162,24 @@ class RechargeCronJobController extends Controller
         if (!is_array($lsgd)) {
             return ['status' => 'error', 'bank' => 'ocb', 'message' => 'API OCB trả lịch sử không hợp lệ.'];
         }
-        Log::info('OCB cron history result', ['keys' => array_keys($lsgd), 'elements' => is_array($lsgd['elements'] ?? null) ? count($lsgd['elements']) : 0]);
-        $elements = $lsgd['elements'] ?? (array_is_list($lsgd) ? $lsgd : []);
+        $elements = $this->ocbElements($lsgd);
+        if ($elements === []) {
+            $ocb->get_balance($loginRes['accessToken'], $accountNo);
+            $retry = json_decode($ocb->LSGD($accountNo, 50, $loginRes['accessToken']), true);
+            if (is_array($retry)) {
+                $lsgd = $retry;
+                $elements = $this->ocbElements($retry);
+            }
+        }
+
+        Log::info('OCB cron history result', ['keys' => array_keys($lsgd), 'elements' => count($elements)]);
+        if ($elements === [] && isset($lsgd['code'])) {
+            return [
+                'status' => 'error',
+                'bank' => 'ocb',
+                'message' => $lsgd['msg'] ?? $lsgd['message'] ?? 'OCB history request failed.',
+            ];
+        }
         foreach ($elements as $element) {
             $attrs = $element['attributes'] ?? $element;
             Log::info('OCB transaction received', ['element' => $element]);
@@ -182,6 +198,24 @@ class RechargeCronJobController extends Controller
         }
 
         return ['status' => 'success', 'bank' => 'ocb', 'message' => 'Đã kiểm tra API OCB gốc.', 'transactions_received' => count($elements)];
+    }
+
+    private function ocbElements(array $payload): array
+    {
+        if (array_is_list($payload)) {
+            return $payload;
+        }
+
+        foreach (['elements', 'transactions', 'content', 'items'] as $key) {
+            if (isset($payload[$key]) && is_array($payload[$key])) {
+                return $payload[$key];
+            }
+            if (isset($payload['data'][$key]) && is_array($payload['data'][$key])) {
+                return $payload['data'][$key];
+            }
+        }
+
+        return [];
     }
 
     private function ocbDescription(array $attrs): string
