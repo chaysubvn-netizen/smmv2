@@ -459,13 +459,8 @@ export default function DashboardPage() {
   const serviceContent = selectedService?.note || selectedService?.description || '';
 
   return (
-    <ClientLayout>
-      {loading ? (
-        <div className="flex min-h-[calc(100vh-120px)] items-center justify-center">
-          <Spin size="large" />
-        </div>
-      ) : (
-        <>
+    <ClientLayout loading={loading}>
+      <>
           <Modal
             open={noticeOpen && Boolean(config?.notice_modal)}
             onCancel={hideNoticeForTwoHours}
@@ -1178,8 +1173,7 @@ export default function DashboardPage() {
               </Card>
             </Col>
           </Row>
-        </>
-      )}
+      </>
     </ClientLayout>
   );
 }

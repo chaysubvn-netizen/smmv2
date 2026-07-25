@@ -43,7 +43,7 @@ function readableTextColor(background: string) {
   return luminance > 150 ? '#253044' : '#f4f6fa';
 }
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({ children, loading = false }: { children: React.ReactNode; loading?: boolean }) {
   const [user, setUser] = useState<any>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarHidden, setIsSidebarHidden] = useState(false);
@@ -265,7 +265,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     router.push('/login');
   };
 
-  const isLayoutLoading = !user || !configLoaded;
+  const isLayoutLoading = !user || !configLoaded || loading;
 
   if (configLoaded && config?.maintenance_mode === 'on') {
     return <MaintenanceScreen title={config.title} logo={toImageUrl(config.logo)} onLogout={() => void handleLogout()} />;
