@@ -4,11 +4,17 @@
 .brandIcon { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: #1677ff; }
 .main { min-height: 100vh; margin-left: 260px; transition: margin .2s ease; }
 .collapsedMain { margin-left: 80px; }
-.header { position: sticky; top: 0; z-index: 20; display: flex; height: 64px; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid #e8edf4; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); }
-.headerLeft, .headerRight { display: flex; align-items: center; gap: 12px; }
-.trigger { font-size: 18px; }
+.header { position: sticky; top: 0; z-index: 20; display: flex; height: 64px; align-items: center; justify-content: flex-end; padding: 0 22px; border-bottom: 1px solid #e8edf4; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); }
+.headerRight { display: flex; align-items: center; gap: 12px; }
+.mobileBackdrop { display: none; }
 .user { display: flex; flex-direction: column; line-height: 1.25; }
 .user small { color: #94a3b8; }
 .content { padding: 24px; }
 .loading { min-height: 100vh; display: grid; place-items: center; }
-@media (max-width: 800px) { .sider { position: fixed !important; } .main, .collapsedMain { margin-left: 0; } .content { padding: 16px 12px; } .user { display: none; } }
+@media (max-width: 800px) {
+  .sider { position: fixed !important; z-index: 40; max-width: min(260px, 86vw) !important; }
+  .mobileBackdrop { position: fixed; inset: 0; z-index: 35; display: block; padding: 0; border: 0; background: rgba(15, 23, 42, .48); backdrop-filter: blur(1px); }
+  .main, .collapsedMain { min-width: 0; margin-left: 0; }
+  .content { min-width: 0; padding: 16px 12px; overflow-x: hidden; }
+  .user { display: none; }
+}
