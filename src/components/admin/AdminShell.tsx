@@ -3,11 +3,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Avatar, Dropdown, Layout, Menu, Spin, Typography } from 'antd';import { message } from '@/lib/antd-message';
+import { Avatar, Button, Dropdown, Layout, Menu, Spin, Typography } from 'antd';import { message } from '@/lib/antd-message';
 import {
   ApiOutlined, AppstoreOutlined, BankOutlined, BellOutlined, DashboardOutlined,
-  DollarOutlined, FileTextOutlined, GlobalOutlined, HistoryOutlined,
-  MessageOutlined, PercentageOutlined, SettingOutlined,
+  DollarOutlined, FileTextOutlined, GlobalOutlined, HistoryOutlined, MenuFoldOutlined,
+  MenuUnfoldOutlined, MessageOutlined, PercentageOutlined, SettingOutlined,
   ShoppingCartOutlined, TagsOutlined, TeamOutlined, UserOutlined, WalletOutlined, CustomerServiceOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
@@ -100,7 +100,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   const logoUrl = config?.logo ? (config.logo.startsWith('http') ? config.logo : (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '') + config.logo) : '';
 
   return <Layout className={styles.root}>
-    <Sider className={styles.sider} width={260} collapsedWidth={mobile ? 0 : 80} collapsed={collapsed} breakpoint="md" onBreakpoint={(value) => { setMobile(value); setCollapsed(value); }} theme="dark">
+    <Sider className={styles.sider} width={260} collapsedWidth={mobile ? 0 : 80} collapsed={collapsed} breakpoint="md" onBreakpoint={(value) => { setMobile(value); setCollapsed(value); }} trigger={null} theme="dark">
       <div className={styles.brand}>
         {logoUrl ? (
           <img src={logoUrl} alt="Logo" style={{ maxHeight: 36, maxWidth: collapsed ? 40 : 180, objectFit: 'contain' }} />
@@ -129,6 +129,13 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     ) : null}
     <Layout className={`${styles.main} ${collapsed ? styles.collapsedMain : ''}`}>
       <Header className={styles.header}>
+        <Button
+          className={styles.trigger}
+          type="text"
+          aria-label={collapsed ? 'Mở menu quản trị' : 'Thu gọn menu quản trị'}
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => setCollapsed(value => !value)}
+        />
         <div className={styles.headerRight}>
           <div className={styles.user}><Text strong>{user?.username}</Text><small>Quản trị viên</small></div>
           <Dropdown menu={{ items: [{ key: 'client', label: <Link href="/new">Về trang khách hàng</Link> }, { key: 'logout', danger: true, label: 'Đăng xuất', onClick: () => { localStorage.removeItem('token'); localStorage.removeItem('user'); router.replace('/login'); } }] }}>
