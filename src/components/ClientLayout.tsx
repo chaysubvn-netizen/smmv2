@@ -265,14 +265,9 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     router.push('/login');
   };
 
-  if (!user || !configLoaded) {
-    return (
-      <div className="flex min-h-[calc(100vh-120px)] items-center justify-center">
-        <Spin size="large" />
-      </div>
-    );
-  }
-  if (config?.maintenance_mode === 'on') {
+  const isLayoutLoading = !user || !configLoaded;
+
+  if (configLoaded && config?.maintenance_mode === 'on') {
     return <MaintenanceScreen title={config.title} logo={toImageUrl(config.logo)} onLogout={() => void handleLogout()} />;
   }
 
@@ -744,7 +739,14 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
       <div className="pc-container">
         <div className="pc-content">
-          {children}
+          {isLayoutLoading ? (
+            <div
+              className="d-flex align-items-center justify-content-center"
+              style={{ minHeight: 'calc(100vh - 190px)' }}
+            >
+              <Spin size="large" />
+            </div>
+          ) : children}
         </div>
       </div>
 
