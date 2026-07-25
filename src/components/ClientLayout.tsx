@@ -592,16 +592,24 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         <div className="navbar-wrapper">
           <div className="m-header">
             <Link href="/" className="b-brand text-primary">
-              <img 
-                src={toImageUrl(config?.logo)} 
-                className="img-fluid logo-lg" 
-                alt={config?.title || "logo"} 
-                style={{ maxHeight: '40px' }}
-              />
+              {configLoaded ? (
+                <img
+                  src={toImageUrl(config?.logo)}
+                  className="img-fluid logo-lg"
+                  alt={config?.title || "logo"}
+                  style={{ maxHeight: '40px' }}
+                />
+              ) : (
+                <span className="client-logo-loading" aria-hidden="true" />
+              )}
             </Link>
           </div>
           <div className="navbar-content" style={config?.client_nav_style === 'nav2' ? { position: 'relative', height: 'calc(100vh - 70px)', overflowY: 'auto', paddingRight: '0 !important', scrollbarWidth: 'none' } : {}}>
-            {config?.client_nav_style === 'nav2' ? renderNav2() : renderNav1()}
+            {!configLoaded ? (
+              <div className="client-nav-loading" aria-hidden="true">
+                {Array.from({ length: 15 }, (_, index) => <span key={index} />)}
+              </div>
+            ) : config?.client_nav_style === 'nav2' ? renderNav2() : renderNav1()}
           </div>
         </div>
       </nav>
@@ -783,6 +791,31 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
         .pc-sidebar .m-header {
           background: transparent !important;
           border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .client-logo-loading,
+        .client-nav-loading span {
+          display: block;
+          background: color-mix(in srgb, var(--client-sidebar-text) 12%, transparent);
+          animation: client-nav-pulse 1.2s ease-in-out infinite;
+        }
+        .client-logo-loading {
+          width: 132px;
+          height: 30px;
+          border-radius: 8px;
+        }
+        .client-nav-loading {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 8px;
+          padding: 18px 15px;
+        }
+        .client-nav-loading span {
+          height: 70px;
+          border-radius: 12px;
+        }
+        @keyframes client-nav-pulse {
+          0%, 100% { opacity: .45; }
+          50% { opacity: .9; }
         }
         .pc-sidebar .pc-navbar {
           padding: 8px 10px 20px !important;
