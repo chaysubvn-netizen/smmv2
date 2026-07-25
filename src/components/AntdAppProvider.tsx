@@ -1,8 +1,12 @@
 'use client';
 
-import { App as AntdApp } from 'antd';
+import { App as AntdApp, ConfigProvider } from 'antd';
 import { AntdMessageBridge } from '@/lib/antd-message';
 
 export default function AntdAppProvider({ children }: { children: React.ReactNode }) {
-  return <AntdApp><AntdMessageBridge />{children}</AntdApp>;
+  return (
+    <ConfigProvider virtual={false}>
+      <AntdApp><AntdMessageBridge />{children}</AntdApp>
+    </ConfigProvider>
+  );
 }
