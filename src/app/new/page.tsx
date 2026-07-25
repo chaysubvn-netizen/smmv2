@@ -51,7 +51,16 @@ export default function DashboardPage() {
   const [submitting, setSubmitting] = useState(false);
   const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [showContentToggle, setShowContentToggle] = useState(false);
+  const [isMobileSelect, setIsMobileSelect] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const syncMobileSelect = () => setIsMobileSelect(mediaQuery.matches);
+    syncMobileSelect();
+    mediaQuery.addEventListener('change', syncMobileSelect);
+    return () => mediaQuery.removeEventListener('change', syncMobileSelect);
+  }, []);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -599,7 +608,7 @@ export default function DashboardPage() {
                         name="platform_id"
                         rules={[{ required: true, message: 'Vui lòng chọn nền tảng' }]}
                       >
-                        <Select virtual={false} placeholder="Chọn nền tảng" onChange={handlePlatformChange} showSearch optionFilterProp="title" optionLabelProp="label">
+                        <Select virtual={false} placeholder="Chọn nền tảng" onChange={handlePlatformChange} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
                           {platforms.map(plat => (
                             <Option
                               key={plat.id}
@@ -628,7 +637,7 @@ export default function DashboardPage() {
                         name="category_id"
                         rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
                       >
-                        <Select virtual={false} placeholder="Chọn phân loại" onChange={handleCategoryChange} disabled={!selectedPlatform} showSearch optionFilterProp="title" optionLabelProp="label">
+                        <Select virtual={false} placeholder="Chọn phân loại" onChange={handleCategoryChange} disabled={!selectedPlatform} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
                           {categories.filter(cat => cat.platform_id === selectedPlatform?.id).map(cat => (
                             <Option
                               key={cat.id}
@@ -666,7 +675,7 @@ export default function DashboardPage() {
                       </Form.Item>
                       <Select
                         size="large"
-                        showSearch
+                        showSearch={!isMobileSelect}
                         value={selectedService?.id}
                         placeholder="Chọn hoặc tìm kiếm dịch vụ"
                         className="w-full"
