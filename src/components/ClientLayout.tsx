@@ -265,8 +265,13 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     router.push('/login');
   };
 
-  if (!user) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><Spin size="large" /></div>;
-  if (!configLoaded) return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}><Spin size="large" /></div>;
+  if (!user || !configLoaded) {
+    return (
+      <div className="flex min-h-[calc(100vh-120px)] items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
   if (config?.maintenance_mode === 'on') {
     return <MaintenanceScreen title={config.title} logo={toImageUrl(config.logo)} onLogout={() => void handleLogout()} />;
   }
