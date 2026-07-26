@@ -146,7 +146,11 @@ export default function Landing2Page() {
         <span><GiftOutlined /> Ưu đãi dành cho khách hàng nạp lớn</span>
         <h2>Sẵn sàng <em>bùng nổ</em><br />tương tác?</h2>
         <Link href="/register" className={styles.gradientButton}>Tham gia ngay <ArrowRightOutlined /></Link>
-        <p><CheckCircleFilled /> Hỗ trợ 24/7　 <CheckCircleFilled /> Quy trình chỉ vài giây　 <CheckCircleFilled /> API cho reseller</p>
+        <p>
+          <span><CheckCircleFilled /> Hỗ trợ 24/7</span>
+          <span><CheckCircleFilled /> Quy trình chỉ vài giây</span>
+          <span><CheckCircleFilled /> API cho reseller</span>
+        </p>
       </section>
     </main>
 
