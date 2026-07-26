@@ -597,7 +597,7 @@ export default function ClientLayout({ children, loading = false }: { children: 
                   src={toImageUrl(config?.logo)}
                   className="img-fluid logo-lg"
                   alt={config?.title || "logo"}
-                  style={{ maxHeight: '40px' }}
+                  style={{ width: '100%', maxWidth: '220px', height: '60px', objectFit: 'contain' }}
                 />
               ) : (
                 <span className="client-logo-loading" aria-hidden="true" />
@@ -791,6 +791,13 @@ export default function ClientLayout({ children, loading = false }: { children: 
         .pc-sidebar .m-header {
           background: transparent !important;
           border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 4px 18px !important;
+        }
+        .pc-sidebar .m-header .b-brand {
+          display: flex;
+          width: 100%;
+          align-items: center;
+          justify-content: center;
         }
         .client-logo-loading,
         .client-nav-loading span {
