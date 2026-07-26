@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import ClientLayout from '@/components/ClientLayout';
-import { Table, Typography, Card, Input, Button, Tag, Space, Select, Modal } from 'antd';import { message } from '@/lib/antd-message';
-import { CopyOutlined, LinkOutlined, MessageOutlined, RightOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Table, Typography, Card, Input, Button, Tag, Space, Select, Modal, Dropdown } from 'antd';import { message } from '@/lib/antd-message';
+import { CopyOutlined, LinkOutlined, MessageOutlined, RightOutlined, PlusOutlined, SearchOutlined, SettingOutlined } from '@ant-design/icons';
 import api from '@/lib/axios';
 import Link from 'next/link';
 
@@ -239,24 +239,30 @@ export default function OrdersPage() {
       width: 130,
       align: 'right' as const,
       render: (text: string, record: any) => {
-        if (record.status !== 'Canceled' && record.status !== 'Completed') {
-          if (record.cancel) {
-            return (
-              <Button size="small" type="primary" danger onClick={() => handleActionOrder(record.id, 'cancel')}>
-                Yêu cầu huỷ
-              </Button>
-            );
-          }
-        } else {
-          if (record.refill) {
-            return (
-              <Button size="small" style={{ backgroundColor: '#10b981', color: 'white', borderColor: '#10b981' }} onClick={() => handleActionOrder(record.id, 'refill')}>
-                Yêu cầu bảo hành
-              </Button>
-            );
-          }
+        const items = [];
+
+        if (record.refill) {
+          items.push({
+            key: 'refill',
+            label: 'Yêu cầu bảo hành',
+            onClick: () => handleActionOrder(record.id, 'refill'),
+          });
         }
-        return null;
+
+        if (record.cancel && record.status !== 'Canceled' && record.status !== 'Completed') {
+          items.push({
+            key: 'cancel',
+            danger: true,
+            label: 'Yêu cầu huỷ',
+            onClick: () => handleActionOrder(record.id, 'cancel'),
+          });
+        }
+
+        return items.length ? (
+          <Dropdown menu={{ items }} trigger={['click']} placement="bottomRight">
+            <Button size="small" shape="circle" icon={<SettingOutlined />} aria-label={`Thao tác đơn hàng #${record.id}`} />
+          </Dropdown>
+        ) : <span style={{ color: '#9ca3af' }}>—</span>;
       }
     },
     {
