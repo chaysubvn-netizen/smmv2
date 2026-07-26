@@ -39,7 +39,9 @@ const reviews = [
   ['Thuận Thiên', 'Reseller • 1 năm', '82', 'Hỗ trợ cực nhanh. Các hình thức thanh toán tự động rất tiện lợi và dễ sử dụng!'],
 ];
 
-const simpleIcon = (name: string, color: string) => `https://cdn.simpleicons.org/${name}/${color}`;
+const simpleIcon = (name: string, color: string) => name === 'linkedin'
+  ? 'https://img.magnific.com/vector-cao-cap/logo-linkedin-tron-duoc-co-lap-tren-nen-trang_469489-985.jpg?semt=ais_hybrid&w=740&q=80'
+  : `https://cdn.simpleicons.org/${name}/${color}`;
 
 export default function Landing2Page() {
   const [config, setConfig] = useState<Config>({ title: 'SMM Panel' });
