@@ -1,12 +1,13 @@
 'use client';
+/* eslint-disable @next/next/no-img-element */
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
-  ApiOutlined, ArrowRightOutlined, CheckCircleFilled, CustomerServiceOutlined,
-  FacebookFilled, GlobalOutlined, InstagramOutlined, PlayCircleFilled,
-  RocketOutlined, SafetyCertificateOutlined, SendOutlined, ShopOutlined,
-  StarFilled, ThunderboltOutlined, UserOutlined, YoutubeFilled,
+  ArrowRightOutlined, BookOutlined, CheckCircleFilled,
+  ClockCircleOutlined, CodeOutlined, EyeOutlined, GiftOutlined,
+  LoadingOutlined, LoginOutlined, MenuOutlined, RocketOutlined,
+  SafetyCertificateOutlined, StarFilled, ThunderboltFilled, WalletOutlined,
 } from '@ant-design/icons';
 import api from '@/lib/axios';
 import styles from './landing2.module.css';
@@ -14,122 +15,140 @@ import styles from './landing2.module.css';
 type Config = { title?: string; logo?: string; description?: string; footer_text?: string };
 
 const platforms = [
-  ['Instagram', <InstagramOutlined key="ig" />],
-  ['Facebook', <FacebookFilled key="fb" />],
-  ['YouTube', <YoutubeFilled key="yt" />],
-  ['TikTok', <PlayCircleFilled key="tt" />],
-  ['Telegram', <SendOutlined key="tg" />],
-  ['X (Twitter)', <b key="x">X</b>],
-  ['LinkedIn', <b key="in">in</b>],
-  ['Spotify', <b key="sp">●</b>],
-  ['Discord', <b key="dc">◉</b>],
-  ['Pinterest', <b key="pi">P</b>],
-  ['Snapchat', <b key="sc">S</b>],
-  ['Threads', <b key="th">@</b>],
-  ['Reddit', <b key="rd">R</b>],
-  ['Twitch', <b key="tw">T</b>],
-  ['SoundCloud', <b key="so">☁</b>],
+  ['instagram', 'E4405F', 'Instagram'], ['facebook', '1877F2', 'Facebook'],
+  ['tiktok', '00f2ea', 'TikTok'], ['youtube', 'FF0000', 'YouTube'],
+  ['telegram', '26A5E4', 'Telegram'], ['x', 'ffffff', 'X / Twitter'],
+  ['discord', '5865F2', 'Discord'], ['spotify', '1DB954', 'Spotify'],
+  ['linkedin', '0A66C2', 'LinkedIn'], ['pinterest', 'BD081C', 'Pinterest'],
+  ['reddit', 'FF4500', 'Reddit'], ['twitch', '9146FF', 'Twitch'],
+  ['snapchat', 'FFFC00', 'Snapchat'], ['whatsapp', '25D366', 'WhatsApp'],
 ];
 
-const benefits = [
-  [<ThunderboltOutlined key="fast" />, 'Xử lý nhanh', 'Đơn hàng được tiếp nhận tự động và bắt đầu chỉ sau vài phút.'],
-  [<SafetyCertificateOutlined key="safe" />, 'Không cần mật khẩu', 'Chỉ cần liên kết công khai, thông tin đăng nhập luôn được bảo mật.'],
-  [<ApiOutlined key="api" />, 'API cho đại lý', 'Kết nối hệ thống bán hàng và xử lý số lượng lớn đơn hàng tự động.'],
-  [<CustomerServiceOutlined key="support" />, 'Hỗ trợ 24/7', 'Theo dõi đơn rõ ràng và gửi ticket hỗ trợ ngay trên hệ thống.'],
+const services = [
+  ['instagram', 'E4405F', 'Instagram Services', 'Followers, Likes, Views, Comments, Story Views, Reels Views, IGTV Views...'],
+  ['tiktok', '00f2ea', 'TikTok Services', 'Followers, Likes, Views, Shares, Saves, Live Stream Views, Favorites...'],
+  ['youtube', 'FF0000', 'YouTube Services', 'Subscribers, Views, Watch Hours, Likes, Comments, Shorts Views...'],
+  ['facebook', '1877F2', 'Facebook Services', 'Page Likes, Followers, Post Likes, Views, Group Members, Event Joined...'],
+  ['telegram', '26A5E4', 'Telegram Services', 'Members, Post Views, Reactions, Channel Subscribers, Group Members...'],
+  ['spotify', '1DB954', 'Spotify Services', 'Followers, Plays, Monthly Listeners, Playlist Followers, Saves...'],
 ];
+
+const reviews = [
+  ['Minh Agency', 'Reseller • 2 năm', '55', 'Đã dùng hơn 10 trang web, đây là hệ thống tốt nhất. Giá rẻ, tốc độ nhanh, drop cực ít. API ổn định và rất mượt.'],
+  ['Hoàng Thị Thanh Tâm', 'Streamer • 8 tháng', '112', 'Mình mới tập livestream và rất ít mắt xem. Nhờ hệ thống đã giúp mình có nhiều người xem hơn. Quá ngon!'],
+  ['Thuận Thiên', 'Reseller • 1 năm', '82', 'Hỗ trợ cực nhanh. Các hình thức thanh toán tự động rất tiện lợi và dễ sử dụng!'],
+];
+
+const simpleIcon = (name: string, color: string) => `https://cdn.simpleicons.org/${name}/${color}`;
 
 export default function Landing2Page() {
   const [config, setConfig] = useState<Config>({ title: 'SMM Panel' });
-  const [faq, setFaq] = useState(0);
+  const [menu, setMenu] = useState(false);
 
   useEffect(() => {
-    api.get('/client/config').then(response => {
-      if (response.data?.status) setConfig(response.data.data);
-    }).catch(() => undefined);
+    api.get('/client/config').then(({ data }) => data?.status && setConfig(data.data)).catch(() => undefined);
   }, []);
 
-  const asset = (value?: string) => value
-    ? (/^https?:/i.test(value) ? value : `${String(api.defaults.baseURL || '').replace(/\/api\/?$/, '')}${value.startsWith('/') ? '' : '/'}${value}`)
-    : '';
   const title = config.title || 'SMM Panel';
+  const asset = (value?: string) => value
+    ? (/^https?:/i.test(value) ? value : `${String(api.defaults.baseURL || '').replace(/\/api\/?$/, '')}/${value.replace(/^\//, '')}`)
+    : '';
 
   return <div className={styles.page}>
+    <div className={styles.ambience} />
     <header className={styles.header}>
       <Link href="/" className={styles.brand}>
-        {config.logo ? <img src={asset(config.logo)} alt={title} /> : <><span>S</span><b>{title}</b></>}
+        {config.logo ? <img src={asset(config.logo)} alt={title} /> : <span className={styles.brandMark}><ThunderboltFilled /></span>}
+        <b>{title}</b>
       </Link>
-      <nav><a href="#services">Dịch vụ</a><a href="#why">Vì sao chọn chúng tôi</a><a href="#how">Cách hoạt động</a><a href="#faq">FAQ</a></nav>
-      <div className={styles.headerActions}><Link href="/login">Đăng nhập</Link><Link href="/register" className={styles.primary}>Đăng ký miễn phí</Link></div>
+      <nav><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><a href="#api">API</a></nav>
+      <div className={styles.headerActions}>
+        <Link href="/login" className={styles.login}><LoginOutlined /> Đăng nhập</Link>
+        <Link href="/register" className={styles.gradientButton}><RocketOutlined /> Đăng ký</Link>
+      </div>
+      <button className={styles.menuButton} onClick={() => setMenu(!menu)} aria-label="Mở menu"><MenuOutlined /></button>
+      {menu && <div className={styles.mobileMenu}><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><a href="#api">API</a><Link href="/login">Truy cập ngay</Link></div>}
     </header>
 
     <main>
       <section className={styles.hero}>
-        <img className={styles.heroBackdrop} src="/landing/smmgen-hero-source.webp" alt="SMM Panel tăng trưởng mạng xã hội" />
-        <div className={styles.socialDock} aria-label="Các nền tảng được hỗ trợ">
-          <span className={styles.dockFacebook}><FacebookFilled /></span>
-          <span className={styles.dockInstagram}><InstagramOutlined /></span>
-          <span className={styles.dockLinkedin}>in</span>
-          <span className={styles.dockSpotify}>●</span>
-          <span className={styles.dockTelegram}><SendOutlined /></span>
-          <span className={styles.dockTiktok}><PlayCircleFilled /></span>
-        </div>
         <div className={styles.heroCopy}>
-          <div className={styles.trustRow}>
-            <div className={styles.googleReview}><strong>G</strong><span><b><StarFilled /><StarFilled /><StarFilled /><StarFilled /><StarFilled /></b><small>4.9 Reviews</small></span></div>
-            <div className={styles.trustedAvatars}><i>Q</i><i>A</i><i>M</i><i>T</i><b>Được tin dùng bởi 90.534 người dùng</b></div>
+          <div className={styles.live}><i /><span>Hơn 200K+ đơn hàng/ngày</span></div>
+          <h1><span>{title}</span></h1>
+          <p>{config.description || 'Hệ thống chuyên cung cấp các dịch vụ tăng Like, Follow, Share, Comment, View Video và hơn thế nữa cho Facebook, Instagram, TikTok, YouTube...'}</p>
+          <div className={styles.actions}>
+            <Link href="/login" className={styles.gradientButton}><ArrowRightOutlined /> Truy cập ngay</Link>
+            <Link href="/services" className={styles.glassButton}><EyeOutlined /> Xem bảng giá</Link>
           </div>
-          <h1>SMM Panel giúp tăng trưởng mạng xã hội <em>nhanh và đáng tin cậy</em></h1>
-          <p>{config.description || 'Nền tảng SMM toàn cầu dành cho nhà sáng tạo, doanh nghiệp và đại lý. Đặt lượt theo dõi, lượt thích, lượt xem và bình luận cho mọi nền tảng. Hệ thống xử lý tự động, bắt đầu giao trong vài phút và không bao giờ yêu cầu mật khẩu.'}</p>
-          <div className={styles.heroButtons}><Link href="/login" className={styles.secondary}>Đăng nhập ngay</Link><Link href="/register" className={styles.primary}>Đăng ký miễn phí <ArrowRightOutlined /></Link></div>
+          <div className={styles.heroStats}>
+            <div><b>500K+</b><small>Khách hàng</small></div><i />
+            <div><b>2.500+</b><small>Dịch vụ</small></div><i />
+            <div><b>99%</b><small>Uptime</small></div>
+          </div>
+        </div>
+        <div className={styles.dashboard}>
+          <div className={styles.windowBar}><i /><i /><i /><span>{title.toLowerCase()}/home</span></div>
+          <div className={styles.balance}><WalletOutlined /><small>Số dư tài khoản</small><strong>897.247<span>.50₫</span></strong><em>↗ +53.5% so với tháng trước</em></div>
+          {[['instagram','E4405F','Instagram Followers','Hoàn thành'],['tiktok','00f2ea','TikTok Views','Đang xử lý...'],['youtube','FF0000','YouTube Subscribers','Chờ']].map((item, i) =>
+            <div className={styles.order} key={item[2]}><img src={simpleIcon(item[0],item[1])} alt="" /><b>{item[2]}</b><span>{i === 0 ? <CheckCircleFilled /> : i === 1 ? <LoadingOutlined /> : <ClockCircleOutlined />} {item[3]}</span></div>
+          )}
+          <div className={styles.orderToast}><CheckCircleFilled /><span><b>Đơn hàng #28471</b><small>10.000 followers • Hoàn thành</small></span></div>
         </div>
       </section>
 
-      <section className={styles.stats}>
-        <article><span><RocketOutlined /></span><div><b>95M+</b><small>Tương tác đã xử lý</small></div></article>
-        <article><span><ThunderboltOutlined /></span><div><b>9.857</b><small>Dịch vụ hoạt động</small></div></article>
-        <article><span><UserOutlined /></span><div><b>90K+</b><small>Người dùng tin tưởng</small></div></article>
-        <article><span><GlobalOutlined /></span><div><b>#1</b><small>SMM Panel toàn cầu</small></div></article>
+      <section className={styles.platformSection}>
+        <div className={styles.sectionHeading}><label>HỖ TRỢ TOÀN DIỆN</label><h2>Mọi nền tảng <span>trong tầm tay</span></h2></div>
+        <div className={styles.marquee}><div>{[...platforms,...platforms].map((p,i) => <span key={`${p[0]}-${i}`}><img src={simpleIcon(p[0],p[1])} alt="" />{p[2]}</span>)}</div></div>
       </section>
 
-      <section className={styles.intro}>
-        <span className={styles.questionOrb}>?</span>
-        <div className={styles.introArt}><img src="/landing/smmgen-about-source.webp" alt="Chuyên gia giới thiệu SMM Panel" /></div>
-        <div className={styles.introCopy}><h2>SMM Panel <em>là gì?</em></h2><p>SMM Panel là nền tảng trực tuyến giúp người dùng mua các dịch vụ tiếp thị mạng xã hội với số lượng lớn, giá thấp và quản lý tất cả trong một bảng điều khiển tự động.</p><p>Thay vì mất nhiều tháng để phát triển tài khoản tự nhiên, người dùng có thể đặt lượt theo dõi, lượt thích, lượt xem, thời gian xem hoặc bình luận và nhận kết quả trong vài phút.</p><p>Khi bạn đặt đơn, hệ thống kết nối đến mạng lưới nhà cung cấp qua API, xử lý dịch vụ và cập nhật dashboard theo thời gian thực. Bạn có thể theo dõi mọi thứ ngay trên hệ thống.</p><p>Nhà sáng tạo xây dựng độ tin cậy, doanh nghiệp quản lý nhiều chiến dịch và đại lý mua dịch vụ với giá sỉ để bán lại cho khách hàng.</p><Link href="/register" className={styles.primary}>Tìm hiểu thêm về {title} <ArrowRightOutlined /></Link></div>
+      <section className={styles.section} id="services">
+        <div className={styles.sectionHeading}><label>DỊCH VỤ</label><h2>Mọi thứ bạn cần để <span>phát triển</span></h2><p>Giải pháp tăng trưởng toàn diện cho doanh nghiệp, nhà sáng tạo nội dung và đại lý.</p></div>
+        <div className={styles.serviceGrid}>{services.map(s => <Link href="/services" className={styles.card} key={s[0]}><i><img src={simpleIcon(s[0],s[1])} alt="" /></i><h3>{s[2]}</h3><p>{s[3]}</p><b>Từ 100đ <ArrowRightOutlined /></b></Link>)}</div>
       </section>
 
-      <section className={styles.why} id="why">
-        <div className={styles.sectionTitle}><span>KHÁC BIỆT CỦA CHÚNG TÔI</span><h2>Tăng trưởng dễ dàng, vận hành chuyên nghiệp</h2><p>Mọi tính năng cần thiết để bắt đầu và mở rộng hoạt động kinh doanh SMM.</p></div>
-        <div className={styles.benefitGrid}>{benefits.map(([icon, name, text]) => <article key={String(name)}><span>{icon}</span><h3>{name}</h3><p>{text}</p></article>)}</div>
+      <section className={styles.numbers} id="pricing">
+        {[['50M+','Đơn hàng hoàn thành'],['2.500+','Dịch vụ hoạt động'],['28+','Nền tảng hỗ trợ'],['500K+','Khách hàng tin dùng']].map(n => <div key={n[1]}><b>{n[0]}</b><small>{n[1]}</small></div>)}
       </section>
 
-      <section className={styles.services} id="services">
-        <div className={styles.platformOrb}>f</div>
-        <div className={styles.sectionTitle}><h2>Mọi nền tảng. Mọi dịch vụ. <em>Một Dashboard</em></h2><p>Tất cả mạng xã hội phổ biến đều có trong một bảng điều khiển, với mô tả, mức giá và thời gian xử lý rõ ràng.</p></div>
-        <div className={styles.platforms}>{platforms.map(([name, icon], index) => <Link href="/services" className={index === 1 ? styles.activePlatform : ''} key={String(name)}><span>{icon}</span><b>{name}</b></Link>)}</div>
-      </section>
-
-      <section className={styles.how} id="how">
-        <div className={styles.sectionTitle}><span>BẮT ĐẦU TRONG VÀI PHÚT</span><h2>Chỉ 4 bước đơn giản</h2></div>
+      <section className={styles.section}>
+        <div className={styles.sectionHeading}><label>QUY TRÌNH</label><h2>Chỉ <span>3 bước</span> đơn giản</h2></div>
         <div className={styles.steps}>{[
-          [<UserOutlined key="u" />, 'Tạo tài khoản', 'Đăng ký miễn phí bằng email của bạn.'],
-          [<ShopOutlined key="s" />, 'Nạp số dư', 'Chọn phương thức thanh toán phù hợp.'],
-          [<GlobalOutlined key="g" />, 'Chọn dịch vụ', 'Dán liên kết và nhập số lượng cần chạy.'],
-          [<RocketOutlined key="r" />, 'Nhận kết quả', 'Hệ thống tự động xử lý và cập nhật tiến độ.'],
-        ].map(([icon, name, text], index) => <article key={String(name)}><i>{String(index + 1).padStart(2, '0')}</i><span>{icon}</span><h3>{name}</h3><p>{text}</p></article>)}</div>
+          ['1','Đăng ký & Nạp tiền','Tạo tài khoản miễn phí trong 30 giây. Nạp tiền qua ngân hàng và ví điện tử.'],
+          ['2','Chọn dịch vụ','Chọn nền tảng, dịch vụ cần mua. Nhập liên kết và số lượng mong muốn.'],
+          ['3','Nhận kết quả','Hệ thống tự động xử lý. Theo dõi tiến độ theo thời gian thực trên dashboard.'],
+        ].map(x => <article className={styles.card} key={x[0]}><i>{x[0]}</i><h3>{x[1]}</h3><p>{x[2]}</p></article>)}</div>
       </section>
 
-      <section className={styles.faq} id="faq">
-        <div><span>CÂU HỎI THƯỜNG GẶP</span><h2>Điều bạn cần biết trước khi bắt đầu</h2><p>Đội ngũ hỗ trợ luôn sẵn sàng trợ giúp bạn 24/7.</p></div>
-        <div>{[
-          ['Tôi có cần cung cấp mật khẩu mạng xã hội?', 'Không. Bạn chỉ cần cung cấp liên kết công khai của trang cá nhân hoặc bài đăng.'],
-          ['Bao lâu thì đơn hàng bắt đầu?', 'Phần lớn dịch vụ bắt đầu trong vài phút. Thời gian cụ thể được ghi trong mô tả dịch vụ.'],
-          ['Tôi có thể bán lại dịch vụ không?', 'Có. Bảng giá đại lý và API giúp bạn xây dựng hệ thống bán lại tự động.'],
-        ].map(([q, a], index) => <article key={q}><button onClick={() => setFaq(faq === index ? -1 : index)}><b>{q}</b><span>{faq === index ? '−' : '+'}</span></button>{faq === index && <p>{a}</p>}</article>)}</div>
+      <section className={`${styles.section} ${styles.features}`}>
+        <div><label>TÍNH NĂNG</label><h2>Tại sao chọn <span>{title}</span>?</h2><p>Không chỉ là panel — chúng tôi xây dựng hệ sinh thái tăng trưởng hoàn chỉnh.</p>
+          <div className={styles.featureList}>
+            <article><ThunderboltFilled /><div><b>Tốc độ siêu tốc</b><p>Đơn hàng bắt đầu xử lý ngay lập tức, phần lớn hoàn thành chỉ trong vài phút.</p></div></article>
+            <article><SafetyCertificateOutlined /><div><b>An toàn và bảo mật</b><p>Không yêu cầu mật khẩu mạng xã hội. Dữ liệu khách hàng luôn được bảo vệ.</p></div></article>
+            <article><CodeOutlined /><div><b>API mạnh mẽ</b><p>REST API đầy đủ, tài liệu rõ ràng và tích hợp dễ dàng vào mọi hệ thống.</p></div></article>
+            <article><WalletOutlined /><div><b>Thanh toán đa dạng</b><p>Nạp tiền tự động 24/7 qua nhiều phương thức thanh toán phổ biến.</p></div></article>
+          </div>
+        </div>
+        <div className={styles.apiPanel}><header><b>API Dashboard</b><span>Active</span></header><pre><em>POST</em> /v2/order{'\n\n'}{'{'}{'\n'}  &quot;service&quot;: <i>4521</i>,{'\n'}  &quot;link&quot;: <q>https://facebook.com/page</q>,{'\n'}  &quot;quantity&quot;: <strong>10000</strong>{'\n'}{'}'}{'\n\n'}{'// Response'}{'\n'}{'{'} &quot;order&quot;: <strong>2847193</strong>, &quot;status&quot;: <q>done</q> {'}'}</pre><footer><i /><span>85% API Uptime</span></footer></div>
       </section>
 
-      <section className={styles.cta}><div><span><StarFilled /> Bắt đầu ngay hôm nay</span><h2>Sẵn sàng tăng tốc thương hiệu của bạn?</h2><p>Tạo tài khoản miễn phí và đặt chiến dịch đầu tiên chỉ trong vài phút.</p></div><Link href="/register">Đăng ký miễn phí <ArrowRightOutlined /></Link></section>
+      <section className={styles.apiCta} id="api">
+        <div><h2>API cho <span>Developer</span></h2><p>REST API mạnh mẽ với đầy đủ endpoint, tài liệu rõ ràng và sẵn sàng tích hợp.</p><Link href="/apidoc" className={styles.gradientButton}><BookOutlined /> Xem tài liệu</Link></div>
+        <div className={styles.apiStats}>{[['6','Endpoints'],['<0.3s','Response time'],['99.9%','Uptime SLA'],['3','SDK Languages']].map(x => <article key={x[1]}><b>{x[0]}</b><small>{x[1]}</small></article>)}</div>
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHeading}><label>ĐÁNH GIÁ</label><h2>Khách hàng <span>nói gì</span></h2></div>
+        <div className={styles.reviews}>{reviews.map(r => <article className={styles.card} key={r[0]}><div className={styles.stars}>{[1,2,3,4,5].map(x => <StarFilled key={x} />)}</div><p>“{r[3]}”</p><footer><img src={`https://picsum.photos/id/${r[2]}/96/96`} alt={r[0]} /><span><b>{r[0]}</b><small>{r[1]}</small></span></footer></article>)}</div>
+      </section>
+
+      <section className={styles.finalCta}>
+        <span><GiftOutlined /> Ưu đãi dành cho khách hàng nạp lớn</span>
+        <h2>Sẵn sàng <em>bùng nổ</em><br />tương tác?</h2>
+        <Link href="/register" className={styles.gradientButton}>Tham gia ngay <ArrowRightOutlined /></Link>
+        <p><CheckCircleFilled /> Hỗ trợ 24/7　 <CheckCircleFilled /> Quy trình chỉ vài giây　 <CheckCircleFilled /> API cho reseller</p>
+      </section>
     </main>
 
-    <footer><div className={styles.brand}>{config.logo ? <img src={asset(config.logo)} alt={title} /> : <><span>S</span><b>{title}</b></>}</div><p>{config.footer_text || `© ${new Date().getFullYear()} ${title}. All rights reserved.`}</p><div><Link href="/services">Dịch vụ</Link><Link href="/apidoc">API</Link><Link href="/login">Đăng nhập</Link></div></footer>
+    <footer className={styles.footer}><div className={styles.brand}>{config.logo ? <img src={asset(config.logo)} alt={title} /> : <span className={styles.brandMark}><ThunderboltFilled /></span>}<b>{title}</b></div><p>{config.footer_text || `© ${new Date().getFullYear()} ${title}. All rights reserved.`}</p></footer>
   </div>;
 }
