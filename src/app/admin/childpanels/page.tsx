@@ -100,8 +100,10 @@ export default function AdminChildPanelsPage() {
           cpanel_pass: result.site_settings.cpanel_pass ? '********' : '',
         });
       }
-    } catch (err) {
-      message.error('Không thể tải danh sách Child Panel.');
+    } catch (err: unknown) {
+      const errorMessage = (err as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      message.error(errorMessage || 'Không thể tải danh sách Child Panel.');
     } finally {
       setLoading(false);
     }
