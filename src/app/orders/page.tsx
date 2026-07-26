@@ -192,7 +192,7 @@ export default function OrdersPage() {
       key: 'start_count',
       width: 90,
       align: 'center' as const,
-      render: (count: number) => <span>{count ? count.toLocaleString('vi-VN') : 0}</span>
+      render: (count: number | string) => <span>{Number(count || 0).toLocaleString('vi-VN')}</span>
     },
     {
       title: 'CÒN LẠI',
@@ -200,7 +200,7 @@ export default function OrdersPage() {
       key: 'remains',
       width: 90,
       align: 'center' as const,
-      render: (remains: number) => <span>{remains ? remains.toLocaleString('vi-VN') : 0}</span>
+      render: (remains: number | string) => <span>{Number(remains || 0).toLocaleString('vi-VN')}</span>
     },
     {
       title: 'CHI PHÍ',
