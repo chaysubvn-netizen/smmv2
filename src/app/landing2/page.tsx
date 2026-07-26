@@ -62,13 +62,13 @@ export default function Landing2Page() {
           ? <img src={asset(config.logo)} alt={title} />
           : <><span className={styles.brandMark}><ThunderboltFilled /></span><b>{title}</b></>}
       </Link>
-      <nav><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><a href="#api">API</a></nav>
+      <nav><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><Link href="/apidoc">API</Link></nav>
       <div className={styles.headerActions}>
         <Link href="/login" className={styles.login}><LoginOutlined /> Đăng nhập</Link>
         <Link href="/register" className={styles.gradientButton}><RocketOutlined /> Đăng ký</Link>
       </div>
       <button className={styles.menuButton} onClick={() => setMenu(!menu)} aria-label="Mở menu"><MenuOutlined /></button>
-      {menu && <div className={styles.mobileMenu}><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><a href="#api">API</a><Link href="/login">Truy cập ngay</Link></div>}
+      {menu && <div className={styles.mobileMenu}><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><Link href="/apidoc">API</Link><Link href="/login">Truy cập ngay</Link></div>}
     </header>
 
     <main>
