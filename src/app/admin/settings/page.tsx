@@ -355,9 +355,7 @@ function SettingsImageUpload({
     data.append('image', file, file.name);
     setUploading(true);
     try {
-      const response = await api.post('/admin/settings/upload-image', data, {
-        headers: { 'Content-Type': undefined },
-      });
+      const response = await api.postForm('/admin/settings/upload-image', data);
       const path = response.data.data.path as string;
       onChange?.(path);
       options.onSuccess?.(response.data);
@@ -365,7 +363,7 @@ function SettingsImageUpload({
     } catch (error: unknown) {
       const detail = error as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
       const validation = detail.response?.data?.errors?.image?.[0];
-      const reason = validation || detail.response?.data?.message || 'Không thể tải ảnh lên.';
+      const reason = detail.response?.data?.message || validation || 'Không thể tải ảnh lên.';
       options.onError?.(new Error(reason));
       message.error(reason);
     } finally {
