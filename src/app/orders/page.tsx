@@ -182,7 +182,9 @@ export default function OrdersPage() {
       key: 'quantity',
       width: 80,
       align: 'center' as const,
-      render: (qty: number) => <span className="font-medium">{qty ? qty.toLocaleString('vi-VN') : 0}</span>
+      render: (qty: number | string) => (
+        <span className="font-medium">{Number(qty || 0).toLocaleString('vi-VN')}</span>
+      )
     },
     {
       title: 'BẮT ĐẦU',
