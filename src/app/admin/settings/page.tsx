@@ -349,12 +349,15 @@ function SettingsImageUpload({
   };
 
   const upload: UploadProps['customRequest'] = async options => {
+    const file = options.file as File;
     const data = new FormData();
     data.append('field', field);
-    data.append('image', options.file as Blob);
+    data.append('image', file, file.name);
     setUploading(true);
     try {
-      const response = await api.post('/admin/settings/upload-image', data, { headers: { 'Content-Type': 'multipart/form-data' } });
+      const response = await api.post('/admin/settings/upload-image', data, {
+        headers: { 'Content-Type': undefined },
+      });
       const path = response.data.data.path as string;
       onChange?.(path);
       options.onSuccess?.(response.data);
