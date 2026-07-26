@@ -8,6 +8,7 @@ import api from '@/lib/axios';
 import Link from 'next/link';
 
 const { Title, Text } = Typography;
+const isEnabledFlag = (value: unknown) => value === true || value === 1 || value === '1';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -241,7 +242,7 @@ export default function OrdersPage() {
       render: (text: string, record: any) => {
         const items = [];
 
-        if (record.refill) {
+        if (isEnabledFlag(record.refill)) {
           items.push({
             key: 'refill',
             label: 'Yêu cầu bảo hành',
@@ -249,7 +250,7 @@ export default function OrdersPage() {
           });
         }
 
-        if (record.cancel && record.status !== 'Canceled' && record.status !== 'Completed') {
+        if (isEnabledFlag(record.cancel) && record.status !== 'Canceled' && record.status !== 'Completed') {
           items.push({
             key: 'cancel',
             danger: true,
