@@ -58,8 +58,9 @@ export default function Landing2Page() {
     <div className={styles.ambience} />
     <header className={styles.header}>
       <Link href="/" className={styles.brand}>
-        {config.logo ? <img src={asset(config.logo)} alt={title} /> : <span className={styles.brandMark}><ThunderboltFilled /></span>}
-        <b>{title}</b>
+        {config.logo
+          ? <img src={asset(config.logo)} alt={title} />
+          : <><span className={styles.brandMark}><ThunderboltFilled /></span><b>{title}</b></>}
       </Link>
       <nav><a href="#services">Dịch vụ</a><a href="#pricing">Bảng giá</a><a href="#api">API</a></nav>
       <div className={styles.headerActions}>
@@ -149,6 +150,8 @@ export default function Landing2Page() {
       </section>
     </main>
 
-    <footer className={styles.footer}><div className={styles.brand}>{config.logo ? <img src={asset(config.logo)} alt={title} /> : <span className={styles.brandMark}><ThunderboltFilled /></span>}<b>{title}</b></div><p>{config.footer_text || `© ${new Date().getFullYear()} ${title}. All rights reserved.`}</p></footer>
+    <footer className={styles.footer}><div className={styles.brand}>{config.logo
+      ? <img src={asset(config.logo)} alt={title} />
+      : <><span className={styles.brandMark}><ThunderboltFilled /></span><b>{title}</b></>}</div><p>{config.footer_text || `© ${new Date().getFullYear()} ${title}. All rights reserved.`}</p></footer>
   </div>;
 }
