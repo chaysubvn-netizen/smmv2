@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
+const hasSameId = (left: unknown, right: unknown) => String(left) === String(right);
 const isCustomCommentsService = (service?: { type?: string } | null) =>
   String(service?.type || '').trim().replace(/\s+/g, ' ').toLowerCase() === 'custom comments';
 
@@ -94,21 +95,21 @@ export default function DashboardPage() {
       // Use setTimeout to defer until after Form is mounted in DOM
       const defaultPlatform = platData[0];
       const defaultCategory = cats.find(
-        (category: any) => category.platform_id === defaultPlatform?.id
+        (category: any) => hasSameId(category.platform_id, defaultPlatform?.id)
       );
       const requestedService = presetServiceId
         ? allSvcs.find((service: any) => service.id === parseInt(presetServiceId))
         : allSvcs.find(
-          (service: any) => service.category_id === defaultCategory?.id
+          (service: any) => hasSameId(service.category_id, defaultCategory?.id)
         );
 
       if (requestedService) {
-        const category = cats.find((c: any) => c.id === requestedService.category_id);
-        const platform = platData.find((p: any) => p.id === category?.platform_id);
+        const category = cats.find((c: any) => hasSameId(c.id, requestedService.category_id));
+        const platform = platData.find((p: any) => hasSameId(p.id, category?.platform_id));
 
         if (!category || !platform) return;
 
-        const catServices = allSvcs.filter((s: any) => s.category_id === requestedService.category_id);
+        const catServices = allSvcs.filter((s: any) => hasSameId(s.category_id, requestedService.category_id));
 
         setSelectedPlatform(platform);
         setSelectedCategory(category);
@@ -297,29 +298,41 @@ export default function DashboardPage() {
   };
 
   const handlePlatformChange = (value: number) => {
-    const platform = platforms.find(p => p.id === value);
+    const platform = platforms.find(p => hasSameId(p.id, value));
+    const firstCategory = categories.find(category => hasSameId(category.platform_id, value));
+
     setSelectedPlatform(platform);
-    setSelectedCategory(null);
+    setSelectedCategory(firstCategory || null);
     setSelectedService(null);
     setServices([]);
-    form.setFieldsValue({ category_id: undefined, service_id: undefined, link: '', quantity: '', comments: undefined });
+    form.setFieldsValue({
+      category_id: firstCategory?.id,
+      service_id: undefined,
+      link: '',
+      quantity: '',
+      comments: undefined,
+    });
     setCommentCount(0);
     setPrice(0);
+
+    if (firstCategory) {
+      void fetchServices(firstCategory.id);
+    }
   };
 
   const handleQuickSearchSelect = (value: number) => {
-    const service = allServices.find(s => s.id === value);
+    const service = allServices.find(s => hasSameId(s.id, value));
     if (!service) return;
 
-    const category = categories.find(c => c.id === service.category_id);
+    const category = categories.find(c => hasSameId(c.id, service.category_id));
     if (!category) return;
 
-    const platform = platforms.find(p => p.id === category.platform_id);
+    const platform = platforms.find(p => hasSameId(p.id, category.platform_id));
 
     setSelectedPlatform(platform);
     setSelectedCategory(category);
 
-    const catServices = allServices.filter(s => s.category_id === category.id);
+    const catServices = allServices.filter(s => hasSameId(s.category_id, category.id));
     setServices(catServices);
 
     setSelectedService(service);
@@ -338,13 +351,13 @@ export default function DashboardPage() {
   };
 
   const handleCategoryChange = (value: number) => {
-    const category = categories.find(c => c.id === value);
+    const category = categories.find(c => hasSameId(c.id, value));
     setSelectedCategory(category);
     fetchServices(value);
   };
 
   const handleServiceChange = (value: number) => {
-    const service = services.find(s => s.id === value);
+    const service = services.find(s => hasSameId(s.id, value));
     setSelectedService(service);
     if (!isCustomCommentsService(service)) {
       form.setFieldValue('comments', undefined);
@@ -638,7 +651,7 @@ export default function DashboardPage() {
                         rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
                       >
                         <Select virtual={false} placeholder="Chọn phân loại" onChange={handleCategoryChange} disabled={!selectedPlatform} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
-                          {categories.filter(cat => cat.platform_id === selectedPlatform?.id).map(cat => (
+                          {categories.filter(cat => hasSameId(cat.platform_id, selectedPlatform?.id)).map(cat => (
                             <Option
                               key={cat.id}
                               value={cat.id}
