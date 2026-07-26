@@ -263,7 +263,9 @@ export default function OrdersPage() {
           <Dropdown menu={{ items }} trigger={['click']} placement="bottomRight">
             <Button size="small" shape="circle" icon={<SettingOutlined />} aria-label={`Thao tác đơn hàng #${record.id}`} />
           </Dropdown>
-        ) : <span style={{ color: '#9ca3af' }}>—</span>;
+        ) : (
+          <Button size="small" shape="circle" icon={<SettingOutlined />} disabled aria-label={`Đơn hàng #${record.id} không có thao tác`} />
+        );
       }
     },
     {
