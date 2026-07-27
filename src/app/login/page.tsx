@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Form, Input } from 'antd';
-import { ArrowLeftOutlined, GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, GoogleOutlined, LockOutlined, SafetyCertificateOutlined, UserOutlined } from '@ant-design/icons';
 import api from '@/lib/axios';
 import { message } from '@/lib/antd-message';
 import styles from '../auth.module.css';
@@ -15,6 +15,8 @@ export default function LoginPage() {
   const router = useRouter();
   const [config, setConfig] = useState<LoginConfig>({});
   const [loading, setLoading] = useState(false);
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
+  const [twoFactorMethod, setTwoFactorMethod] = useState<'google' | 'telegram'>('google');
 
   useEffect(() => {
     api.get('/auth/api/me').then(() => router.replace('/new')).catch(() => undefined);
@@ -33,8 +35,23 @@ export default function LoginPage() {
       message.success(response.data.message || 'Đăng nhập thành công');
       router.push('/new');
     } catch (error: unknown) {
-      const detail = error as { response?: { data?: { message?: string } } };
-      message.error(detail.response?.data?.message || 'Không thể đăng nhập');
+      const detail = error as {
+        response?: {
+          data?: {
+            message?: string;
+            two_factor_auth?: boolean;
+            two_factor_method?: string;
+          };
+        };
+      };
+      const data = detail.response?.data;
+      if (data?.two_factor_auth) {
+        setRequiresTwoFactor(true);
+        setTwoFactorMethod(data.two_factor_method === 'telegram' ? 'telegram' : 'google');
+      } else {
+        setRequiresTwoFactor(false);
+      }
+      message.error(data?.message || 'Không thể đăng nhập');
     } finally {
       setLoading(false);
     }
@@ -66,6 +83,25 @@ export default function LoginPage() {
         <Form layout="vertical" size="large" onFinish={submit}>
           <Form.Item label="Tên người dùng" name="username" rules={[{ required: true, message: 'Vui lòng nhập tên người dùng' }]}><Input prefix={<UserOutlined />} placeholder="Nhập tên người dùng" /></Form.Item>
           <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}><Input.Password prefix={<LockOutlined />} placeholder="Nhập mật khẩu" /></Form.Item>
+          {requiresTwoFactor ? (
+            <Form.Item
+              label={twoFactorMethod === 'telegram' ? 'Mã xác thực Telegram' : 'Mã Google Authenticator'}
+              name="two_factor_code"
+              rules={[
+                { required: true, message: 'Vui lòng nhập mã xác thực' },
+                { pattern: /^\d{6}$/, message: 'Mã xác thực phải gồm 6 chữ số' },
+              ]}
+            >
+              <Input
+                prefix={<SafetyCertificateOutlined />}
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                autoFocus
+                placeholder="Nhập mã xác thực 6 số"
+              />
+            </Form.Item>
+          ) : null}
           <Button type="primary" htmlType="submit" block loading={loading}>Đăng nhập</Button>
         </Form>
         <p className={styles.switch}>Chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link></p>
