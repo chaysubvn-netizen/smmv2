@@ -88,7 +88,6 @@ export default function SettingsPage() {
         if (!response.data?.status) return;
         const current = response.data.data as UserData;
         setUser(current);
-        localStorage.setItem('user', JSON.stringify(current));
       } catch (error: any) {
         message.error(error.response?.data?.message || 'Không thể tải dữ liệu tài khoản từ máy chủ.');
       }
@@ -108,7 +107,6 @@ export default function SettingsPage() {
       if (response.data.status === false) throw new Error(response.data.message);
       const updated = { ...user, ...(response.data.data || values) };
       setUser(updated);
-      localStorage.setItem('user', JSON.stringify(updated));
       message.success(response.data.message || 'Đã cập nhật thông tin tài khoản.');
     } catch (error: any) {
       message.error(error.response?.data?.message || error.message || 'Không thể cập nhật thông tin.');
@@ -152,7 +150,6 @@ export default function SettingsPage() {
           const apiKey = response.data?.data?.api_key as string;
           setUser((current) => {
             const updated = { ...current, api_key: apiKey };
-            localStorage.setItem('user', JSON.stringify(updated));
             return updated;
           });
           setTelegramLink((current) => current ? { ...current, link_command: `/lienket ${apiKey}` } : current);

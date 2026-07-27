@@ -1,3 +1,102 @@
 'use client';
-import { Form, Input, Button } from 'antd'; import { LockOutlined, UserOutlined, MailOutlined, ArrowLeftOutlined } from '@ant-design/icons'; import Link from 'next/link'; import { useRouter } from 'next/navigation'; import { useEffect, useState } from 'react'; import api from '@/lib/axios'; import { message } from '@/lib/antd-message'; import styles from '../auth.module.css';
-export default function RegisterPage() { const router=useRouter(); const [loading,setLoading]=useState(false); const [config,setConfig]=useState<{title?:string;logo?:string}>({}); useEffect(()=>{if(localStorage.getItem('token')&&localStorage.getItem('user')){router.replace('/new');return;} api.get('/client/config').then(r=>r.data?.status&&setConfig(r.data.data)).catch(()=>undefined)},[]); const logo=config.logo?(config.logo.startsWith('http')?config.logo:(process.env.NEXT_PUBLIC_API_URL||'http://127.0.0.1:8000/api').replace(/\/api\/?$/,'')+config.logo):''; const submit=async(v:Record<string,string>)=>{setLoading(true);try{const r=await api.post('/auth/api/register',{...v,ref_username:localStorage.getItem('ref_username')||undefined});if(!r.data.status)return message.error(r.data.message);localStorage.setItem('token',r.data.access_token);localStorage.setItem('user',JSON.stringify(r.data.user));router.push('/new');}catch(e:any){message.error(e.response?.data?.message||'Không thể đăng ký')}finally{setLoading(false)}};return <main className={styles.page}><section className={styles.visual}><Link href="/" className={styles.back}><ArrowLeftOutlined /> Trang chủ</Link><div className={styles.visualInner}><div className={styles.logoMark}>{logo ? <img src={logo} alt="Logo" /> : "S"}</div><h1>Tạo tài khoản mới</h1><p>Bắt đầu trải nghiệm hệ thống ngay hôm nay.</p><ul className={styles.benefits}><li>Giá sỉ cực rẻ, cạnh tranh nhất thị trường</li><li>Xử lý đơn hàng tự động 24/7</li><li>Hỗ trợ đa nền tảng mạng xã hội</li><li>Bảo mật thông tin tài khoản</li></ul></div></section><section className={styles.formSide}><div className={styles.formWrap}><span className={styles.eyebrow}>THAM GIA NGAY</span><h2>Đăng ký tài khoản</h2><p className={styles.muted}>Điền thông tin bên dưới để tạo tài khoản.</p><Form layout="vertical" size="large" onFinish={submit}><Form.Item label="Tên người dùng" name="username" rules={[{required:true,min:6}]}><Input prefix={<UserOutlined/>} placeholder="Tên người dùng"/></Form.Item><Form.Item label="Email" name="email" rules={[{required:true,type:'email'}]}><Input prefix={<MailOutlined/>} placeholder="you@example.com"/></Form.Item><Form.Item label="Mật khẩu" name="password" rules={[{required:true,min:6}]}><Input.Password prefix={<LockOutlined/>} placeholder="Mật khẩu"/></Form.Item><Form.Item label="Xác nhận mật khẩu" name="password_confirmation" dependencies={['password']} rules={[{required:true},({getFieldValue})=>({validator(_,value){return !value||getFieldValue('password')===value?Promise.resolve():Promise.reject(new Error('Mật khẩu xác nhận không khớp'));}})]}><Input.Password prefix={<LockOutlined/>} placeholder="Nhập lại mật khẩu"/></Form.Item><Button type="primary" htmlType="submit" block loading={loading}>Đăng ký</Button></Form><p className={styles.switch}>Đã có tài khoản? <Link href="/login">Đăng nhập</Link></p></div></section></main> }
+
+import { ArrowLeftOutlined, LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Form, Input } from 'antd';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import api from '@/lib/axios';
+import { message } from '@/lib/antd-message';
+import styles from '../auth.module.css';
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [config, setConfig] = useState<{ title?: string; logo?: string }>({});
+
+  useEffect(() => {
+    api.get('/auth/api/me').then(() => router.replace('/new')).catch(() => undefined);
+    api.get('/client/config')
+      .then(response => response.data?.status && setConfig(response.data.data))
+      .catch(() => undefined);
+  }, [router]);
+
+  const apiRoot = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api').replace(/\/api\/?$/, '');
+  const logo = config.logo
+    ? (config.logo.startsWith('http') ? config.logo : apiRoot + config.logo)
+    : '';
+
+  const submit = async (values: Record<string, string>) => {
+    setLoading(true);
+    try {
+      const response = await api.post('/auth/api/register', {
+        ...values,
+        ref_username: localStorage.getItem('ref_username') || undefined,
+      });
+      if (!response.data.status) return message.error(response.data.message);
+      localStorage.removeItem('ref_username');
+      router.push('/new');
+    } catch (error: unknown) {
+      const detail = error as { response?: { data?: { message?: string } } };
+      message.error(detail.response?.data?.message || 'Không thể đăng ký');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <main className={styles.page}>
+      <section className={styles.visual}>
+        <Link href="/" className={styles.back}><ArrowLeftOutlined /> Trang chủ</Link>
+        <div className={styles.visualInner}>
+          <div className={styles.logoMark}>{logo ? <img src={logo} alt="Logo" /> : 'S'}</div>
+          <h1>Tạo tài khoản mới</h1>
+          <p>Bắt đầu trải nghiệm hệ thống ngay hôm nay.</p>
+          <ul className={styles.benefits}>
+            <li>Giá sỉ cực rẻ, cạnh tranh nhất thị trường</li>
+            <li>Xử lý đơn hàng tự động 24/7</li>
+            <li>Hỗ trợ đa nền tảng mạng xã hội</li>
+            <li>Bảo mật thông tin tài khoản</li>
+          </ul>
+        </div>
+      </section>
+      <section className={styles.formSide}>
+        <div className={styles.formWrap}>
+          <span className={styles.eyebrow}>THAM GIA NGAY</span>
+          <h2>Đăng ký tài khoản</h2>
+          <p className={styles.muted}>Điền thông tin bên dưới để tạo tài khoản.</p>
+          <Form layout="vertical" size="large" onFinish={submit}>
+            <Form.Item label="Tên người dùng" name="username" rules={[{ required: true, min: 6 }]}>
+              <Input prefix={<UserOutlined />} placeholder="Tên người dùng" />
+            </Form.Item>
+            <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
+              <Input prefix={<MailOutlined />} placeholder="you@example.com" />
+            </Form.Item>
+            <Form.Item label="Mật khẩu" name="password" rules={[{ required: true, min: 6 }]}>
+              <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+            </Form.Item>
+            <Form.Item
+              label="Xác nhận mật khẩu"
+              name="password_confirmation"
+              dependencies={['password']}
+              rules={[
+                { required: true },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    return !value || getFieldValue('password') === value
+                      ? Promise.resolve()
+                      : Promise.reject(new Error('Mật khẩu xác nhận không khớp'));
+                  },
+                }),
+              ]}
+            >
+              <Input.Password prefix={<LockOutlined />} placeholder="Nhập lại mật khẩu" />
+            </Form.Item>
+            <Button type="primary" htmlType="submit" block loading={loading}>Đăng ký</Button>
+          </Form>
+          <p className={styles.switch}>Đã có tài khoản? <Link href="/login">Đăng nhập</Link></p>
+        </div>
+      </section>
+    </main>
+  );
+}

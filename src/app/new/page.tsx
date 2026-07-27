@@ -71,10 +71,9 @@ export default function DashboardPage() {
   }, [selectedService]);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    api.get('/auth/api/me')
+      .then(response => setUser(response.data?.user || null))
+      .catch(() => setUser(null));
     // Load all data then auto-select if ?service= is in URL
     const loadData = async () => {
       const [cats, platData, allSvcs, currencyData] = await Promise.all([
@@ -426,13 +425,9 @@ export default function DashboardPage() {
         setCommentCount(0);
         setQuantityValue('');
         // Cập nhật lại số dư user
-        const userData = localStorage.getItem('user');
-        if (userData) {
-          const userObj = JSON.parse(userData);
-          userObj.balance = userObj.balance - price;
-          setUser(userObj);
-          localStorage.setItem('user', JSON.stringify(userObj));
-        }
+        setUser((current: any) => current
+          ? { ...current, balance: Number(current.balance || 0) - price }
+          : current);
       } else {
         message.error(response.data.message || 'Đã có lỗi xảy ra');
       }
@@ -481,7 +476,7 @@ export default function DashboardPage() {
   const serviceContent = selectedService?.note || selectedService?.description || '';
 
   return (
-    <ClientLayout loading={loading}>
+    <ClientLayout>
       <>
           <Modal
             open={noticeOpen && Boolean(config?.notice_modal)}

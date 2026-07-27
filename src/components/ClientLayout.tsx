@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ConfigProvider, Spin } from 'antd';import { message } from '@/lib/antd-message';
 import { useRouter, usePathname } from 'next/navigation';
-import axios from 'axios';
 import api from '@/lib/axios';
 import {
   HomeOutlined,
@@ -155,13 +154,14 @@ export default function ClientLayout({ children, loading = false }: { children: 
 
         if (currentUser && typeof currentUser === 'object' && 'balance' in currentUser) {
           setUser(currentUser);
-          localStorage.setItem('user', JSON.stringify(currentUser));
-          return;
+          return currentUser;
         }
       } catch {
         // Thử endpoint tương thích tiếp theo
       }
     }
+
+    throw new Error('Unauthenticated');
   };
 
   const handleChangeCurrency = async (code: string) => {
@@ -177,7 +177,6 @@ export default function ClientLayout({ children, loading = false }: { children: 
         };
 
         setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -205,36 +204,14 @@ export default function ClientLayout({ children, loading = false }: { children: 
   }, [pathname]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
     void fetchConfig();
     void fetchCategories();
-
-    if (!token || !userData) {
-      setConfigLoaded(true);
-      router.replace('/login');
-      return;
-    }
-
-    try {
-      const parsedUser = JSON.parse(userData);
-      if (!parsedUser || typeof parsedUser !== 'object') throw new Error('Invalid user data');
-      setUser(parsedUser);
-    } catch {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      setConfigLoaded(true);
-      router.replace('/login');
-      return;
-    }
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    axios.defaults.headers.common['Accept'] = 'application/json';
     
     fetchCurrencies();
-    fetchCurrentUser();
+    fetchCurrentUser().catch(() => router.replace('/login'));
     const configTimer = window.setInterval(fetchConfig, 30000);
     const maintenanceListener = () => void fetchConfig();
-    const balanceListener = () => void fetchCurrentUser();
+    const balanceListener = () => void fetchCurrentUser().catch(() => router.replace('/login'));
     window.addEventListener('maintenance-mode-enabled', maintenanceListener);
     window.addEventListener('user-balance-updated', balanceListener);
     return () => {
@@ -260,8 +237,6 @@ export default function ClientLayout({ children, loading = false }: { children: 
     try {
       await api.post('/auth/api/logout');
     } catch (e) {}
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
     router.push('/login');
   };
 

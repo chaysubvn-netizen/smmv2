@@ -138,7 +138,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
         />
         <div className={styles.headerRight}>
           <div className={styles.user}><Text strong>{user?.username}</Text><small>Quản trị viên</small></div>
-          <Dropdown menu={{ items: [{ key: 'client', label: <Link href="/new">Về trang khách hàng</Link> }, { key: 'logout', danger: true, label: 'Đăng xuất', onClick: () => { localStorage.removeItem('token'); localStorage.removeItem('user'); router.replace('/login'); } }] }}>
+          <Dropdown menu={{ items: [{ key: 'client', label: <Link href="/new">Về trang khách hàng</Link> }, { key: 'logout', danger: true, label: 'Đăng xuất', onClick: async () => { await api.post('/auth/api/logout').catch(() => undefined); router.replace('/login'); } }] }}>
             <Avatar src={user?.avatar} icon={<UserOutlined />} />
           </Dropdown>
         </div>

@@ -11,7 +11,7 @@ import styles from './landing.module.css';
 
 type ModalType = 'login' | 'register' | null;
 type AuthValues = Record<string, string>;
-type AuthPayload = { access_token: string; user: Record<string, unknown>; message?: string };
+type AuthPayload = { user: Record<string, unknown>; message?: string };
 
 const apiError = (error: unknown, fallback: string) => {
   const candidate = error as { response?: { data?: { message?: string; two_factor_auth?: boolean; two_factor_method?: string } } };
@@ -32,14 +32,12 @@ export default function LandingPage() {
   const logoUrl = config.logo?.startsWith('http') ? config.logo : config.logo ? `${(process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api').replace(/\/api\/?$/, '')}${config.logo.startsWith('/') ? '' : '/'}${config.logo}` : null;
 
   useEffect(() => {
-    setLoggedIn(Boolean(localStorage.getItem('token') && localStorage.getItem('user')));
+    api.get('/auth/api/me').then(() => setLoggedIn(true)).catch(() => setLoggedIn(false));
     api.get('/client/config', { params: { _: Date.now() } }).then((response) => { if (response.data?.status) { const nextConfig = response.data.data; setConfig(nextConfig); if (nextConfig.landing_page === 'none') router.replace('/login'); } }).finally(() => setConfigReady(true));
     if (new URLSearchParams(window.location.search).get('register') === '1') void Promise.resolve().then(() => setModal('register'));
   }, []);
 
   const finishAuth = (data: AuthPayload) => {
-    localStorage.setItem('token', data.access_token);
-    localStorage.setItem('user', JSON.stringify(data.user));
     message.success(data.message || 'Đăng nhập thành công!');
     router.push(data.user.role === 'admin' ? '/new' : '/admin');
   };

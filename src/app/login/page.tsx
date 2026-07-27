@@ -17,10 +17,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem('token') && localStorage.getItem('user')) {
-      router.replace('/new');
-      return;
-    }
+    api.get('/auth/api/me').then(() => router.replace('/new')).catch(() => undefined);
     const googleError = new URLSearchParams(window.location.search).get('google_error');
     if (googleError) message.error(googleError);
     api.get('/client/config').then(response => {
@@ -33,8 +30,6 @@ export default function LoginPage() {
     try {
       const response = await api.post('/auth/api/login', values);
       if (!response.data.status) return message.error(response.data.message);
-      localStorage.setItem('token', response.data.access_token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
       message.success(response.data.message || 'Đăng nhập thành công');
       router.push('/new');
     } catch (error: unknown) {

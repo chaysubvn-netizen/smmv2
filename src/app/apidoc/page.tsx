@@ -87,15 +87,10 @@ export default function ApiDocPage() {
       api.get('/client/config').then(response => {
         if (response.data?.status) setSiteConfig(response.data.data || {});
       }).catch(() => undefined);
-      const hasToken = Boolean(localStorage.getItem('token'));
-      if (hasToken) {
-        api.get('/client/profile')
-          .then(response => { setApiKey(response.data?.data?.api_key || ''); setLoggedIn(true); })
-          .catch(() => setLoggedIn(false))
-          .finally(() => setAuthResolved(true));
-      } else {
-        setAuthResolved(true);
-      }
+      api.get('/client/profile')
+        .then(response => { setApiKey(response.data?.data?.api_key || ''); setLoggedIn(true); })
+        .catch(() => setLoggedIn(false))
+        .finally(() => setAuthResolved(true));
       const hash = window.location.hash.slice(1);
       if (docs.some(item => item.id === hash)) setActive(hash);
     });

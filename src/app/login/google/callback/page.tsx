@@ -23,8 +23,6 @@ export default function GoogleCallbackPage() {
 
     api.post('/auth/google/exchange', { code })
       .then(response => {
-        localStorage.setItem('token', response.data.access_token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
         message.success(response.data.message || 'Đăng nhập Google thành công');
         router.replace('/new');
       })

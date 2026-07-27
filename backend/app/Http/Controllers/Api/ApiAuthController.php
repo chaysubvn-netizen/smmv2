@@ -66,13 +66,11 @@ class ApiAuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
+        return $this->authenticatedResponse([
             'status' => true,
             'message' => 'Đăng ký thành công',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
             'user' => $user
-        ]);
+        ], $token);
     }
 
     public function login(Request $request)
@@ -168,13 +166,11 @@ class ApiAuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
+        return $this->authenticatedResponse([
             'status' => true,
             'message' => 'Đăng nhập thành công',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
             'user' => $user
-        ]);
+        ], $token);
     }
 
     public function exchangeGoogleCode(Request $request)
@@ -202,13 +198,13 @@ class ApiAuthController extends Controller
         $user->last_login = now();
         $user->save();
 
-        return response()->json([
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return $this->authenticatedResponse([
             'status' => true,
             'message' => 'Đăng nhập Google thành công',
-            'access_token' => $user->createToken('auth_token')->plainTextToken,
-            'token_type' => 'Bearer',
             'user' => $user,
-        ]);
+        ], $token);
     }
 
     public function me(Request $request)
@@ -240,11 +236,26 @@ class ApiAuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        $request->user()?->currentAccessToken()?->delete();
 
         return response()->json([
             'status' => true,
             'message' => 'Đăng xuất thành công'
-        ]);
+        ])->withoutCookie('smm_auth_token', '/');
+    }
+
+    private function authenticatedResponse(array $payload, string $token)
+    {
+        return response()->json($payload)->cookie(
+            'smm_auth_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            app()->environment('production') || request()->isSecure(),
+            true,
+            false,
+            'lax'
+        );
     }
 }

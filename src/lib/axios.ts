@@ -3,6 +3,7 @@ import { message } from '@/lib/antd-message';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api',
+  withCredentials: true,
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
@@ -13,10 +14,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     config.headers['X-Site-Host'] = window.location.hostname;
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    // Remove credentials left by older frontend versions. Authentication now
+    // relies exclusively on the server-issued HttpOnly cookie.
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
   return config;
 }, (error) => {

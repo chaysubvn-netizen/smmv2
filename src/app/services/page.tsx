@@ -28,10 +28,9 @@ export default function ServicesPage() {
     fetchConfig();
     fetchServices();
     
-    const u = localStorage.getItem('user');
-    if (u) {
-      setUser(JSON.parse(u));
-    }
+    api.get('/auth/api/me')
+      .then(response => setUser(response.data?.user || null))
+      .catch(() => setUser(null));
   }, []);
 
   const fetchConfig = async () => {
