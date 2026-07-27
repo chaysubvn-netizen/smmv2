@@ -135,7 +135,7 @@ export default function SystemUpdatePanel() {
 
     <section>
       <div className={styles.historyHeading}><Title level={4}><HistoryOutlined /> Lịch sử cập nhật</Title><Button danger size="small" icon={<DeleteOutlined />} disabled={!history.length} onClick={removeAll}>Xóa tất cả</Button></div>
-      <Table<UpdateLog> rowKey="id" dataSource={history} pagination={{ pageSize: 10 }} scroll={{ x: 850 }}
+      <div className={styles.desktopHistory}><Table<UpdateLog> rowKey="id" dataSource={history} pagination={{ pageSize: 10 }} scroll={{ x: 850 }}
         columns={[
           { title: 'PHIÊN BẢN', render: (_, row) => <Space><Tag color="blue">{row.to_version || 'N/A'}</Tag><Text type="secondary">({row.from_version || 'N/A'})</Text></Space> },
           { title: 'TRẠNG THÁI', dataIndex: 'status', render: value => <span><i className={`${styles.dot} ${value === 'success' ? styles.dotSuccess : styles.dotError}`} />{value === 'success' ? 'Hoàn tất' : value === 'processing' ? 'Đang xử lý' : 'Thất bại'}</span> },
@@ -143,7 +143,21 @@ export default function SystemUpdatePanel() {
           { title: 'ADMIN', dataIndex: 'admin_name', render: value => value || '—' },
           { title: 'THỜI GIAN', dataIndex: 'created_at', render: formatDate },
           { title: '', width: 90, render: (_, row) => <Space><Button type="text" icon={<FileTextOutlined />} onClick={() => setViewing(row)} /><Button type="text" danger icon={<DeleteOutlined />} onClick={() => void removeLog(row.id)} /></Space> },
-        ]} />
+        ]} /></div>
+      <div className={styles.mobileHistory}>
+        {history.length ? history.map(row => <Card size="small" key={row.id} className={styles.historyCard}>
+          <div className={styles.historyCardTop}>
+            <Space><Tag color="blue">{row.to_version || 'N/A'}</Tag><Text type="secondary">từ {row.from_version || 'N/A'}</Text></Space>
+            <Space size={2}><Button type="text" icon={<FileTextOutlined />} onClick={() => setViewing(row)} /><Button type="text" danger icon={<DeleteOutlined />} onClick={() => void removeLog(row.id)} /></Space>
+          </div>
+          <div className={styles.historyMeta}>
+            <span><Text type="secondary">Trạng thái</Text><b><i className={`${styles.dot} ${row.status === 'success' ? styles.dotSuccess : styles.dotError}`} />{row.status === 'success' ? 'Hoàn tất' : row.status === 'processing' ? 'Đang xử lý' : 'Thất bại'}</b></span>
+            <span><Text type="secondary">Migrations</Text><b>{row.migrations || '—'}</b></span>
+            <span><Text type="secondary">Admin</Text><b>{row.admin_name || '—'}</b></span>
+            <span><Text type="secondary">Thời gian</Text><b>{formatDate(row.created_at)}</b></span>
+          </div>
+        </Card>) : <Card className={styles.noHistory}><Text type="secondary">Chưa có lịch sử cập nhật</Text></Card>}
+      </div>
     </section>
 
     <Modal open={Boolean(viewing)} title="Nhật ký cập nhật" footer={null} width={720} onCancel={() => setViewing(null)}>
