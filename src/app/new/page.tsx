@@ -279,16 +279,13 @@ export default function DashboardPage() {
     setCommentCount(0);
     setServicesLoading(true);
     try {
-      const response = await api.get(`/client/services?category_id=${categoryId}`);
-      if (response.data.status) {
-        const categoryServices = response.data.data;
-        const firstService = categoryServices[0];
+      const categoryServices = allServices.filter(service => hasSameId(service.category_id, categoryId));
+      const firstService = categoryServices[0];
 
-        setServices(categoryServices);
-        setSelectedService(firstService || null);
-        form.setFieldsValue({ service_id: firstService?.id });
-        calculatePrice(firstService, form.getFieldValue('quantity'));
-      }
+      setServices(categoryServices);
+      setSelectedService(firstService || null);
+      form.setFieldsValue({ service_id: firstService?.id });
+      calculatePrice(firstService, form.getFieldValue('quantity'));
     } catch (error) {
       message.error('Không thể tải dịch vụ');
     } finally {

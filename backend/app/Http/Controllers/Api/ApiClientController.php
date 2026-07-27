@@ -534,7 +534,27 @@ class ApiClientController extends Controller
         $domains = $this->serviceDomains($request);
         
         $categoryId = $request->input('category_id');
-        $query = Service::with('category.platform')
+        $query = Service::query()
+            ->select([
+                'id',
+                'category_id',
+                'name',
+                'description',
+                'note',
+                'rate',
+                'price_collaborator',
+                'price_agency',
+                'price_distributor',
+                'min',
+                'max',
+                'type',
+                'average_time',
+                'attributes',
+                'refill',
+                'cancel',
+                'dripfeed',
+                'sort_order',
+            ])
             ->where('status', 'active')
             ->where(function ($builder) use ($domains) {
                 $builder->whereIn('domain', $domains)->orWhereNull('domain')->orWhere('domain', '');
@@ -548,13 +568,30 @@ class ApiClientController extends Controller
         
         $user = auth('sanctum')->user();
         $currencyCode = $user ? $user->currency : 'VND';
+        $level = $user?->level;
+        $rankPercent = match ($level) {
+            'silver' => (float) (s('silver_rank') ?? 0),
+            'gold' => (float) (s('gold_rank') ?? 0),
+            'platinum' => (float) (s('platinum_rank') ?? 0),
+            'diamond' => (float) (s('diamond_rank') ?? 0),
+            default => 0,
+        };
         
-        $services->map(function ($service) use ($user, $currencyCode) {
-            $original_rate = $service->rate;
-            $rate = $user ? load_rate($service, $user->level) : $original_rate;
-            $service->original_rate = convert_currency($original_rate, $currencyCode, true);
+        $services->each(function ($service) use ($level, $rankPercent, $currencyCode) {
+            $originalRate = (float) $service->rate;
+            $tierRate = match ($level) {
+                'silver' => (float) $service->price_collaborator,
+                'gold' => (float) $service->price_agency,
+                'platinum', 'diamond' => (float) $service->price_distributor,
+                default => 0,
+            };
+            $rate = $tierRate > 0
+                ? $tierRate
+                : $originalRate - ($originalRate * $rankPercent / 100);
+
+            $service->original_rate = convert_currency($originalRate, $currencyCode, true);
             $service->rate = convert_currency($rate, $currencyCode, true);
-            return $service;
+            unset($service->price_collaborator, $service->price_agency, $service->price_distributor);
         });
 
         return response()->json([
