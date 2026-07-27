@@ -52,7 +52,7 @@ export default function SystemUpdatePanel() {
   const check = async () => {
     setChecking(true);
     try {
-      const response = await api.post('/admin/system-update/check');
+      const response = await api.get('/admin/system-update/check');
       setRelease(response.data.data);
       setUpdateAvailable(Boolean(response.data.update_available));
       message.success(response.data.update_available ? `Có phiên bản ${response.data.data.version}.` : 'Hệ thống đang ở phiên bản mới nhất.');
