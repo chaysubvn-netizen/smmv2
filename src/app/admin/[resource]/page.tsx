@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Button, Card, Form, Input, Modal, Select, Space, Table, Tag, Typography } from 'antd';import { message } from '@/lib/antd-message';
+import { Button, Card, Form, Input, Modal, Select, Table, Tag, Typography } from 'antd';import { message } from '@/lib/antd-message';
 import { DeleteOutlined, EditOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import api from '@/lib/axios';
 import styles from './resource.module.css';
+import SystemUpdatePanel from '@/components/admin/SystemUpdatePanel';
 
 const { Text, Title } = Typography;
 type Row = Record<string, unknown> & { id: number };
@@ -39,6 +40,11 @@ const displayValue = (value: unknown) => {
 
 export default function AdminResourcePage() {
   const { resource } = useParams<{ resource: string }>();
+  if (resource === 'system') return <SystemUpdatePanel />;
+  return <AdminDataResourcePage resource={resource} />;
+}
+
+function AdminDataResourcePage({ resource }: { resource: string }) {
   const [form] = Form.useForm();
   const [rows, setRows] = useState<Row[]>([]);
   const [meta, setMeta] = useState<ResourceMeta | null>(null);
@@ -48,7 +54,7 @@ export default function AdminResourcePage() {
   const [editing, setEditing] = useState<Row | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-  const title = titles[resource] || [resource, 'Quản lý dữ liệu hệ thống'];
+  const title = useMemo(() => titles[resource] || [resource, 'Quản lý dữ liệu hệ thống'], [resource]);
 
   const load = useCallback(async (page = 1, pageSize = 20, keyword = search) => {
     setLoading(true);
