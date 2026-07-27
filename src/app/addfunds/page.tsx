@@ -50,7 +50,7 @@ const defaultOptions: Options = {
   binance_exchange_rate: 23000,
   banks: [],
 };
-const quickAmounts = [50000, 100000, 200000, 500000, 1000000];
+const quickAmounts = [10000, 20000, 30000, 50000, 100000, 200000, 500000, 1000000];
 const quickCryptoAmounts = [5, 10, 20, 50, 100];
 const labels: Record<string, string> = { waiting: 'Đang chờ', completed: 'Thành công', canceled: 'Đã hủy', expired: 'Hết hạn', pending: 'Đang chờ' };
 const colors: Record<string, string> = { waiting: 'gold', completed: 'green', canceled: 'default', expired: 'red', pending: 'gold' };
@@ -60,7 +60,7 @@ export default function AddFundsPage() {
   const [options, setOptions] = useState<Options>(defaultOptions);
   const [method, setMethod] = useState<Method>('bank');
   const [bankId, setBankId] = useState<number>();
-  const [amount, setAmount] = useState<number>(100000);
+  const [amount, setAmount] = useState<number>(10000);
   const [binanceOrderId, setBinanceOrderId] = useState('');
   const [binanceStep, setBinanceStep] = useState<0 | 1 | 2>(0);
   const [binanceError, setBinanceError] = useState('');
@@ -170,12 +170,13 @@ export default function AddFundsPage() {
 
   const selectMethod = (nextMethod: Method) => {
     setMethod(nextMethod);
-    setAmount(nextMethod === 'bank' ? 100000 : 10);
+    setAmount(nextMethod === 'bank' ? 10000 : 10);
     setPayment(null);
   };
 
   const createRecharge = async () => {
     if (method === 'bank' && !bankId) return message.warning('Vui lòng chọn tài khoản ngân hàng.');
+    if (method === 'bank' && amount > 1000000000) return message.warning('Số tiền nạp tối đa là 1.000.000.000đ.');
     if (method === 'binance') {
       if (amount < 1) return message.warning('Số tiền nạp tối thiểu là 1 USDT.');
       setBinanceError('');
@@ -282,7 +283,6 @@ export default function AddFundsPage() {
       </div>
 
       {method === 'bank' ? <>
-        <p className={styles.required}>* 1. Chọn tài khoản ngân hàng</p>
         <div className={styles.banks}>
           {options.banks.map((bank) => (
             <button
@@ -294,23 +294,29 @@ export default function AddFundsPage() {
                 {bank.icon ? <img src={assetUrl(bank.icon)} alt={bank.bank_name} /> : <BankOutlined />}
               </span>
               <strong>{bank.bank_name}</strong>
-              <span className={styles.freeBadge}>FREE</span>
+              <span className={styles.bankAccount}>Số tài khoản: <b>{bank.account_number}</b></span>
+              <span className={styles.bankAccount}>Chủ tài khoản: <b>{bank.account_name}</b></span>
+              {bank.icon ? <img className={styles.bankWatermark} src={assetUrl(bank.icon)} alt="" aria-hidden="true" /> : null}
               {bankId === bank.id ? <CheckCircleFilled className={styles.bankCheck} /> : null}
               <span className={styles.bankLimits}>
-                <small>Min: <b>10.000 VND</b></small>
-                <small>Max: <b>Không giới hạn</b></small>
+                <small><span>TỐI THIỂU</span><b>10,000đ</b></small>
+                <small><span>TỐI ĐA</span><b>1,000,000,000đ</b></small>
               </span>
             </button>
           ))}
         </div>
       </> : null}
 
-      <p className={styles.required}>* {method === 'bank' ? '2' : method === 'binance' ? '1' : '1'}. Số tiền nạp ({isCrypto ? 'USDT' : 'VND'})</p>
-      <InputNumber className={styles.amount} min={method === 'bank' ? 10000 : 1} value={amount} onChange={(value) => setAmount(Number(value || 0))} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(value) => Number((value || '').replace(/,/g, '')) as unknown as 0} />
+      {method !== 'bank' ? <p className={styles.required}>* 1. Số tiền nạp (USDT)</p> : null}
+      <div className={method === 'bank' ? styles.bankAmountField : styles.cryptoAmountField}>
+        {method === 'bank' ? <DollarCircleOutlined /> : null}
+        <InputNumber className={styles.amount} min={method === 'bank' ? 10000 : 1} max={method === 'bank' ? 1000000000 : undefined} value={amount} onChange={(value) => setAmount(Number(value || 0))} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(value) => Number((value || '').replace(/,/g, '')) as unknown as 0} />
+        {method === 'bank' ? <b>VNĐ</b> : null}
+      </div>
       {isCrypto ? <div className={styles.estimated}>Số tiền quy đổi (VND): <b>≈ {(amount * exchangeRate).toLocaleString('vi-VN')} đ</b> <span>(Tỷ giá: 1 USDT = {Number(exchangeRate).toLocaleString('vi-VN')}đ)</span></div> : null}
-      <div className={styles.quick}>{(method === 'bank' ? quickAmounts : quickCryptoAmounts).map((value) => <button key={value} className={amount === value ? styles.activeAmount : ''} onClick={() => setAmount(value)}>{value.toLocaleString('vi-VN')}</button>)}</div>
+      <div className={styles.quick}>{(method === 'bank' ? quickAmounts : quickCryptoAmounts).map((value) => <button key={value} className={method !== 'bank' && amount === value ? styles.activeAmount : ''} onClick={() => setAmount(method === 'bank' ? Math.min(1000000000, amount + value) : value)}>{method === 'bank' ? `+${value.toLocaleString('en-US')}đ` : value.toLocaleString('vi-VN')}</button>)}</div>
 
-      <Button type="primary" block size="large" className={`${styles.continue} ${method === 'binance' ? styles.binancePayButton : ''}`} loading={submitting} onClick={createRecharge}>{method === 'bank' ? 'Tiếp tục thanh toán' : method === 'binance' ? 'Thanh toán' : method === 'trc20' ? 'Tạo hóa đơn TRC20' : 'Khởi tạo hóa đơn USDT'}</Button>
+      <Button type="primary" block size="large" className={`${styles.continue} ${method === 'bank' ? styles.bankCreateButton : ''} ${method === 'binance' ? styles.binancePayButton : ''}`} loading={submitting} onClick={createRecharge}>{method === 'bank' ? 'Tạo hóa đơn nạp tiền' : method === 'binance' ? 'Thanh toán' : method === 'trc20' ? 'Tạo hóa đơn TRC20' : 'Khởi tạo hóa đơn USDT'}</Button>
       </div>
       <aside className={styles.guide}>
         <h3><InfoCircleOutlined /> Hướng dẫn nạp tiền</h3>
