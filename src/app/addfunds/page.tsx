@@ -11,7 +11,7 @@ import styles from './addfunds.module.css';
 const { Text } = Typography;
 type Method = 'bank' | 'usdt' | 'binance' | 'trc20';
 type Bank = { id: number; bank_name: string; bank_code?: string; account_number: string; account_name: string; icon?: string };
-type Recharge = { id: number; transaction_id: string; gateway_name: string; amount: number; amount_display?: number; status: string; created_at: string };
+type Recharge = { id: number; transaction_id: string; gateway_name: string; method?: string; type?: string; amount: number; amount_display?: number; status: string; created_at: string };
 type Payment = {
   id: number;
   type?: 'binance' | 'trc20';
@@ -249,8 +249,8 @@ export default function AddFundsPage() {
     {
       title: 'Thao tác',
       render: (_: unknown, item: Recharge) => {
-        if (!['waiting', 'pending'].includes(item.status)) return null;
-        if (item.gateway_name === 'USDT') {
+        const gateway = `${item.gateway_name || ''} ${item.method || ''} ${item.type || ''}`.toLowerCase();
+        if (gateway.includes('usdt')) {
           return (
             <Button
               type="primary"
@@ -263,6 +263,7 @@ export default function AddFundsPage() {
             </Button>
           );
         }
+        if (!['waiting', 'pending'].includes(String(item.status).toLowerCase())) return null;
         return <Button size="small" onClick={() => openPayment(item.id)}>Thanh toán</Button>;
       },
     },
