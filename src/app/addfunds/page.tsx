@@ -281,7 +281,29 @@ export default function AddFundsPage() {
         {options.usdt_enabled ? <button className={method === 'usdt' ? styles.selected : ''} onClick={() => selectMethod('usdt')}><DollarCircleOutlined /><span><b>USDT (Blockchain)</b><small>Tự động qua Blockchain</small></span></button> : null}
       </div>
 
-      {method === 'bank' ? <><p className={styles.required}>* 1. Chọn tài khoản ngân hàng</p><div className={styles.banks}>{options.banks.map((bank) => <button key={bank.id} className={bankId === bank.id ? styles.selectedBank : ''} onClick={() => setBankId(bank.id)}>{bank.icon ? <img src={assetUrl(bank.icon)} alt={bank.bank_name} /> : <BankOutlined />}<span><b>{bank.bank_name}</b><small>{bank.account_number} - {bank.account_name}</small></span>{bankId === bank.id ? <CheckCircleFilled /> : null}</button>)}</div></> : null}
+      {method === 'bank' ? <>
+        <p className={styles.required}>* 1. Chọn tài khoản ngân hàng</p>
+        <div className={styles.banks}>
+          {options.banks.map((bank) => (
+            <button
+              key={bank.id}
+              className={bankId === bank.id ? styles.selectedBank : ''}
+              onClick={() => setBankId(bank.id)}
+            >
+              <span className={styles.bankLogo}>
+                {bank.icon ? <img src={assetUrl(bank.icon)} alt={bank.bank_name} /> : <BankOutlined />}
+              </span>
+              <strong>{bank.bank_name}</strong>
+              <span className={styles.freeBadge}>FREE</span>
+              {bankId === bank.id ? <CheckCircleFilled className={styles.bankCheck} /> : null}
+              <span className={styles.bankLimits}>
+                <small>Min: <b>10.000 VND</b></small>
+                <small>Max: <b>Không giới hạn</b></small>
+              </span>
+            </button>
+          ))}
+        </div>
+      </> : null}
 
       <p className={styles.required}>* {method === 'bank' ? '2' : method === 'binance' ? '1' : '1'}. Số tiền nạp ({isCrypto ? 'USDT' : 'VND'})</p>
       <InputNumber className={styles.amount} min={method === 'bank' ? 10000 : 1} value={amount} onChange={(value) => setAmount(Number(value || 0))} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} parser={(value) => Number((value || '').replace(/,/g, '')) as unknown as 0} />
