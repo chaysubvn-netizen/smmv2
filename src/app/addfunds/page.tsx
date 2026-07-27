@@ -249,6 +249,8 @@ export default function AddFundsPage() {
     {
       title: 'Thao tác',
       render: (_: unknown, item: Recharge) => {
+        const isPayable = ['waiting', 'pending'].includes(String(item.status).trim().toLowerCase());
+        if (!isPayable) return null;
         const gateway = `${item.gateway_name || ''} ${item.method || ''} ${item.type || ''}`.toLowerCase();
         if (gateway.includes('usdt')) {
           return (
@@ -263,7 +265,6 @@ export default function AddFundsPage() {
             </Button>
           );
         }
-        if (!['waiting', 'pending'].includes(String(item.status).toLowerCase())) return null;
         return <Button size="small" onClick={() => openPayment(item.id)}>Thanh toán</Button>;
       },
     },
