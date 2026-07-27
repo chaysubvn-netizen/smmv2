@@ -246,7 +246,26 @@ export default function AddFundsPage() {
     { title: 'Số tiền', dataIndex: 'amount_display', render: (value: number, item: Recharge) => <b>{formatMoney(value ?? item.amount)}</b> },
     { title: 'Trạng thái', dataIndex: 'status', render: (value: string) => <Tag color={colors[value] || 'default'}>{labels[value] || value}</Tag> },
     { title: 'Thời gian', dataIndex: 'created_at', render: (value: string) => new Date(value).toLocaleString('vi-VN') },
-    { title: 'Thao tác', render: (_: unknown, item: Recharge) => item.status === 'waiting' && item.gateway_name !== 'USDT' ? <Button size="small" onClick={() => openPayment(item.id)}>Thanh toán</Button> : null },
+    {
+      title: 'Thao tác',
+      render: (_: unknown, item: Recharge) => {
+        if (!['waiting', 'pending'].includes(item.status)) return null;
+        if (item.gateway_name === 'USDT') {
+          return (
+            <Button
+              type="primary"
+              size="small"
+              href={`https://app.fpayment.net/payment/${encodeURIComponent(item.transaction_id)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Thanh toán
+            </Button>
+          );
+        }
+        return <Button size="small" onClick={() => openPayment(item.id)}>Thanh toán</Button>;
+      },
+    },
   ];
 
   return <ClientLayout><div className={styles.grid}>
