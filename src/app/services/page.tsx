@@ -9,6 +9,7 @@ import api from '@/lib/axios';
 
 const { Title, Text } = Typography;
 const { Search } = Input;
+const hasSameId = (left: unknown, right: unknown) => String(left) === String(right);
 
 export default function ServicesPage() {
   const [services, setServices] = useState<any[]>([]);
@@ -182,8 +183,11 @@ export default function ServicesPage() {
   const filteredServices = services.filter(service => {
     let match = true;
     if (searchText && !service.name.toLowerCase().includes(searchText.toLowerCase())) match = false;
-    if (selectedCategory && service.category_id !== selectedCategory) match = false;
-    if (selectedPlatform && service.category?.platform_id !== selectedPlatform) match = false;
+    if (selectedCategory && !hasSameId(service.category_id, selectedCategory)) match = false;
+    if (selectedPlatform) {
+      const category = categories.find(item => hasSameId(item.id, service.category_id));
+      if (!category || !hasSameId(category.platform_id, selectedPlatform)) match = false;
+    }
     return match;
   });
 
@@ -336,7 +340,7 @@ export default function ServicesPage() {
             optionFilterProp="title"
           >
             {categories
-              .filter(c => !selectedPlatform || c.platform_id === selectedPlatform)
+              .filter(c => !selectedPlatform || hasSameId(c.platform_id, selectedPlatform))
               .map(c => (
                 <Select.Option key={c.id} value={c.id} title={c.name} label={<span className="flex items-center">{renderAdminIcon(c.icon)}{c.name}</span>}>
                   <div className="flex items-center">
