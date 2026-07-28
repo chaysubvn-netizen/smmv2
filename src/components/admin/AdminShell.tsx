@@ -9,6 +9,7 @@ import {
   DollarOutlined, FileTextOutlined, GlobalOutlined, HistoryOutlined, MenuFoldOutlined,
   MenuUnfoldOutlined, MessageOutlined, PercentageOutlined, SettingOutlined,
   ShoppingCartOutlined, TagsOutlined, TeamOutlined, UserOutlined, WalletOutlined, CustomerServiceOutlined,
+  SafetyCertificateOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import api from '@/lib/axios';
@@ -48,6 +49,7 @@ const menuItems: MenuProps['items'] = [
   { key: '/admin/facebook-tokens', icon: <ApiOutlined />, label: link('/admin/facebook-tokens', 'Facebook Token') },
   { key: '/admin/users', icon: <UserOutlined />, label: link('/admin/users', 'Thành viên') },
   { key: '/admin/transactions', icon: <HistoryOutlined />, label: link('/admin/transactions', 'Giao dịch') },
+  { key: '/admin/auth-logs', icon: <SafetyCertificateOutlined />, label: link('/admin/auth-logs', 'Nhật ký đăng nhập') },
   { type: 'divider' },
   { key: '/admin/notifications', icon: <BellOutlined />, label: link('/admin/notifications', 'Thông báo') },
   { key: '/admin/contact-widgets', icon: <CustomerServiceOutlined />, label: link('/admin/contact-widgets', 'Widget liên hệ') },
@@ -93,7 +95,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
     if (pathname.includes('/products') || pathname.includes('/product-categories') || pathname.includes('/product-orders')) return ['products'];
     if (pathname.includes('/banks') || pathname.includes('/deposits') || pathname.includes('/api-keys')) return ['payments'];
     return [];
-  }, []);
+  }, [pathname]);
 
   if (!ready) return <div className={styles.loading}><Spin size="large" /></div>;
 
