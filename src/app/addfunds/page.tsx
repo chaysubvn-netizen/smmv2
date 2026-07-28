@@ -300,7 +300,6 @@ export default function AddFundsPage() {
               {bankId === bank.id ? <CheckCircleFilled className={styles.bankCheck} /> : null}
               <span className={styles.bankLimits}>
                 <small><span>TỐI THIỂU</span><b>10,000đ</b></small>
-                <small><span>TỐI ĐA</span><b>1,000,000,000đ</b></small>
               </span>
             </button>
           ))}
