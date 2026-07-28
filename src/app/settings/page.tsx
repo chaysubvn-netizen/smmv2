@@ -125,6 +125,7 @@ export default function SettingsPage() {
       const response = await api.post('/client/change-password', values);
       if (response.data.status === false) throw new Error(response.data.message);
       message.success(response.data.message || 'Đổi mật khẩu thành công.');
+      window.location.assign('/login');
     } catch (error: any) {
       message.error(error.response?.data?.message || error.message || 'Có lỗi xảy ra.');
     } finally {
