@@ -8,6 +8,7 @@ import api from '@/lib/axios';
 import { useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './new.module.css';
 
 const { Title, Text } = Typography;
@@ -55,9 +56,11 @@ export default function DashboardPage() {
   const [isContentExpanded, setIsContentExpanded] = useState(false);
   const [showContentToggle, setShowContentToggle] = useState(false);
   const [isMobileSelect, setIsMobileSelect] = useState(false);
+  const [siteDomain, setSiteDomain] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setSiteDomain(window.location.hostname.replace(/^www\./i, '').toUpperCase());
     const mediaQuery = window.matchMedia('(max-width: 768px)');
     const syncMobileSelect = () => setIsMobileSelect(mediaQuery.matches);
     syncMobileSelect();
@@ -548,7 +551,7 @@ export default function DashboardPage() {
                 Xin chào <span className={styles.username}>{displayName}</span>
                 <span className={styles.verified} aria-label="Tài khoản đã xác minh">✓</span>
               </h2>
-              <p className={styles.welcomeSubtitle}>Chào mừng đến với {config?.title || 'SMM Panel'}</p>
+              <p className={styles.welcomeSubtitle}>Chào mừng đến với {siteDomain || 'SMM Panel'}</p>
               <div className={styles.stats}>
                 <div className={styles.stat}>
                   <span className={styles.statIcon}>$</span>
@@ -563,27 +566,7 @@ export default function DashboardPage() {
                   <span><strong>{totalOrders.toLocaleString('vi-VN')}</strong><small>Tổng đơn hàng</small></span>
                 </div>
               </div>
-              <svg className={styles.character} viewBox="0 0 235 177" aria-hidden="true">
-                <defs>
-                  <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#f4f1eb"/><stop offset="1" stopColor="#b9c5c5"/></linearGradient>
-                  <radialGradient id="glow"><stop stopColor="#244358"/><stop offset="1" stopColor="#172131" stopOpacity="0"/></radialGradient>
-                </defs>
-                <circle cx="137" cy="103" r="85" fill="url(#glow)"/>
-                <path d="M184 8l22 3-9 18 16 2-30 36 7-27-16-1z" fill="#fff12b" stroke="#1fd873" strokeWidth="5"/>
-                <path d="M53 130c-17 5-24 13-20 21 5 10 22 2 35-5" fill="#d29b7c" stroke="#a76f54" strokeWidth="3"/>
-                <path d="M72 91c19-15 59-14 78 1l17 85H57z" fill="url(#shirt)"/>
-                <path d="M83 95l-14 70M140 95l14 70" stroke="#9facad" strokeWidth="3"/>
-                <circle cx="112" cy="50" r="37" fill="#d9a284"/>
-                <path d="M77 46c0-31 22-44 45-40 18 3 29 15 29 31-12-10-20-5-32-12-10 10-25 12-42 11z" fill="#70432d"/>
-                <path d="M90 30c7-18 35-22 50-8" fill="none" stroke="#966044" strokeWidth="8" strokeLinecap="round"/>
-                <ellipse cx="98" cy="52" rx="3" ry="4" fill="#35261f"/><ellipse cx="127" cy="52" rx="3" ry="4" fill="#35261f"/>
-                <path d="M104 67c6 4 12 4 18 0" fill="none" stroke="#8d5748" strokeWidth="3" strokeLinecap="round"/>
-                <path d="M99 83v12c7 5 20 5 27 0V83" fill="#c78d71"/>
-                <circle cx="113" cy="112" r="3" fill="#657273"/><circle cx="113" cy="133" r="3" fill="#657273"/><circle cx="113" cy="154" r="3" fill="#657273"/>
-                <path d="M56 116c-8 3-13 10-11 17" fill="none" stroke="#c2cecd" strokeWidth="14" strokeLinecap="round"/>
-                <path d="M158 112c12 11 17 30 18 54" fill="none" stroke="#b8c4c4" strokeWidth="15" strokeLinecap="round"/>
-                <path d="M19 128l5 11 12 1-9 8 3 12-11-6-10 6 2-12-9-8 12-1z" fill="#ffd83d"/>
-              </svg>
+              <Image className={styles.character} src="/man_book_green.png" width={596} height={372} alt="" aria-hidden="true" priority />
             </div>
             <div className={styles.rankCard}>
               <div className={styles.rankHeading}>
