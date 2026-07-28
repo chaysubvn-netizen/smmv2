@@ -69,6 +69,15 @@
 }
 .bankAmountField{
   margin-top:18px;
+  border-color:#eceff3;
+  box-shadow:none;
+}
+.bankAmountField :global(.ant-input-number-handler-wrap){
+  display:none;
+}
+.bankAmountField:focus-within{
+  border-color:#cfd8e6;
+  box-shadow:0 0 0 2px rgba(124,58,237,.06);
 }
 @media(max-width:600px){
   .banks{grid-template-columns:1fr;margin-top:12px}
