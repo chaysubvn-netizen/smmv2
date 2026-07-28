@@ -481,8 +481,8 @@ export default function DashboardPage() {
     diamond: 'DIAMOND MEMBER',
   };
   const displayName = user?.name || user?.username || 'Thành viên';
-  const totalOrders = Number(user?.total_orders ?? user?.orders_count ?? user?.order_count ?? 0);
-  const totalSpent = Number(user?.total_spent ?? user?.spent ?? user?.total_deposit ?? 0);
+  const totalOrders = Number(config?.total_orders_system ?? 0);
+  const totalSpent = Number(user?.total_spent ?? 0);
 
   return (
     <ClientLayout>
@@ -548,7 +548,7 @@ export default function DashboardPage() {
                 Xin chào <span className={styles.username}>{displayName}</span>
                 <span className={styles.verified} aria-label="Tài khoản đã xác minh">✓</span>
               </h2>
-              <p className={styles.welcomeSubtitle}>Chào mừng đến với {config?.name || config?.site_name || 'Smm.vn'}</p>
+              <p className={styles.welcomeSubtitle}>Chào mừng đến với {config?.title || 'SMM Panel'}</p>
               <div className={styles.stats}>
                 <div className={styles.stat}>
                   <span className={styles.statIcon}>$</span>

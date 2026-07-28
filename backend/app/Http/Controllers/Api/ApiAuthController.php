@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -209,9 +210,17 @@ class ApiAuthController extends Controller
 
     public function me(Request $request)
     {
+        $user = $request->user();
+        $user->setAttribute(
+            'total_spent',
+            (float) Order::where('user_id', $user->id)
+                ->where('domain', $user->domain)
+                ->sum('total')
+        );
+
         return response()->json([
             'status' => true,
-            'user' => $request->user()
+            'user' => $user
         ]);
     }
 

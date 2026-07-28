@@ -469,6 +469,7 @@ class ApiClientController extends Controller
             'data' => [
                 'currency' => $currency,
                 'title' => $config ? $config->title : 'SMM Panel',
+                'total_orders_system' => Order::count(),
                 'description' => $config ? $config->description : '',
                 'keywords' => $config ? $config->keywords : '',
                 'logo' => $config ? $config->logo : null,
