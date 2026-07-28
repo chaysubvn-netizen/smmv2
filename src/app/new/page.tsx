@@ -7,6 +7,8 @@ import { AppstoreOutlined, BellOutlined, CheckCircleOutlined, ClockCircleOutline
 import api from '@/lib/axios';
 import { useSearchParams } from 'next/navigation';
 import dayjs from 'dayjs';
+import Link from 'next/link';
+import styles from './new.module.css';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -471,6 +473,16 @@ export default function DashboardPage() {
   };
 
   const serviceContent = selectedService?.note || selectedService?.description || '';
+  const accountLevel: Record<string, string> = {
+    member: 'JUNIOR MEMBER',
+    silver: 'SILVER MEMBER',
+    gold: 'GOLD MEMBER',
+    platinum: 'PLATINUM MEMBER',
+    diamond: 'DIAMOND MEMBER',
+  };
+  const displayName = user?.name || user?.username || 'Thành viên';
+  const totalOrders = Number(user?.total_orders ?? user?.orders_count ?? user?.order_count ?? 0);
+  const totalSpent = Number(user?.total_spent ?? user?.spent ?? user?.total_deposit ?? 0);
 
   return (
     <ClientLayout>
@@ -530,6 +542,66 @@ export default function DashboardPage() {
               <ShoppingCartOutlined />
             </span>
           </div>
+          <section className={styles.accountOverview} aria-label="Tổng quan tài khoản">
+            <div className={styles.welcomeCard}>
+              <h2 className={styles.welcomeTitle}>
+                Xin chào <span className={styles.username}>{displayName}</span>
+                <span className={styles.verified} aria-label="Tài khoản đã xác minh">✓</span>
+              </h2>
+              <p className={styles.welcomeSubtitle}>Chào mừng đến với {config?.name || config?.site_name || 'Smm.vn'}</p>
+              <div className={styles.stats}>
+                <div className={styles.stat}>
+                  <span className={styles.statIcon}>$</span>
+                  <span><strong>{formatAccountBalance(user?.balance || 0)}</strong><small>Số dư</small></span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statIcon}><RocketOutlined /></span>
+                  <span><strong>{formatAccountBalance(totalSpent)}</strong><small>Đã sử dụng</small></span>
+                </div>
+                <div className={styles.stat}>
+                  <span className={styles.statIcon}><ShoppingCartOutlined /></span>
+                  <span><strong>{totalOrders.toLocaleString('vi-VN')}</strong><small>Tổng đơn hàng</small></span>
+                </div>
+              </div>
+              <svg className={styles.character} viewBox="0 0 235 177" aria-hidden="true">
+                <defs>
+                  <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#f4f1eb"/><stop offset="1" stopColor="#b9c5c5"/></linearGradient>
+                  <radialGradient id="glow"><stop stopColor="#244358"/><stop offset="1" stopColor="#172131" stopOpacity="0"/></radialGradient>
+                </defs>
+                <circle cx="137" cy="103" r="85" fill="url(#glow)"/>
+                <path d="M184 8l22 3-9 18 16 2-30 36 7-27-16-1z" fill="#fff12b" stroke="#1fd873" strokeWidth="5"/>
+                <path d="M53 130c-17 5-24 13-20 21 5 10 22 2 35-5" fill="#d29b7c" stroke="#a76f54" strokeWidth="3"/>
+                <path d="M72 91c19-15 59-14 78 1l17 85H57z" fill="url(#shirt)"/>
+                <path d="M83 95l-14 70M140 95l14 70" stroke="#9facad" strokeWidth="3"/>
+                <circle cx="112" cy="50" r="37" fill="#d9a284"/>
+                <path d="M77 46c0-31 22-44 45-40 18 3 29 15 29 31-12-10-20-5-32-12-10 10-25 12-42 11z" fill="#70432d"/>
+                <path d="M90 30c7-18 35-22 50-8" fill="none" stroke="#966044" strokeWidth="8" strokeLinecap="round"/>
+                <ellipse cx="98" cy="52" rx="3" ry="4" fill="#35261f"/><ellipse cx="127" cy="52" rx="3" ry="4" fill="#35261f"/>
+                <path d="M104 67c6 4 12 4 18 0" fill="none" stroke="#8d5748" strokeWidth="3" strokeLinecap="round"/>
+                <path d="M99 83v12c7 5 20 5 27 0V83" fill="#c78d71"/>
+                <circle cx="113" cy="112" r="3" fill="#657273"/><circle cx="113" cy="133" r="3" fill="#657273"/><circle cx="113" cy="154" r="3" fill="#657273"/>
+                <path d="M56 116c-8 3-13 10-11 17" fill="none" stroke="#c2cecd" strokeWidth="14" strokeLinecap="round"/>
+                <path d="M158 112c12 11 17 30 18 54" fill="none" stroke="#b8c4c4" strokeWidth="15" strokeLinecap="round"/>
+                <path d="M19 128l5 11 12 1-9 8 3 12-11-6-10 6 2-12-9-8 12-1z" fill="#ffd83d"/>
+              </svg>
+            </div>
+            <div className={styles.rankCard}>
+              <div className={styles.rankHeading}>
+                <SafetyCertificateOutlined />
+                <span>Cấp độ tài khoản</span>
+                <span className={styles.rankBadge}>{accountLevel[user?.level] || 'JUNIOR MEMBER'}</span>
+              </div>
+              <p>
+                Tìm hiểu cách bán lại các dịch vụ của chúng tôi và kiếm thu nhập ổn định hàng tháng!
+                Nếu cần giúp đỡ hãy mở một <Link href="/tickets">Ticket</Link> và kết nối trực tiếp với nhóm của chúng tôi.
+              </p>
+              <svg className={styles.medal} viewBox="0 0 93 157" aria-hidden="true">
+                <path d="M17 0h23l17 67H34z" fill="#20d77b"/><path d="M67 0h20L64 68H41z" fill="#08a855"/>
+                <circle cx="52" cy="108" r="36" fill="#ffb62e" stroke="#ffd66d" strokeWidth="6"/>
+                <path d="M52 87l6 12 14 2-10 10 3 14-13-7-12 7 2-14-10-10 14-2z" fill="#fff1b0"/>
+              </svg>
+            </div>
+          </section>
           {config?.notice_service ? (
             <div className="mb-5 rounded-lg border border-[#91caff] bg-[#e6f4ff] px-4 py-3 shadow-sm animate-fade-in">
               <div className="text-[13px] leading-relaxed text-gray-800 [&>p]:mb-3 [&>p:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: config.notice_service }} />
