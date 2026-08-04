@@ -11,20 +11,28 @@ import {
   CheckCircleFilled,
   StarFilled,
   ArrowRightOutlined,
-  DashboardOutlined
+  DashboardOutlined,
+  HeartFilled,
+  SettingOutlined,
+  UsergroupAddOutlined,
+  TrophyOutlined
 } from '@ant-design/icons';
-import { Button, Card, Statistic, Steps, Typography, Rate, Tag, Divider } from 'antd';
 import api from '@/lib/axios';
 
-const { Title, Text, Paragraph } = Typography;
-
 const services = [
-  { title: 'Tăng Follow, Like, View', desc: 'Thúc đẩy tương tác mạnh mẽ cho Instagram, Facebook, Tiktok v.v...', icon: <RocketOutlined />, color: '#1677ff' },
-  { title: 'Tốc độ xử lý siêu tốc', desc: 'Hàng ngàn đơn hàng được xử lý tự động trong tích tắc bằng API.', icon: <ThunderboltFilled />, color: '#faad14' },
-  { title: 'Bảo mật an toàn 100%', desc: 'Không yêu cầu mật khẩu mạng xã hội, an toàn tuyệt đối cho tài khoản.', icon: <SafetyCertificateOutlined />, color: '#52c41a' },
-  { title: 'Thống kê minh bạch', desc: 'Theo dõi chi tiết tiến độ đơn hàng và lịch sử chi tiêu theo thời gian thực.', icon: <LineChartOutlined />, color: '#722ed1' },
-  { title: 'Đa quốc gia', desc: 'Hỗ trợ dịch vụ từ nhiều Server, đa dạng quốc gia cho nhiều mục đích.', icon: <GlobalOutlined />, color: '#eb2f96' },
-  { title: 'Hỗ trợ 24/7', desc: 'Đội ngũ CSKH chuyên nghiệp luôn sẵn sàng hỗ trợ bạn bất kỳ lúc nào.', icon: <CustomerServiceOutlined />, color: '#13c2c2' }
+  { title: 'Processing 24/7', desc: 'Our automated system never sleeps. Orders start processing instantly.', icon: <SettingOutlined /> },
+  { title: '100% Secure', desc: 'No passwords required. Your account safety is our top priority.', icon: <SafetyCertificateOutlined /> },
+  { title: 'Cheapest Prices', desc: 'Direct provider sourcing allows us to offer the most competitive market rates.', icon: <LineChartOutlined /> },
+  { title: 'API for Resellers', desc: 'Seamlessly connect your own panel to our services with our robust API.', icon: <ThunderboltFilled /> },
+  { title: 'Global Reach', desc: 'High quality services for users worldwide across all major platforms.', icon: <GlobalOutlined /> },
+  { title: 'Live Support', desc: 'Dedicated support team ready to assist you anytime via ticket or chat.', icon: <CustomerServiceOutlined /> }
+];
+
+const steps = [
+  { num: '01', title: 'Create Account', desc: 'Sign up for free in less than 30 seconds. No credit card required.' },
+  { num: '02', title: 'Add Funds', desc: 'Load your balance safely using Cards, Crypto, or Bank Transfer.' },
+  { num: '03', title: 'Choose Service', desc: 'Paste your link, select category and submit your order.' },
+  { num: '04', title: 'Track & Grow', desc: 'Watch your metrics skyrocket instantly in real-time.' }
 ];
 
 export default function LandingDefaultPage() {
@@ -34,16 +42,14 @@ export default function LandingDefaultPage() {
     api.get('/client/config').then(({ data }) => {
       if (data?.status) {
         setConfig(data.data);
-        
-        // Dynamically update SEO
         document.title = data.data.title || 'SMM Panel';
         let metaDescription = document.querySelector('meta[name="description"]');
         if (metaDescription) {
-          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM tự động, kéo tương tác mạnh mẽ cho mạng xã hội.');
+          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM hàng đầu Việt Nam.');
         } else {
           metaDescription = document.createElement('meta');
           metaDescription.setAttribute('name', 'description');
-          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM tự động, kéo tương tác mạnh mẽ cho mạng xã hội.');
+          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM hàng đầu Việt Nam.');
           document.head.appendChild(metaDescription);
         }
       }
@@ -53,242 +59,269 @@ export default function LandingDefaultPage() {
   const logoUrl = config.logo?.startsWith('http') ? config.logo : config.logo ? `${(process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api').replace(/\/api\/?$/, '')}${config.logo.startsWith('/') ? '' : '/'}${config.logo}` : null;
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans text-slate-800 overflow-x-hidden selection:bg-[#1677ff] selection:text-white">
-      
-      {/* NAVBAR */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm transition-all h-20 flex items-center">
+    <div className="min-h-screen bg-[#0B0F19] text-gray-300 font-sans selection:bg-green-500 selection:text-white relative overflow-x-hidden">
+      {/* GLOBAL BACKGROUND GRID & GLOWS */}
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: 'linear-gradient(#222 1px, transparent 1px), linear-gradient(90deg, #222 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+      <div className="fixed top-[-20%] left-[-10%] w-[600px] h-[600px] bg-green-500/20 blur-[120px] rounded-full pointer-events-none z-0" />
+      <div className="fixed bottom-1/4 right-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none z-0" />
+
+      {/* HEADER */}
+      <header className="fixed top-0 w-full z-50 bg-[#0B0F19]/80 backdrop-blur-xl border-b border-gray-800 transition-all h-20 flex items-center">
         <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-2xl font-black text-slate-900 tracking-tight">
+          <Link href="/" className="flex items-center gap-3 relative z-10">
             {logoUrl ? (
-              <img src={logoUrl} alt={config.title || 'Logo'} className="h-10 object-contain" />
+              <img src={logoUrl} alt={config.title || 'Logo'} className="h-9 w-auto object-contain brightness-0 invert" />
             ) : (
-              <>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1677ff] to-[#36cfc9] flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+              <div className="flex items-center gap-2 text-2xl font-black text-white tracking-tight">
+                <div className="w-9 h-9 rounded-lg bg-green-500 flex items-center justify-center text-black">
                   <DashboardOutlined />
                 </div>
                 {config.title || 'PRO SMM'}
-              </>
+              </div>
             )}
           </Link>
-          <nav className="hidden md:flex items-center gap-8 font-semibold text-slate-600">
-            <a href="#features" className="hover:text-[#1677ff] transition-colors">Tính năng</a>
-            <a href="#services" className="hover:text-[#1677ff] transition-colors">Dịch vụ</a>
-            <a href="#workflow" className="hover:text-[#1677ff] transition-colors">Cách hoạt động</a>
+          <nav className="hidden md:flex items-center gap-8 font-semibold text-sm text-gray-400 z-10">
+            <a href="#services" className="hover:text-white transition-colors">Services</a>
+            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a href="#workflow" className="hover:text-white transition-colors">How it works</a>
+            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
           </nav>
-          <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button type="text" size="large" className="font-bold text-slate-600 hover:text-[#1677ff] hidden sm:block">Đăng nhập</Button>
-            </Link>
+          <div className="flex items-center gap-6 z-10">
+            <Link href="/login" className="hidden sm:block text-gray-400 font-bold hover:text-white transition-colors text-sm">Log in</Link>
             <Link href="/register">
-              <Button type="primary" size="large" className="font-bold shadow-md shadow-blue-500/30 rounded-full px-6 flex items-center gap-2">
-                Bắt đầu ngay <ArrowRightOutlined />
-              </Button>
+              <button className="bg-transparent border border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-bold py-2 px-6 rounded-full transition-all duration-300 text-sm shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_25px_rgba(34,197,94,0.6)]">
+                Get Started
+              </button>
             </Link>
           </div>
         </div>
       </header>
 
-      <main>
+      <main className="relative z-10 pt-32 pb-20 lg:pt-48 lg:pb-32">
         {/* HERO SECTION */}
-        <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white">
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-full blur-3xl opacity-60 -translate-y-1/3 translate-x-1/3" />
+        <section className="container mx-auto px-6 lg:px-12 text-center max-w-5xl">
+          <div className="inline-flex items-center gap-2 bg-[#1a202c] border border-gray-700/50 rounded-full px-4 py-1.5 mb-8 shadow-sm">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span className="text-xs font-semibold text-gray-300 uppercase tracking-widest">Processing orders right now — every 0.2s</span>
+          </div>
           
-          <div className="container mx-auto px-6 lg:px-12 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-            <div className="max-w-2xl">
-              <Tag color="blue" className="px-3 py-1 rounded-full text-sm font-bold border-blue-200 mb-6 flex items-center w-fit gap-2">
-                <ThunderboltFilled className="text-yellow-500" /> Hệ thống SMM Số 1 Việt Nam
-              </Tag>
-              <Title level={1} className="!text-5xl lg:!text-[64px] !font-black !leading-[1.1] !mb-6 text-slate-900 tracking-tight">
-                Phát triển mạng <br /> xã hội của bạn <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#1677ff] to-[#722ed1]">Siêu Tốc Độ</span>
-              </Title>
-              <Paragraph className="!text-lg !text-slate-500 !mb-8 !leading-relaxed font-medium">
-                Nền tảng tự động hóa các dịch vụ Marketing Mạng xã hội tốt nhất. Tăng trưởng lượng người theo dõi, tương tác và khách hàng tiềm năng cho doanh nghiệp của bạn chỉ với vài cú click.
-              </Paragraph>
-              <div className="flex flex-wrap items-center gap-4">
-                <Link href="/register">
-                  <Button type="primary" size="large" style={{ height: '54px', padding: '0 32px' }} className="rounded-full text-lg font-bold shadow-xl shadow-blue-500/30 flex items-center gap-2">
-                    Tạo tài khoản miễn phí <ArrowRightOutlined />
-                  </Button>
-                </Link>
-                <Link href="#workflow">
-                  <Button size="large" type="default" style={{ height: '54px', padding: '0 32px' }} className="rounded-full text-lg font-bold">
-                    Tìm hiểu thêm
-                  </Button>
-                </Link>
-              </div>
-              <div className="mt-10 flex items-center gap-6">
-                <div className="flex -space-x-4">
-                  {[1,2,3,4].map(i => (
-                    <img key={i} className="w-12 h-12 rounded-full border-2 border-white object-cover shadow-sm" src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
-                  ))}
-                  <div className="w-12 h-12 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 shadow-sm">50k+</div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex text-yellow-400 text-lg"><StarFilled /><StarFilled /><StarFilled /><StarFilled /><StarFilled /></div>
-                  <Text className="text-sm font-semibold text-slate-500">Được tin dùng bởi 50,000+ Đại lý</Text>
-                </div>
-              </div>
-            </div>
+          <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8 tracking-tight">
+            The #1 SMM panel for <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-300">serious growth.</span>
+          </h1>
+          
+          <p className="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Built for people who take social media seriously. Increase your engagement, build authority, and scale your brand with the world's most advanced automated platform.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+            <Link href="/register">
+              <button className="w-full sm:w-auto bg-green-500 text-black text-lg font-bold py-4 px-10 rounded-full shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:shadow-[0_0_30px_rgba(34,197,94,0.6)] transition-all hover:scale-105 flex items-center justify-center gap-2">
+                Get started for free <ArrowRightOutlined />
+              </button>
+            </Link>
+            <Link href="#services">
+              <button className="w-full sm:w-auto bg-[#1a202c] hover:bg-[#2d3748] border border-gray-700 text-white text-lg font-bold py-4 px-10 rounded-full transition-all">
+                Explore Services
+              </button>
+            </Link>
+          </div>
 
-            {/* HERO IMAGE/ABSTRACT */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-lg aspect-square">
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#1677ff] to-[#722ed1] rounded-[3rem] rotate-3 opacity-10 animate-pulse" />
-                <div className="absolute inset-0 bg-white rounded-[3rem] shadow-2xl -rotate-3 transition-transform hover:rotate-0 duration-500 border border-slate-100 overflow-hidden flex flex-col">
-                  <div className="h-12 bg-slate-50 border-b border-slate-100 flex items-center gap-2 px-6">
-                    <div className="w-3 h-3 rounded-full bg-red-400" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                    <div className="w-3 h-3 rounded-full bg-green-400" />
-                  </div>
-                  <div className="flex-1 p-8 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-50/50 flex flex-col gap-6">
-                    <Card size="small" className="w-3/4 rounded-2xl shadow-sm border-0 border-l-4 border-l-[#1677ff]">
-                      <Statistic title="Đơn hàng đã xử lý" value={1254302} prefix={<CheckCircleFilled className="text-[#1677ff]" />} />
-                    </Card>
-                    <Card size="small" className="w-3/4 self-end rounded-2xl shadow-sm border-0 border-l-4 border-l-[#52c41a]">
-                      <Statistic title="Tài khoản hoạt động" value={54200} prefix={<LineChartOutlined className="text-[#52c41a]" />} />
-                    </Card>
-                    <Card size="small" className="w-full rounded-2xl shadow-sm border-0 mt-auto bg-gradient-to-r from-[#1677ff] to-[#36cfc9]">
-                      <Statistic title={<span className="text-white/80">Số dư hiện tại</span>} value={1500000} suffix="VNĐ" valueStyle={{ color: '#fff', fontWeight: 'bold' }} />
-                    </Card>
-                  </div>
-                </div>
-              </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-semibold text-gray-400 mb-20">
+            <div className="flex items-center gap-2"><CheckCircleFilled className="text-green-500" /> No credit card required</div>
+            <div className="flex items-center gap-2"><CheckCircleFilled className="text-green-500" /> Instant activation</div>
+            <div className="flex items-center gap-2"><CheckCircleFilled className="text-green-500" /> Cancel anytime</div>
+          </div>
+
+          {/* STATS ROW */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+             <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 text-center hover:border-green-500/50 transition-colors">
+               <div className="text-3xl font-black text-white mb-1">50M+</div>
+               <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">Orders Delivered</div>
+             </div>
+             <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 text-center hover:border-green-500/50 transition-colors">
+               <div className="text-3xl font-black text-white mb-1">&lt; 30s</div>
+               <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">Avg Delivery Time</div>
+             </div>
+             <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 text-center hover:border-green-500/50 transition-colors">
+               <div className="text-3xl font-black text-white mb-1">99.9%</div>
+               <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">Uptime Server</div>
+             </div>
+             <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 text-center hover:border-green-500/50 transition-colors">
+               <div className="text-3xl font-black text-white mb-1">4.9/5</div>
+               <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">Customer Rating</div>
+             </div>
+          </div>
+        </section>
+
+        {/* LOGOS RUNNER */}
+        <section className="py-20 border-y border-gray-800/50 bg-[#0B0F19]/50 overflow-hidden relative">
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0B0F19] to-transparent z-10" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#0B0F19] to-transparent z-10" />
+          <div className="container mx-auto px-6">
+            <div className="flex justify-center items-center gap-12 md:gap-20 opacity-40 grayscale hover:grayscale-0 transition duration-500 flex-wrap">
+               <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" className="h-8 object-contain" alt="Instagram" />
+               <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" className="h-8 object-contain" alt="Tiktok" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Twitter_new_X_logo.png" className="h-6 object-contain filter invert" alt="X" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" className="h-8 object-contain" alt="Facebook" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" className="h-8 object-contain" alt="Telegram" />
+               <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" className="h-8 object-contain" alt="YouTube" />
             </div>
           </div>
         </section>
 
-        {/* LOGO BAR */}
-        <section className="py-10 bg-white border-y border-slate-100">
-          <div className="container mx-auto px-6 lg:px-12 flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-40 grayscale">
-             <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" className="h-8 object-contain" alt="Ig" />
-             <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" className="h-8 object-contain" alt="Tiktok" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/9/95/Twitter_new_X_logo.png" className="h-6 object-contain" alt="X" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" className="h-8 object-contain" alt="Fb" />
-             <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" className="h-8 object-contain" alt="Yt" />
-          </div>
-        </section>
-
-        {/* SERVICES / FEATURES */}
-        <section id="features" className="py-24 bg-slate-50">
+        {/* WHY CHOOSE US */}
+        <section id="features" className="py-32">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <Title level={2} className="!text-3xl lg:!text-4xl !font-bold text-slate-900 !mb-4">Dịch vụ chất lượng cao, đa nền tảng</Title>
-              <Paragraph className="!text-lg text-slate-500 font-medium">Hệ thống cung cấp đầy đủ các tiện ích để quản lý chiến dịch Social Media hiệu quả với chi phí tối ưu nhất.</Paragraph>
+            <div className="text-center mb-16">
+              <h4 className="text-green-500 font-bold uppercase tracking-widest text-sm mb-4">WHY CHOOSE US</h4>
+              <h2 className="text-4xl md:text-5xl font-black text-white">Built for anyone serious about <br/>social media growth</h2>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((item, idx) => (
-                <Card 
-                  key={idx} 
-                  hoverable 
-                  className="rounded-3xl border-slate-200 transition-all duration-300 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-1"
-                  bodyStyle={{ padding: '32px' }}
-                >
-                  <div 
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-sm"
-                    style={{ backgroundColor: `${item.color}15`, color: item.color }}
-                  >
+                <div key={idx} className="bg-[#111827] border border-gray-800 rounded-3xl p-8 hover:bg-[#1a2333] transition-colors group">
+                  <div className="w-14 h-14 rounded-full bg-gray-900 border border-gray-700 flex items-center justify-center text-xl text-green-400 mb-6 group-hover:scale-110 group-hover:border-green-500 transition-all">
                     {item.icon}
                   </div>
-                  <Title level={4} className="!font-bold !mb-3 text-slate-800">{item.title}</Title>
-                  <Paragraph className="!text-slate-500 font-medium !mb-0">{item.desc}</Paragraph>
-                </Card>
+                  <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                  <p className="text-gray-400 font-medium leading-relaxed">{item.desc}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
         {/* HOW IT WORKS */}
-        <section id="workflow" className="py-24 bg-white">
+        <section id="workflow" className="py-32 bg-[#0d1321] border-y border-gray-800">
           <div className="container mx-auto px-6 lg:px-12">
-            <div className="grid lg:grid-cols-2 gap-16 items-center">
-              <div>
-                <Tag color="cyan" className="px-3 py-1 rounded-full text-sm font-bold border-cyan-200 mb-6">Quy trình vận hành</Tag>
-                <Title level={2} className="!text-3xl lg:!text-4xl !font-bold text-slate-900 !mb-6">Bắt đầu dễ dàng chỉ với 3 bước</Title>
-                <Paragraph className="!text-lg text-slate-500 font-medium !mb-10">
-                  Giao diện thân thiện và dễ sử dụng. Bạn không cần bất kỳ kiến thức kỹ thuật nào để bắt đầu chạy chiến dịch.
-                </Paragraph>
-                
-                <Steps
-                  direction="vertical"
-                  current={0}
-                  className="custom-steps"
-                  items={[
-                    {
-                      title: <span className="text-xl font-bold text-slate-800">1. Tạo tài khoản & Nạp tiền</span>,
-                      description: <span className="text-slate-500 font-medium text-base">Đăng ký hoàn toàn miễn phí, nạp tiền tự động 24/7 qua hệ thống Ngân hàng, Momo tiện lợi.</span>,
-                    },
-                    {
-                      title: <span className="text-xl font-bold text-slate-800">2. Mua dịch vụ SMM</span>,
-                      description: <span className="text-slate-500 font-medium text-base">Lựa chọn dịch vụ phù hợp, dán đường dẫn (Link) và nhập số lượng cần tăng.</span>,
-                    },
-                    {
-                      title: <span className="text-xl font-bold text-slate-800">3. Theo dõi & Tận hưởng</span>,
-                      description: <span className="text-slate-500 font-medium text-base">Hệ thống của chúng tôi tự động xử lý đơn hàng của bạn. Bạn chỉ cần xem kết quả gửi về!</span>,
-                    },
-                  ]}
-                />
+            <div className="text-center mb-20 max-w-3xl mx-auto">
+              <h4 className="text-green-500 font-bold uppercase tracking-widest text-sm mb-4">HOW IT WORKS</h4>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6">4 steps. Under 3 minutes. Seriously.</h2>
+              <p className="text-xl text-gray-400">Our platform is designed to be as frictionless as possible.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {steps.map((step, idx) => (
+                <div key={idx} className="relative p-6 group">
+                  <div className="absolute top-0 right-4 text-7xl font-black text-gray-800/40 select-none group-hover:text-green-500/10 transition-colors">{step.num}</div>
+                  <h3 className="relative text-xl font-bold text-white mb-4 mt-8 z-10">{step.title}</h3>
+                  <p className="relative text-gray-400 z-10">{step.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* TWO COLS: WHAT IS / WHY USE */}
+        <section className="py-32">
+          <div className="container mx-auto px-6 lg:px-12">
+            <div className="grid lg:grid-cols-2 gap-12">
+              <div className="bg-[#111827] border border-gray-800 rounded-3xl p-10 md:p-14">
+                <h3 className="text-3xl font-black text-white mb-6">What is an SMM Panel?</h3>
+                <p className="text-gray-400 text-lg leading-relaxed mb-6">
+                  An SMM (Social Media Marketing) panel is an online store that sells comprehensive social media marketing services at highly competitive wholesale prices.
+                </p>
+                <p className="text-gray-400 text-lg leading-relaxed">
+                  People use SMM panels to quickly boost engagement, grow followings, and build social proof—a critical element in today's digital landscape.
+                </p>
               </div>
-              <div className="relative">
-                 <div className="absolute inset-0 bg-blue-100 rounded-full blur-3xl opacity-50 translate-x-10 translate-y-10" />
-                 <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" className="relative z-10 rounded-[2rem] shadow-2xl object-cover aspect-[4/3] border-8 border-white" alt="Workflow" />
-                 
-                 {/* Floating Badges */}
-                 <Card size="small" className="absolute -bottom-6 left-6 z-20 rounded-2xl shadow-xl border-0 bg-white/90 backdrop-blur-md">
-                    <Statistic title="Đánh giá tích cực" value={99.8} suffix="%" valueStyle={{ color: '#52c41a', fontWeight: 'bold' }} />
-                 </Card>
+              <div className="bg-[#111827] border border-gray-800 rounded-3xl p-10 md:p-14">
+                <h3 className="text-3xl font-black text-white mb-6">Why do people use us?</h3>
+                <ul className="space-y-4">
+                  {[
+                    'Extremely cheap pricing for high quantity',
+                    'Fully automated API for instant delivery',
+                    'Multiple secure payment gateways available',
+                    'Drip-feed functionality for organic looking growth'
+                  ].map((text, i) => (
+                    <li key={i} className="flex items-start gap-4">
+                      <div className="mt-1 min-w-[24px] h-6 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center text-xs border border-green-500/30">
+                        <CheckCircleFilled />
+                      </div>
+                      <span className="text-gray-300 text-lg">{text}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-24 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-[100px] opacity-20" />
-          
-          <div className="container mx-auto px-6 relative z-10 text-center max-w-4xl">
-            <Title level={1} className="!text-4xl md:!text-5xl !font-black !text-white !mb-6">Sẵn sàng để đưa thương hiệu của bạn vươn xa?</Title>
-            <Paragraph className="!text-xl text-slate-300 font-medium !mb-10">Tham gia cùng hàng ngàn khách hàng đã và đang thành công rực rỡ với các công cụ SMM Tự động của chúng tôi.</Paragraph>
-            
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/register">
-                <Button type="primary" size="large" style={{ height: '60px', padding: '0 40px' }} className="rounded-full text-lg font-bold shadow-xl shadow-blue-600/30">
-                  Tạo tài khoản & Trải nghiệm
-                </Button>
-              </Link>
+        {/* CTA CARD */}
+        <section className="py-20">
+          <div className="container mx-auto px-6 lg:px-12 text-center">
+            <div className="bg-gradient-to-br from-[#131d2e] to-[#0a0f18] border border-gray-700 rounded-[3rem] p-12 md:p-24 relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-green-500 rounded-full blur-[150px] opacity-20 pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500 rounded-full blur-[150px] opacity-10 pointer-events-none" />
+              
+              <div className="relative z-10 max-w-3xl mx-auto">
+                <h2 className="text-4xl md:text-6xl font-black text-white mb-6">Ready to dominate?</h2>
+                <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">Create your account now and get access to thousands of premium social media services.</p>
+                <Link href="/register">
+                  <button className="bg-green-500 hover:bg-green-400 text-black text-xl font-bold py-5 px-12 rounded-full shadow-[0_0_30px_rgba(34,197,94,0.3)] transition-all hover:scale-105">
+                    Create free account
+                  </button>
+                </Link>
+                <div className="mt-8 flex items-center justify-center gap-4 text-gray-500 text-sm font-semibold opacity-60">
+                  <HeartFilled /> 100% Satisfaction Guarantee
+                </div>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
       {/* FOOTER */}
-      <footer className="bg-white border-t border-slate-100 py-12">
-        <div className="container mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 text-xl font-black text-slate-900">
-            {logoUrl ? (
-              <img src={logoUrl} alt={config.title || 'Logo'} className="h-8 object-contain" />
-            ) : (
-              <>
-                <DashboardOutlined className="text-[#1677ff]" /> {config.title || 'PRO SMM PANEL'}
-              </>
-            )}
+      <footer className="bg-[#070A11] border-t border-gray-900 pt-16 pb-12 relative z-10">
+        <div className="container mx-auto px-6 lg:px-12">
+          <div className="grid md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2 mb-6">
+                {logoUrl ? (
+                  <img src={logoUrl} alt={config.title || 'Logo'} className="h-8 w-auto object-contain brightness-0 invert" />
+                ) : (
+                  <div className="text-2xl font-black text-white">
+                    <DashboardOutlined className="text-green-500 mr-2" /> {config.title || 'PRO SMM'}
+                  </div>
+                )}
+              </div>
+              <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+                The ultimate SMM Panel providing high speed, premium quality social media marketing services at wholesale prices.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Platform</h4>
+              <ul className="space-y-4 text-gray-500 text-sm">
+                <li><Link href="/services" className="hover:text-green-400 transition-colors">Services</Link></li>
+                <li><Link href="/api" className="hover:text-green-400 transition-colors">API Documentation</Link></li>
+                <li><Link href="/register" className="hover:text-green-400 transition-colors">Sign Up</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-xs">Support</h4>
+              <ul className="space-y-4 text-gray-500 text-sm">
+                <li><a href="#" className="hover:text-green-400 transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-green-400 transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-green-400 transition-colors">Privacy Policy</a></li>
+              </ul>
+            </div>
           </div>
-          <Text className="text-slate-500 font-medium text-center">
-            © {new Date().getFullYear()} {config.title || 'SMM Panel'}. Kéo tương tác đỉnh cao. All rights reserved.
-          </Text>
+          
+          <div className="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-sm">
+            <div>© {new Date().getFullYear()} {config.title || 'SMM Platform'}. All rights reserved.</div>
+            <div className="flex gap-6">
+               <a href="#" className="hover:text-white transition-colors">Terms</a>
+               <a href="#" className="hover:text-white transition-colors">Privacy</a>
+            </div>
+          </div>
         </div>
       </footer>
-      
-      {/* OVERRIDE ANTD STYLES FOR LANDING */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .custom-steps .ant-steps-item-title {
-          font-family: inherit !important;
-        }
-        .custom-steps .ant-steps-item-description {
-          padding-bottom: 24px !important;
-        }
-      `}} />
     </div>
   );
 }
