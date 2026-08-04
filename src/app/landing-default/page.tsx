@@ -129,11 +129,11 @@ export default function LandingDefaultPage() {
             <span className="text-[#3EDB7F]">serious growth</span>
           </h1>
           
-          <p className="text-lg md:text-[17px] text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-[17px] text-slate-500 mb-16 max-w-2xl mx-auto leading-relaxed">
             {config.title || 'Slike.vn'} là SMM Panel Việt Nam uy tín, cung cấp dịch vụ tăng like, follow, view, comment, share cho Facebook, TikTok, Instagram, YouTube và nhiều nền tảng mạng xã hội khác. Hệ thống xử lý nhanh, giá rẻ, dễ sử dụng, hỗ trợ 24/7.
           </p>
           
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 mt-4">
             <Link href="/register">
               <button className="w-full sm:w-auto bg-[#e6f4ea] text-[#137333] text-[15px] font-bold py-3.5 px-8 rounded transition-all hover:bg-[#d4edd9] flex items-center justify-center gap-2">
                 Get started for free <ArrowRightOutlined className="text-xs" />
