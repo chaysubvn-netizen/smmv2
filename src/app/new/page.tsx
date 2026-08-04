@@ -458,7 +458,7 @@ export default function DashboardPage() {
       };
       return <span className={`${className} grid place-items-center rounded-lg bg-blue-600 text-sm text-white`}>{preset[icon.slice(7)] || <AppstoreOutlined />}</span>;
     }
-    return <img src={getImageUrl(icon)} alt={alt} className={className} onError={event => { event.currentTarget.style.display = 'none'; }} />;
+    return <img src={getImageUrl(icon)} alt={alt || "icon"} width="32" height="32" loading="lazy" className={className} onError={event => { event.currentTarget.style.display = 'none'; }} />;
   };
 
   const quickSearchKeyword = quickSearch.trim().toLowerCase();
