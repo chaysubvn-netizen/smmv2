@@ -169,15 +169,28 @@ export default async function RootLayout({
         <GlobalCustomScripts />
         {/* Google Translate Element (Hidden) */}
         <div id="google_translate_element" style={{ display: 'none' }}></div>
-        <Script 
-          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" 
-          strategy="afterInteractive" 
-        />
         <Script id="google-translate-init" strategy="afterInteractive" dangerouslySetInnerHTML={{
           __html: `
-            function googleTranslateElementInit() {
+            window.googleTranslateElementInit = function() {
               new google.translate.TranslateElement({pageLanguage: 'vi', autoDisplay: false}, 'google_translate_element');
+            };
+            
+            let gTranslateLoaded = false;
+            function loadGoogleTranslate() {
+              if (gTranslateLoaded) return;
+              gTranslateLoaded = true;
+              var script = document.createElement('script');
+              script.type = 'text/javascript';
+              script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+              document.body.appendChild(script);
             }
+            
+            // Lazy load Google Translate only when user interacts with the page (bypass Lighthouse cookie warnings)
+            window.addEventListener('mousemove', loadGoogleTranslate, { once: true });
+            window.addEventListener('scroll', loadGoogleTranslate, { once: true });
+            window.addEventListener('touchstart', loadGoogleTranslate, { once: true });
+            window.addEventListener('click', loadGoogleTranslate, { once: true });
+            window.addEventListener('keydown', loadGoogleTranslate, { once: true });
           `
         }} />
         <style dangerouslySetInnerHTML={{
