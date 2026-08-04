@@ -139,7 +139,7 @@ export default async function RootLayout({
           } catch (_) {}
         ` }} />
         <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"></link>
-        <link rel="stylesheet" href="https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css" />
+        {/* <link rel="stylesheet" href="https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css" />
         
@@ -151,7 +151,7 @@ export default async function RootLayout({
         <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/material.css" />
         <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style.css" id="main-style-link" />
         <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style-preset.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/custom.css" />
+        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/custom.css" /> */}
         
         <style>{`
           :root {
@@ -196,7 +196,7 @@ export default async function RootLayout({
         <AntdAppProvider>{children}</AntdAppProvider>
 
         {/* Global Scripts */}
-        <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" strategy="beforeInteractive" />
+        {/* <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" strategy="beforeInteractive" />
         <Script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" strategy="lazyOnload" />
         <Script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" strategy="lazyOnload" />
         <Script src="/cmsbvq/template/frontend/js/plugins/popper.min.js" strategy="lazyOnload" />
@@ -204,7 +204,7 @@ export default async function RootLayout({
         <Script src="/cmsbvq/template/frontend/js/plugins/bootstrap.min.js" strategy="lazyOnload" />
         <Script src="/cmsbvq/template/frontend/js/icon/custom-font.js" strategy="lazyOnload" />
         <Script src="/cmsbvq/template/frontend/js/script.js" strategy="lazyOnload" />
-        <Script src="/cmsbvq/template/frontend/js/plugins/feather.min.js" strategy="lazyOnload" />
+        <Script src="/cmsbvq/template/frontend/js/plugins/feather.min.js" strategy="lazyOnload" /> */}
       </body>
     </html>
   );
