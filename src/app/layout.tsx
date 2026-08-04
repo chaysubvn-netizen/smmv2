@@ -138,6 +138,9 @@ export default async function RootLayout({
             root.setAttribute('data-pc-sidebar-theme', 'dark');
           } catch (_) {}
         ` }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" precedence="default" />
         <script dangerouslySetInnerHTML={{
           __html: `
             function injectCSS(href) {
@@ -146,7 +149,6 @@ export default async function RootLayout({
               el.href = href;
               document.head.appendChild(el);
             }
-            injectCSS('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
             injectCSS('https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css');
             injectCSS('https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css');
             injectCSS('https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css');
@@ -158,7 +160,6 @@ export default async function RootLayout({
           `
         }} />
         <noscript>
-          <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
           <link rel="stylesheet" href="https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css" />
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css" />
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css" />
@@ -234,7 +235,7 @@ export default async function RootLayout({
         <AntdAppProvider>{children}</AntdAppProvider>
 
         {/* Global Scripts */}
-        <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" strategy="beforeInteractive" />
+        <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" strategy="lazyOnload" />
         <Script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" strategy="lazyOnload" />
         <Script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js" strategy="lazyOnload" />
         <Script src="/cmsbvq/template/frontend/js/plugins/popper.min.js" strategy="lazyOnload" />
