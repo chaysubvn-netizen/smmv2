@@ -658,7 +658,7 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-gray-400 mt-1">Nhập tên hoặc ID dịch vụ để tìm kiếm nhanh và tự động chọn</div>
+                    <div className="text-xs text-gray-600 mt-1">Nhập tên hoặc ID dịch vụ để tìm kiếm nhanh và tự động chọn</div>
                   </Form.Item>
 
                   <Row gutter={16}>
@@ -668,7 +668,7 @@ export default function DashboardPage() {
                         name="platform_id"
                         rules={[{ required: true, message: 'Vui lòng chọn nền tảng' }]}
                       >
-                        <Select virtual={false} placeholder="Chọn nền tảng" onChange={handlePlatformChange} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
+                        <Select virtual={false} aria-label="Nền tảng" placeholder="Chọn nền tảng" onChange={handlePlatformChange} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
                           {platforms.map(plat => (
                             <Option
                               key={plat.id}
@@ -697,7 +697,7 @@ export default function DashboardPage() {
                         name="category_id"
                         rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
                       >
-                        <Select virtual={false} placeholder="Chọn phân loại" onChange={handleCategoryChange} disabled={!selectedPlatform} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
+                        <Select virtual={false} aria-label="Phân loại" placeholder="Chọn phân loại" onChange={handleCategoryChange} disabled={!selectedPlatform} showSearch={!isMobileSelect} optionFilterProp="title" optionLabelProp="label">
                           {categories.filter(cat => hasSameId(cat.platform_id, selectedPlatform?.id)).map(cat => (
                             <Option
                               key={cat.id}
@@ -734,6 +734,7 @@ export default function DashboardPage() {
                         <Input />
                       </Form.Item>
                       <Select
+                        aria-label="Dịch vụ"
                         size="large"
                         showSearch={!isMobileSelect}
                         value={selectedService?.id}
@@ -800,7 +801,7 @@ export default function DashboardPage() {
                           <CheckCircleOutlined />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-500">TRẠNG THÁI</div>
+                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-700">TRẠNG THÁI</div>
                           <div className="truncate text-xs font-bold text-emerald-600">Hoạt động</div>
                         </div>
                       </div>
@@ -811,7 +812,7 @@ export default function DashboardPage() {
                           <ClockCircleOutlined />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-500">THỜI GIAN TB</div>
+                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-700">THỜI GIAN TB</div>
                           <div className="truncate text-xs font-bold text-blue-600">{formatAverageTime(selectedService?.average_time)}</div>
                         </div>
                       </div>
@@ -822,7 +823,7 @@ export default function DashboardPage() {
                           <CloseCircleOutlined />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-500">HỦY ĐƠN</div>
+                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-700">HỦY ĐƠN</div>
                           <div className="truncate text-xs font-bold text-red-500">Không</div>
                         </div>
                       </div>
@@ -833,7 +834,7 @@ export default function DashboardPage() {
                           <CloseCircleOutlined />
                         </div>
                         <div className="min-w-0">
-                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-500">BẢO HÀNH</div>
+                          <div className="text-[8px] font-semibold uppercase tracking-wide text-gray-700">BẢO HÀNH</div>
                           <div className="truncate text-xs font-bold text-red-500">Không</div>
                         </div>
                       </div>
@@ -881,6 +882,7 @@ export default function DashboardPage() {
                     <span className="text-sm text-gray-500 flex items-center gap-2">
                       Mua nhiều link
                       <Switch
+                        aria-label="Mua nhiều link"
                         size="small"
                         checked={multiLink}
                         onChange={(val) => {
@@ -950,7 +952,7 @@ export default function DashboardPage() {
                   >
                     <Input type="number" placeholder="Nhập số lượng" onChange={handleQuantityChange} disabled={!selectedService || isCustomCommentsService(selectedService)} />
                   </Form.Item>
-                  <div className="text-xs text-gray-500 mb-4">
+                  <div className="text-xs text-gray-700 mb-4">
                    Tối Thiểu: <strong>{formatQuantity(selectedService?.min)}  · Tối đa:  {formatQuantity(selectedService?.max)}</strong>
                   </div>
 
@@ -959,7 +961,7 @@ export default function DashboardPage() {
                     <span className="text-sm font-semibold text-gray-700 flex items-center">
                       <ClockCircleOutlined className="mr-2" /> Đặt lịch chạy
                     </span>
-                    <Switch checked={scheduleEnabled} onChange={setScheduleEnabled} />
+                    <Switch aria-label="Đặt lịch chạy" checked={scheduleEnabled} onChange={setScheduleEnabled} />
                   </div>
                   {scheduleEnabled && (
                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-4">
@@ -969,7 +971,7 @@ export default function DashboardPage() {
                         className="w-full mb-1"
                         disabledDate={(current) => current && current < dayjs().startOf('day')}
                       />
-                      <div className="text-xs text-gray-400 mt-1">Múi giờ: Asia/Ho_Chi_Minh</div>
+                      <div className="text-xs text-gray-600 mt-1">Múi giờ: Asia/Ho_Chi_Minh</div>
                     </div>
                   )}
 
@@ -978,7 +980,7 @@ export default function DashboardPage() {
                     <span className="text-sm font-semibold text-gray-700 flex items-center">
                       <CopyOutlined className="mr-2" /> Lặp lại đơn hàng
                     </span>
-                    <Switch checked={repeatEnabled} onChange={setRepeatEnabled} />
+                    <Switch aria-label="Lặp lại đơn hàng" checked={repeatEnabled} onChange={setRepeatEnabled} />
                   </div>
                   {repeatEnabled && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
@@ -1005,7 +1007,7 @@ export default function DashboardPage() {
                             {((parseInt(quantityValue || '0') || 0) * repeatTimes).toLocaleString()}
                           </span>
                         </div>
-                        <div className="text-xs text-gray-500 mt-2">
+                        <div className="text-xs text-gray-700 mt-2">
                           * Hệ thống sẽ chạy {repeatTimes} lần, mỗi lần {quantityValue || 0} đơn vị, cách nhau {repeatInterval} phút.
                         </div>
                       </div>
@@ -1102,13 +1104,13 @@ export default function DashboardPage() {
                 {selectedService ? (
                   <div className="overflow-hidden rounded-xl border border-gray-100 bg-gray-50/60 text-sm">
                     <div className="flex items-start justify-between border-b border-gray-100 px-3 py-2.5">
-                      <span className="w-1/3 font-semibold text-gray-500">ID dịch vụ</span>
+                      <span className="w-1/3 font-semibold text-gray-700">ID dịch vụ</span>
                       <span className="w-2/3 text-right font-bold text-blue-500">#{selectedService.id}</span>
                     </div>
 
                     {Array.isArray(selectedService.attributes) && selectedService.attributes.length > 0 ? (
                       <div className="flex items-start justify-between border-b border-gray-100 bg-white px-3 py-2.5">
-                        <span className="w-1/3 font-semibold text-gray-500">Thuộc tính</span>
+                        <span className="w-1/3 font-semibold text-gray-700">Thuộc tính</span>
                         <div className="flex w-2/3 flex-wrap justify-end gap-1">
                           {selectedService.attributes.map((attribute: string, index: number) => {
                             const badge = getServiceAttribute(attribute);
@@ -1119,28 +1121,28 @@ export default function DashboardPage() {
                     ) : null}
 
                     <div className="flex items-start justify-between border-b border-gray-100 bg-white px-3 py-2.5">
-                      <span className="w-1/3 font-semibold text-gray-500">Tên dịch vụ</span>
+                      <span className="w-1/3 font-semibold text-gray-700">Tên dịch vụ</span>
                       <span className="w-2/3 text-right font-semibold text-gray-800">{selectedService.name}</span>
                     </div>
 
                     <div className="flex items-start justify-between border-b border-gray-100 px-3 py-2.5">
-                      <span className="w-1/3 font-semibold text-gray-500">Loại dịch vụ</span>
+                      <span className="w-1/3 font-semibold text-gray-700">Loại dịch vụ</span>
                       <div className="w-2/3 text-right">
                         <Tag color="blue" className="m-0 rounded-full">{selectedService.type || 'Mặc định'}</Tag>
                       </div>
                     </div>
 
                     <div className="flex items-start justify-between border-b border-gray-100 bg-white px-3 py-2.5">
-                      <span className="w-1/3 font-semibold text-gray-500">Giới hạn</span>
+                      <span className="w-1/3 font-semibold text-gray-700">Giới hạn</span>
                       <span className="w-2/3 text-right font-semibold text-gray-800">{formatQuantity(selectedService.min)} - {formatQuantity(selectedService.max)}</span>
                     </div>
 
                     <div className="flex items-center justify-between px-3 py-3">
-                      <span className="w-1/3 font-semibold text-gray-500">
+                      <span className="w-1/3 font-semibold text-gray-700">
                         {String(selectedService.type || '').toLowerCase() === 'package' ? 'Giá gói' : 'Giá mỗi 1000'}
                       </span>
                       <div className="flex w-2/3 items-center justify-end text-right">
-                        <span className="mr-2 text-xs text-gray-400 line-through">{formatCurrency(selectedService.rate * 1.1)}</span>
+                        <span className="mr-2 text-xs text-gray-500 line-through">{formatCurrency(selectedService.rate * 1.1)}</span>
                         <span className="font-bold text-red-500">{formatCurrency(selectedService.rate)}</span>
                       </div>
                     </div>
@@ -1162,7 +1164,7 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <div className="text-sm font-bold uppercase text-gray-900">Lưu ý mua hàng</div>
-                      <div className="text-[11px] font-normal text-gray-400">Đọc kỹ trước khi tạo đơn</div>
+                      <div className="text-[11px] font-normal text-gray-600">Đọc kỹ trước khi tạo đơn</div>
                     </div>
                   </div>
                 }
@@ -1235,7 +1237,7 @@ export default function DashboardPage() {
                     <p>Truy cập mục Liên hệ hỗ trợ để nhận trợ giúp từ đội ngũ admin.</p>
                   </section>
 
-                  <p className="pt-1 text-center text-[11px] font-semibold text-gray-500">
+                  <p className="pt-1 text-center text-[11px] font-semibold text-gray-700">
                     Tuân thủ đúng quy định giúp hệ thống hoạt động ổn định, an toàn và hiệu quả.
                   </p>
                 </div>
