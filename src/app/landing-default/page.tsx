@@ -31,8 +31,26 @@ export default function LandingDefaultPage() {
   const [config, setConfig] = useState<any>({ title: 'SMM Panel' });
 
   useEffect(() => {
-    api.get('/client/config').then(({ data }) => data?.status && setConfig(data.data)).catch(() => undefined);
+    api.get('/client/config').then(({ data }) => {
+      if (data?.status) {
+        setConfig(data.data);
+        
+        // Dynamically update SEO
+        document.title = data.data.title || 'SMM Panel';
+        let metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM tự động, kéo tương tác mạnh mẽ cho mạng xã hội.');
+        } else {
+          metaDescription = document.createElement('meta');
+          metaDescription.setAttribute('name', 'description');
+          metaDescription.setAttribute('content', data.data.description || 'Hệ thống SMM tự động, kéo tương tác mạnh mẽ cho mạng xã hội.');
+          document.head.appendChild(metaDescription);
+        }
+      }
+    }).catch(() => undefined);
   }, []);
+
+  const logoUrl = config.logo?.startsWith('http') ? config.logo : config.logo ? `${(process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api').replace(/\/api\/?$/, '')}${config.logo.startsWith('/') ? '' : '/'}${config.logo}` : null;
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans text-slate-800 overflow-x-hidden selection:bg-[#1677ff] selection:text-white">
@@ -41,10 +59,16 @@ export default function LandingDefaultPage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100 shadow-sm transition-all h-20 flex items-center">
         <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 text-2xl font-black text-slate-900 tracking-tight">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1677ff] to-[#36cfc9] flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <DashboardOutlined />
-            </div>
-            {config.title || 'PRO SMM'}
+            {logoUrl ? (
+              <img src={logoUrl} alt={config.title || 'Logo'} className="h-10 object-contain" />
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1677ff] to-[#36cfc9] flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                  <DashboardOutlined />
+                </div>
+                {config.title || 'PRO SMM'}
+              </>
+            )}
           </Link>
           <nav className="hidden md:flex items-center gap-8 font-semibold text-slate-600">
             <a href="#features" className="hover:text-[#1677ff] transition-colors">Tính năng</a>
@@ -239,16 +263,22 @@ export default function LandingDefaultPage() {
       </main>
 
       {/* FOOTER */}
-      <Footer className="bg-white border-t border-slate-100 py-12">
+      <footer className="bg-white border-t border-slate-100 py-12">
         <div className="container mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2 text-xl font-black text-slate-900">
-            <DashboardOutlined className="text-[#1677ff]" /> {config.title || 'PRO SMM PANEL'}
+            {logoUrl ? (
+              <img src={logoUrl} alt={config.title || 'Logo'} className="h-8 object-contain" />
+            ) : (
+              <>
+                <DashboardOutlined className="text-[#1677ff]" /> {config.title || 'PRO SMM PANEL'}
+              </>
+            )}
           </div>
           <Text className="text-slate-500 font-medium text-center">
             © {new Date().getFullYear()} {config.title || 'SMM Panel'}. Kéo tương tác đỉnh cao. All rights reserved.
           </Text>
         </div>
-      </Footer>
+      </footer>
       
       {/* OVERRIDE ANTD STYLES FOR LANDING */}
       <style dangerouslySetInnerHTML={{ __html: `
