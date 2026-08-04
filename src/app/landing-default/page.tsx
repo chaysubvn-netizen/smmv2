@@ -79,7 +79,7 @@ export default function LandingDefaultPage() {
       {/* HEADER */}
       <header className="fixed top-0 w-full z-50 bg-[#FAFAFA]/90 backdrop-blur-xl border-b border-slate-200 transition-all h-[72px] flex items-center">
         <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 relative z-10 w-[200px]">
+          <Link href="/" className="flex items-center gap-3 relative z-10 w-fit shrink-0">
             {logoUrl ? (
               <img src={logoUrl} alt={config.title || 'Logo'} className="h-8 w-auto object-contain" />
             ) : (
@@ -97,10 +97,15 @@ export default function LandingDefaultPage() {
             <a href="#workflow" className="hover:text-slate-900 transition-colors">How It Works</a>
             <a href="#faq" className="hover:text-slate-900 transition-colors">FAQ</a>
           </nav>
-          <div className="flex items-center justify-end gap-6 z-10 w-[200px]">
-            <Link href="/login" className="hidden sm:block text-blue-500 font-bold hover:text-blue-600 transition-colors text-[14px]">Log in</Link>
-            <Link href="/register">
-              <button className="bg-[#e6f4ea] text-[#137333] hover:bg-[#d4edd9] font-bold py-2.5 px-5 rounded transition-all duration-300 text-[14px]">
+          <div className="flex items-center justify-end gap-6 z-10 w-fit shrink-0">
+            <Link 
+              href="/login" 
+              className="hidden sm:block text-slate-800 font-semibold hover:text-[#34D399] transition-colors text-[15px] whitespace-nowrap"
+            >
+              Log in
+            </Link>
+            <Link href="/register" className="whitespace-nowrap">
+              <button className="bg-[#ecfdf3] border border-[#d1f4e0] text-[#34D399] hover:bg-[#e0fcea] font-bold py-2.5 px-6 rounded-full transition-all duration-300 text-[15px]">
                 Get Started
               </button>
             </Link>
