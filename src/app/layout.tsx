@@ -159,7 +159,30 @@ export default async function RootLayout({
         data-pc-sidebar-theme="dark"
       >
         <GlobalCustomScripts />
-
+        {/* Google Translate Element (Hidden) */}
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
+        <Script 
+          src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" 
+          strategy="afterInteractive" 
+        />
+        <Script id="google-translate-init" strategy="afterInteractive" dangerouslySetInnerHTML={{
+          __html: `
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'vi', autoDisplay: false}, 'google_translate_element');
+            }
+          `
+        }} />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+            .VIpgJd-ZVi9od-aZ2wEe-wOHMyf { display: none !important; }
+            .skiptranslate > iframe.skiptranslate { display: none !important; }
+            body { top: 0 !important; }
+            #goog-gt-tt { display: none !important; }
+            .goog-te-balloon-frame { display: none !important; }
+            .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+          `
+        }} />
 
         <AntdAppProvider>{children}</AntdAppProvider>
 
