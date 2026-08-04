@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import Landing2Page from './landing2/page';
+import Landing1Page from './landing1/page';
 import styles from './landing.module.css';
 
 type ModalType = 'login' | 'register' | null;
@@ -75,6 +76,7 @@ export default function LandingPage() {
 
   if (!configReady || config.landing_page === 'none') return null;
   if (config.landing_page === 'landing2') return <Landing2Page />;
+  if (config.landing_page === 'landing1') return <Landing1Page />;
   if (config.landing_page && config.landing_page !== 'default' && config.landing_page !== 'none') return <DistinctLanding theme={config.landing_page} title={config.title || 'SMM Panel'} logo={logoUrl} loggedIn={loggedIn} onStart={() => { if (loggedIn) router.push('/new'); else setModal('register'); }} />;
   return <div className={`${styles.page} ${config.landing_page && config.landing_page !== 'default' && config.landing_page !== 'none' ? styles[`landing_${config.landing_page}`] || '' : ''}`}>
     <header className={styles.header}>
