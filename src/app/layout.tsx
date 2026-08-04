@@ -138,19 +138,45 @@ export default async function RootLayout({
             root.setAttribute('data-pc-sidebar-theme', 'dark');
           } catch (_) {}
         ` }} />
-        <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/inter/inter.css" id="main-font-link" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/phosphor/duotone/style.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/tabler-icons.min.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/feather.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/fontawesome.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/material.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style.css" id="main-style-link" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style-preset.css" />
-        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/custom.css" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            function injectCSS(href) {
+              var el = document.createElement('link');
+              el.rel = 'stylesheet';
+              el.href = href;
+              document.head.appendChild(el);
+            }
+            injectCSS('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap');
+            injectCSS('https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css');
+            injectCSS('https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css');
+            injectCSS('https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css');
+            injectCSS('/cmsbvq/template/frontend/fonts/phosphor/duotone/style.css');
+            injectCSS('/cmsbvq/template/frontend/fonts/tabler-icons.min.css');
+            injectCSS('/cmsbvq/template/frontend/fonts/feather.css');
+            injectCSS('/cmsbvq/template/frontend/fonts/fontawesome.css');
+            injectCSS('/cmsbvq/template/frontend/fonts/material.css');
+          `
+        }} />
+        <noscript>
+          <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+          <link rel="stylesheet" href="https://cdn.hassbase.com/plugins/font-awesome/5.15.4/css/all.min.css" />
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.12/sweetalert2.min.css" />
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify@1.0.4/dist/simple-notify.css" />
+          <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/phosphor/duotone/style.css" />
+          <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/tabler-icons.min.css" />
+          <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/feather.css" />
+          <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/fontawesome.css" />
+          <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/material.css" />
+        </noscript>
+
+        <link rel="preload" href="/cmsbvq/template/frontend/fonts/inter/inter.css" as="style" />
+        <link rel="preload" href="/cmsbvq/template/frontend/css/style.css" as="style" />
+        <link rel="preload" href="/cmsbvq/template/frontend/css/style-preset.css" as="style" />
+
+        <link rel="stylesheet" href="/cmsbvq/template/frontend/fonts/inter/inter.css" id="main-font-link" precedence="default" />
+        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style.css" id="main-style-link" precedence="default" />
+        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/style-preset.css" precedence="default" />
+        <link rel="stylesheet" href="/cmsbvq/template/frontend/css/custom.css" precedence="default" />
         
         <style>{`
           :root {
