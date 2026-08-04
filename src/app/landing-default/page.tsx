@@ -382,7 +382,7 @@ export default function LandingDefaultPage() {
               <h4 className="text-slate-900 font-bold mb-6 text-sm">Platform</h4>
               <ul className="space-y-4 text-slate-500 text-sm">
                 <li><Link href="/services" className="hover:text-[#3EDB7F] transition-colors">Services</Link></li>
-                <li><Link href="/api" className="hover:text-[#3EDB7F] transition-colors">API Documentation</Link></li>
+                <li><Link href="/apidoc" className="hover:text-[#3EDB7F] transition-colors">API Documentation</Link></li>
                 <li><Link href="/register" className="hover:text-[#3EDB7F] transition-colors">Sign Up</Link></li>
               </ul>
             </div>
