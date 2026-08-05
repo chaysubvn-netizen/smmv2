@@ -40,6 +40,7 @@ export default function LandingPage() {
   }, []);
 
   const finishAuth = (data: AuthPayload) => {
+    if ((data as any).token) localStorage.setItem('token', (data as any).token);
     message.success(data.message || 'Đăng nhập thành công!');
     router.push(data.user.role === 'admin' ? '/new' : '/admin');
   };

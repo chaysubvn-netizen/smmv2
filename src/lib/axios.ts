@@ -14,10 +14,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     config.headers['X-Site-Host'] = window.location.hostname;
-    // Remove credentials left by older frontend versions. Authentication now
-    // relies exclusively on the server-issued HttpOnly cookie.
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
   return config;
 }, (error) => {

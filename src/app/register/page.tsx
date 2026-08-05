@@ -34,6 +34,7 @@ export default function RegisterPage() {
         ref_username: localStorage.getItem('ref_username') || undefined,
       });
       if (!response.data.status) return message.error(response.data.message);
+      if (response.data.token) localStorage.setItem('token', response.data.token);
       localStorage.removeItem('ref_username');
       router.push('/new');
     } catch (error: unknown) {

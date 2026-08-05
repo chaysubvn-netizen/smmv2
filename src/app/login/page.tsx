@@ -32,6 +32,7 @@ export default function LoginPage() {
     try {
       const response = await api.post('/auth/api/login', values);
       if (!response.data.status) return message.error(response.data.message);
+      if (response.data.token) localStorage.setItem('token', response.data.token);
       message.success(response.data.message || 'Đăng nhập thành công');
       router.push('/new');
     } catch (error: unknown) {

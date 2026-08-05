@@ -237,6 +237,7 @@ export default function ClientLayout({ children, loading = false }: { children: 
     try {
       await api.post('/auth/api/logout');
     } catch (e) {}
+    localStorage.removeItem('token');
     router.push('/login');
   };
 
