@@ -186,6 +186,7 @@ export default async function RootLayout({
               --dh-dark-main-color: #3580f7;
           }
         `}</style>
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="yyCxCqNp167IjqXwPCO3tA" async></script>
       </head>
       <body
         suppressHydrationWarning
