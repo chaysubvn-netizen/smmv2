@@ -742,6 +742,29 @@ export default function DashboardPage() {
                         className="w-full"
                         optionFilterProp="label"
                         onChange={(value) => { handleServiceChange(value); form.setFieldValue('service_id', value); }}
+                        optionRender={(option) => {
+                          const service = filteredServices.find(item => hasSameId(item.id, option.value));
+                          if (!service) return option.label;
+
+                          return (
+                            <span className="flex w-full items-start gap-2 py-1">
+                              {renderAdminIcon(selectedPlatform?.icon, 'mt-0.5 h-6 w-6 shrink-0 rounded-full object-contain')}
+                              <span className="mt-0.5 shrink-0 rounded-md bg-blue-50 px-1.5 py-0.5 text-xs font-bold text-blue-600">#{service.id}</span>
+                              <span className="min-w-0 flex-1">
+                                <span className="block whitespace-normal break-words text-sm font-semibold leading-5 text-gray-800">{service.name}</span>
+                                {Array.isArray(service.attributes) && service.attributes.length > 0 ? (
+                                  <span className="mt-1 flex flex-wrap gap-1">
+                                    {service.attributes.map((attribute: string, index: number) => {
+                                      const badge = getServiceAttribute(attribute);
+                                      return <Tag key={`${service.id}-${attribute}-${index}`} color={badge.color} className="m-0 text-[10px] leading-4">{badge.icon ? `${badge.icon} ` : ''}{badge.label}</Tag>;
+                                    })}
+                                  </span>
+                                ) : null}
+                              </span>
+                              <span className="shrink-0 whitespace-nowrap pt-0.5 text-sm font-bold text-red-500">{formatCurrency(service.rate)}</span>
+                            </span>
+                          );
+                        }}
                         options={filteredServices.map(service => ({ 
                           value: service.id, 
                           title: service.name, 
