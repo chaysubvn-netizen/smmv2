@@ -705,13 +705,13 @@ export default function DashboardPage() {
                               title={cat.name}
                               label={
                                 <div className="flex items-center">
-                                  {renderAdminIcon(cat.icon, 'w-6 h-6 mr-2 shrink-0 object-contain rounded-full', cat.name)}
+                                  {renderAdminIcon(cat.icon || selectedPlatform?.icon, 'w-6 h-6 mr-2 shrink-0 object-contain rounded-full', cat.name)}
                                   {cat.name}
                                 </div>
                               }
                             >
                               <div className="flex items-center">
-                                {renderAdminIcon(cat.icon, 'w-7 h-7 mr-2 shrink-0 object-contain rounded-full', cat.name)}
+                                {renderAdminIcon(cat.icon || selectedPlatform?.icon, 'w-7 h-7 mr-2 shrink-0 object-contain rounded-full', cat.name)}
                                 {cat.name}
                               </div>
                             </Option>
