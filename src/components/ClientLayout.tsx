@@ -318,6 +318,13 @@ export default function ClientLayout({ children, loading = false }: { children: 
         </Link>
       </li>
 
+      <li className={`pc-item ${pathname === '/campaigns' ? 'active' : ''}`}>
+        <Link href="/campaigns" className="pc-link">
+          <span className="pc-micon"><AppstoreAddOutlined style={{ fontSize: '20px' }} /></span>
+          <span className="pc-mtext">Chiến dịch</span>
+        </Link>
+      </li>
+
       <li className={`pc-item ${pathname === '/drip-feed' ? 'active' : ''}`}>
         <Link href="/drip-feed" className="pc-link">
           <span className="pc-micon">
@@ -460,6 +467,7 @@ export default function ClientLayout({ children, loading = false }: { children: 
       { id: 'products', label: 'Sản phẩm', path: '/products', icon: <ShoppingCartOutlined /> },
       { id: 'orders', label: 'Lịch sử', path: '/orders', icon: <UnorderedListOutlined /> },
       { id: 'subscriptions', label: 'Gói định kỳ', path: '/subscriptions', icon: <SyncOutlined /> },
+      { id: 'campaigns', label: 'Chiến dịch', path: '/campaigns', icon: <AppstoreAddOutlined /> },
       { id: 'drip-feed', label: 'Đơn lặp', path: '/drip-feed', icon: <RetweetOutlined /> },
       { id: 'refill', label: 'Bảo hành', path: '/refill', icon: <ReloadOutlined /> },
       { id: 'addfunds', label: 'Nạp tiền', path: '/addfunds', icon: <WalletOutlined /> },
