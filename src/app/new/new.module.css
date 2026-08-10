@@ -221,3 +221,11 @@
     width: 90px;
   }
 }
+
+@media (min-width: 769px) {
+  .serviceSelect :global(.svc-name) {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+  }
+}

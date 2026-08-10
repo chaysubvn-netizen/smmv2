@@ -739,7 +739,7 @@ export default function DashboardPage() {
                         showSearch={!isMobileSelect}
                         value={selectedService?.id}
                         placeholder="Chọn hoặc tìm kiếm dịch vụ"
-                        className="w-full"
+                        className={`${styles.serviceSelect} w-full`}
                         optionFilterProp="label"
                         onChange={(value) => { handleServiceChange(value); form.setFieldValue('service_id', value); }}
                         optionRender={(option) => {
@@ -772,7 +772,7 @@ export default function DashboardPage() {
                             <span className="svc-option flex min-w-0 items-center gap-1.5 md:gap-2">
                               {renderAdminIcon(selectedPlatform?.icon, 'h-5 w-5 shrink-0 rounded-full object-contain md:h-6 md:w-6')}
                               <span className="svc-id shrink-0 rounded-md bg-blue-50 px-1 py-0.5 text-[10px] font-bold text-blue-600 md:px-1.5 md:text-xs">#{service.id}</span>
-                              <span className="min-w-0 flex-1 truncate text-xs font-medium text-gray-800 md:text-base md:font-bold">{service.name}</span>
+                              <span className="svc-name min-w-0 flex-1 truncate text-xs font-medium text-gray-800">{service.name}</span>
                               <span className="svc-price hidden shrink-0 font-bold text-emerald-600 md:block">{formatCurrency(service.rate)}</span>
                             </span>
                           ) 
