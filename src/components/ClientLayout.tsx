@@ -146,23 +146,19 @@ export default function ClientLayout({ children, loading = false }: { children: 
   };
 
   const fetchCurrentUser = async () => {
-    const endpoints = ['/auth/api/me', '/client/profile'];
+    const res = await api.get('/auth/api/me');
+    const currentUser = res.data?.user;
 
-    for (const endpoint of endpoints) {
-      try {
-        const res = await api.get(endpoint);
-        const currentUser = res.data?.user || res.data?.data || res.data;
-
-        if (currentUser && typeof currentUser === 'object' && 'balance' in currentUser) {
-          setUser(currentUser);
-          return currentUser;
-        }
-      } catch {
-        // Thử endpoint tương thích tiếp theo
-      }
+    if (
+      currentUser &&
+      typeof currentUser === 'object' &&
+      ('id' in currentUser || 'username' in currentUser)
+    ) {
+      setUser(currentUser);
+      return currentUser;
     }
 
-    throw new Error('Unauthenticated');
+    throw new Error('Invalid authenticated user response');
   };
 
   const handleChangeCurrency = async (code: string) => {
