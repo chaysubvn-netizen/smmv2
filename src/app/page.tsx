@@ -10,11 +10,10 @@ import Landing2Page from './landing2/page';
 import Landing1Page from './landing1/page';
 import LandingDefaultPage from './landing-default/page';
 import styles from './landing.module.css';
-import { saveFrontendSession } from '@/lib/frontend-session';
 
 type ModalType = 'login' | 'register' | null;
 type AuthValues = Record<string, string>;
-type AuthPayload = { user: { role?: string }; message?: string; token?: string };
+type AuthPayload = { user: { role?: string }; message?: string };
 
 const apiError = (error: unknown, fallback: string) => {
   const candidate = error as { response?: { data?: { message?: string; two_factor_auth?: boolean; two_factor_method?: string } } };
@@ -40,17 +39,13 @@ export default function LandingPage() {
     if (new URLSearchParams(window.location.search).get('register') === '1') void Promise.resolve().then(() => setModal('register'));
   }, []);
 
-  const finishAuth = async (data: AuthPayload) => {
-    if (data.token) {
-      await saveFrontendSession(data.token);
-      localStorage.setItem('token', data.token);
-    }
+  const finishAuth = (data: AuthPayload) => {
     message.success(data.message || 'Đăng nhập thành công!');
     router.push(data.user.role === 'admin' ? '/admin' : '/new');
   };
   const login = async (values: AuthValues) => {
     setLoading(true);
-    try { const response = await api.post('/auth/api/login', values); if (response.data.status) await finishAuth(response.data); else message.error(response.data.message); }
+    try { const response = await api.post('/auth/api/login', values); if (response.data.status) finishAuth(response.data); else message.error(response.data.message); }
     catch (error: unknown) { const details = apiError(error, 'Không thể đăng nhập.'); if (details.data?.two_factor_auth) { setRequiresTwoFactor(true); setTwoFactorMethod(details.data.two_factor_method === 'telegram' ? 'telegram' : 'google'); } message.error(details.message); }
     finally { setLoading(false); }
   };
@@ -59,7 +54,7 @@ export default function LandingPage() {
     try {
       const refUsername = localStorage.getItem('ref_username');
       const response = await api.post('/auth/api/register', { ...values, ref_username: refUsername || undefined });
-      if (response.data.status) { localStorage.removeItem('ref_username'); await finishAuth(response.data); } else message.error(response.data.message);
+      if (response.data.status) { localStorage.removeItem('ref_username'); finishAuth(response.data); } else message.error(response.data.message);
     }
     catch (error: unknown) { message.error(apiError(error, 'Không thể đăng ký.').message); }
     finally { setLoading(false); }
@@ -130,7 +125,7 @@ export default function LandingPage() {
 function DistinctLanding({ theme, title, logo, loggedIn, onStart }: { theme: string; title: string; logo: string | null; loggedIn: boolean; onStart: () => void }) {
   const labels: Record<string, [string, string, string]> = { landing2: ['SMM PANEL NO.1', 'Tăng trưởng thật cho thương hiệu của bạn', 'Dịch vụ social media nhanh, an toàn và tối ưu chi phí.'], landing1: ['LARAVEL TEMPLATE 01', 'Dịch vụ SMM nhanh và chuyên nghiệp', 'Mua like, follow, view và nhiều dịch vụ mạng xã hội với giá tốt.'], modern: ['Tăng trưởng thông minh', 'SMM hiện đại cho thương hiệu dẫn đầu', 'Tự động hóa mọi chiến dịch mạng xã hội.'], classic: ['Uy tín từ nền tảng', 'Dịch vụ SMM bền vững, đáng tin cậy', 'Giải pháp tăng trưởng ổn định cho doanh nghiệp.'], top: ['Nền tảng số 1', 'Tất cả dịch vụ mạng xã hội trong một nơi', 'Nhanh hơn, đơn giản hơn, hiệu quả hơn.'], pro: ['PRO SOLUTION', 'Scale your social presence', 'Công cụ chuyên nghiệp cho nhà bán hàng và đại lý.'], vip: ['VIP EXPERIENCE', 'Đặc quyền tăng trưởng dành riêng cho bạn', 'Dịch vụ cao cấp, hỗ trợ ưu tiên 24/7.'] };
   const [kicker, headline, desc] = labels[theme] || labels.modern;
-  return <main className={`${styles.distinct} ${styles[`distinct_${theme}`] || styles.distinct_modern}`}><header><a href="/">{logo ? <img src={logo} alt={title} /> : <b>{title}</b>}</a><nav><a href="#services">Dịch vụ</a><a href="/apidoc">API</a><button onClick={onStart}>{loggedIn ? 'Dashboard' : 'Đăng ký'}</button></nav></header><section className={styles.distinctHero}><div><small>{kicker}</small><h1>{headline}</h1><p>{desc}</p><button className={styles.distinctCta} onClick={onStart}>{loggedIn ? 'Vào Dashboard' : 'Bắt đầu ngay'} →</button></div><div className={styles.distinctArt}><span>♥</span><span>↗</span><span>★</span><strong>+99%</strong></div></section><section id="services" className={styles.distinctCards}><article><b>⚡</b><h3>Tự động hoàn toàn</h3><p>Xử lý đơn hàng nhanh chóng 24/7.</p></article><article><b>◈</b><h3>Giá cạnh tranh</h3><p>Dịch vụ ổn định, chi phí tối ưu.</p></article><article><b>✓</b><h3>An toàn bảo mật</h3><p>Bảo vệ tài khoản và giao dịch của bạn.</p></article></section></main>;
+  return <main className={`${styles.distinct} ${styles[`distinct_${theme}`] || styles.distinct_modern}`}><header><Link href="/">{logo ? <img src={logo} alt={title} /> : <b>{title}</b>}</Link><nav><a href="#services">Dịch vụ</a><Link href="/apidoc">API</Link><button onClick={onStart}>{loggedIn ? 'Dashboard' : 'Đăng ký'}</button></nav></header><section className={styles.distinctHero}><div><small>{kicker}</small><h1>{headline}</h1><p>{desc}</p><button className={styles.distinctCta} onClick={onStart}>{loggedIn ? 'Vào Dashboard' : 'Bắt đầu ngay'} →</button></div><div className={styles.distinctArt}><span>♥</span><span>↗</span><span>★</span><strong>+99%</strong></div></section><section id="services" className={styles.distinctCards}><article><b>⚡</b><h3>Tự động hoàn toàn</h3><p>Xử lý đơn hàng nhanh chóng 24/7.</p></article><article><b>◈</b><h3>Giá cạnh tranh</h3><p>Dịch vụ ổn định, chi phí tối ưu.</p></article><article><b>✓</b><h3>An toàn bảo mật</h3><p>Bảo vệ tài khoản và giao dịch của bạn.</p></article></section></main>;
 }
 function SectionTitle({ label, title, subtitle }: { label: string; title: React.ReactNode; subtitle: string }) { return <div className={styles.sectionTitle}><span>{label}</span><h2>{title}</h2><p>{subtitle}</p></div>; }
 function Step({ number, icon, title, text }: { number: string; icon: React.ReactNode; title: string; text: string }) { return <article><i>{number}</i><span>{icon}</span><h3>{title}</h3><p>{text}</p></article>; }

@@ -2,7 +2,9 @@ import axios from 'axios';
 import { message } from '@/lib/antd-message';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api',
+  // Browser requests stay on the Next.js origin. The Route Handler attaches the
+  // Laravel access token from an HttpOnly cookie on the server.
+  baseURL: '/api/backend',
   withCredentials: true,
   headers: {
     'Accept': 'application/json',
@@ -10,19 +12,13 @@ const api = axios.create({
   }
 });
 
-// Thêm interceptor để luôn đính kèm token vào request
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    config.headers['X-Site-Host'] = window.location.hostname;
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
+    // Remove tokens created by older builds. Never read or attach them in JS.
+    localStorage.removeItem('token');
   }
   return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+}, error => Promise.reject(error));
 
 let lastDemoNotice = 0;
 let lastMaintenanceNotice = 0;
