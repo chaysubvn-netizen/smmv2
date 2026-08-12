@@ -1,5 +1,7 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize-html';
+
 import React, { useEffect, useRef, useState } from 'react';
 import ClientLayout from '@/components/ClientLayout';
 import { Form, Input, Button, Select, Card, Typography, Spin, Row, Col, Tag, Switch, Divider, DatePicker, Modal, Descriptions } from 'antd'; import { message } from '@/lib/antd-message';
@@ -527,7 +529,7 @@ export default function DashboardPage() {
             </div>
             
             <div style={{ backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16, marginTop: '-20px', position: 'relative', padding: '30px 24px 24px', zIndex: 1, minHeight: '250px', display: 'flex', flexDirection: 'column' }}>
-              <div className="py-2 leading-relaxed text-gray-800" style={{ fontSize: '15px', flex: 1 }} dangerouslySetInnerHTML={{ __html: config?.notice_modal || '' }} />
+              <div className="py-2 leading-relaxed text-gray-800" style={{ fontSize: '15px', flex: 1 }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(config?.notice_modal || '') }} />
               
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24, paddingTop: 16 }}>
                 <Button type="primary" size="large" onClick={hideNoticeForTwoHours} style={{ backgroundColor: '#477fff', borderRadius: '24px', fontWeight: 600, padding: '0 24px', height: '44px' }}>
@@ -587,7 +589,7 @@ export default function DashboardPage() {
           </section>
           {config?.notice_service ? (
             <div className="mb-5 rounded-lg border border-[#91caff] bg-[#e6f4ff] px-4 py-3 shadow-sm animate-fade-in">
-              <div className="text-[13px] leading-relaxed text-gray-800 [&>p]:mb-3 [&>p:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: config.notice_service }} />
+              <div className="text-[13px] leading-relaxed text-gray-800 [&>p]:mb-3 [&>p:last-child]:mb-0" dangerouslySetInnerHTML={{ __html: sanitizeHtml(config.notice_service) }} />
             </div>
           ) : null}
           <Row gutter={[24, 24]}>
@@ -873,7 +875,7 @@ export default function DashboardPage() {
                         <div 
                           ref={contentRef}
                           className="leading-relaxed whitespace-pre-line break-words [&>ul]:list-none [&>ul>li]:relative [&>ul>li]:pl-4 [&>ul>li::before]:content-[''] [&>ul>li::before]:absolute [&>ul>li::before]:w-1.5 [&>ul>li::before]:h-1.5 [&>ul>li::before]:bg-blue-400 [&>ul>li::before]:rounded-full [&>ul>li::before]:left-0 [&>ul>li::before]:top-2 [&>p]:mb-2 [&_img]:max-w-full [&_img]:rounded-md"
-                          dangerouslySetInnerHTML={{ __html: serviceContent }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(serviceContent) }}
                         />
                         {!isContentExpanded && showContentToggle && (
                           <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#f2f9ff] to-transparent" />

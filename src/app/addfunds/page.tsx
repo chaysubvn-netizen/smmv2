@@ -1,5 +1,7 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize-html';
+
 import { useCallback, useEffect, useState } from 'react';
 import { App, Button, Card, Empty, Input, InputNumber, Modal, Pagination, Select, Space, Table, Tag, Typography } from 'antd';
 import { message } from '@/lib/antd-message';
@@ -320,7 +322,7 @@ export default function AddFundsPage() {
       <aside className={styles.guide}>
         <h3><InfoCircleOutlined /> Hướng dẫn nạp tiền</h3>
         {options.notice_recharge
-          ? <div className={styles.guideContent} dangerouslySetInnerHTML={{ __html: options.notice_recharge }} />
+          ? <div className={styles.guideContent} dangerouslySetInnerHTML={{ __html: sanitizeHtml(options.notice_recharge) }} />
           : <div className={styles.guideEmpty}>Admin có thể nhập nội dung hướng dẫn tại <b>Thông báo → Thông báo Nạp tiền</b>.</div>}
       </aside>
       </div>

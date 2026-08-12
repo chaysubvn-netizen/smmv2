@@ -1,5 +1,7 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize-html';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeftOutlined, ArrowRightOutlined, CalendarOutlined, FileTextOutlined } from '@ant-design/icons';
@@ -63,7 +65,7 @@ export default function PostDetailPage() {
                     <Title level={2}>{post.title}</Title>
                     {post.created_at ? <Text type="secondary"><CalendarOutlined /> {new Date(post.created_at).toLocaleDateString('vi-VN')}</Text> : null}
                   </header>
-                  <div className={styles.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+                  <div className={styles.content} dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
                 </div>
               </article>
               <aside className={styles.relatedCard}>

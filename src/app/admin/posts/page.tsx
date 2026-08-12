@@ -1,5 +1,7 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize-html';
+
 import { useCallback, useEffect, useState } from 'react';
 import { Button, Card, Form, Image, Input, Modal, Select, Space, Table, Tag, Typography, Upload } from 'antd';import { message } from '@/lib/antd-message';
 import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, ReloadOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
@@ -105,7 +107,7 @@ export default function AdminPostsPage() {
     <Modal width={850} open={Boolean(viewing)} title={viewing?.title} footer={<Button onClick={() => setViewing(null)}>Đóng</Button>} onCancel={() => setViewing(null)}>
       {viewing?.image && <Image className={styles.detailCover} src={asset(viewing.image)} alt={viewing.title} />}
       {viewing && <div className={styles.detailMeta}><Tag color={viewing.status === 'active' ? 'success' : 'error'}>{viewing.status === 'active' ? 'Hiển thị' : 'Ẩn'}</Tag><span>{viewing.user?.username || 'Unknown'}</span><span>{dayjs(viewing.created_at).format('DD/MM/YYYY HH:mm:ss')}</span></div>}
-      {viewing && <article className={styles.content} dangerouslySetInnerHTML={{ __html: viewing.content }} />}
+      {viewing && <article className={styles.content} dangerouslySetInnerHTML={{ __html: sanitizeHtml(viewing.content) }} />}
     </Modal>
   </main>;
 }
