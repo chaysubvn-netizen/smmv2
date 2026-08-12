@@ -8,6 +8,7 @@ import { ArrowLeftOutlined, GoogleOutlined, LockOutlined, SafetyCertificateOutli
 import api from '@/lib/axios';
 import { message } from '@/lib/antd-message';
 import styles from '../auth.module.css';
+import { saveFrontendSession } from '@/lib/frontend-session';
 
 type LoginConfig = { title?: string; logo?: string; google_login_status?: string };
 
@@ -32,9 +33,12 @@ export default function LoginPage() {
     try {
       const response = await api.post('/auth/api/login', values);
       if (!response.data.status) return message.error(response.data.message);
-      if (response.data.token) localStorage.setItem('token', response.data.token);
+      if (response.data.token) {
+        await saveFrontendSession(response.data.token);
+        localStorage.setItem('token', response.data.token);
+      }
       message.success(response.data.message || 'Đăng nhập thành công');
-      router.push('/new');
+      router.push(response.data.user?.role === 'admin' ? '/admin' : '/new');
     } catch (error: unknown) {
       const detail = error as {
         response?: {

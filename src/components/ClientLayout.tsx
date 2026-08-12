@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ConfigProvider, Spin } from 'antd';import { message } from '@/lib/antd-message';
 import { useRouter, usePathname } from 'next/navigation';
 import api from '@/lib/axios';
+import { clearFrontendSession } from '@/lib/frontend-session';
 import {
   HomeOutlined,
   PlusCircleOutlined,
@@ -237,7 +238,7 @@ export default function ClientLayout({ children, loading = false }: { children: 
     try {
       await api.post('/auth/api/logout');
     } catch (e) {}
-    localStorage.removeItem('token');
+    await clearFrontendSession();
     router.push('/login');
   };
 

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 import { message } from '@/lib/antd-message';
 import styles from '../../../auth.module.css';
+import { saveFrontendSession } from '@/lib/frontend-session';
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
@@ -22,10 +23,13 @@ export default function GoogleCallbackPage() {
     }
 
     api.post('/auth/google/exchange', { code })
-      .then(response => {
-        if (response.data.token) localStorage.setItem('token', response.data.token);
+      .then(async response => {
+        if (response.data.token) {
+          await saveFrontendSession(response.data.token);
+          localStorage.setItem('token', response.data.token);
+        }
         message.success(response.data.message || 'Đăng nhập Google thành công');
-        router.replace('/new');
+        router.replace(response.data.user?.role === 'admin' ? '/admin' : '/new');
       })
       .catch(error => {
         message.error(error.response?.data?.message || 'Không thể hoàn tất đăng nhập Google.');
