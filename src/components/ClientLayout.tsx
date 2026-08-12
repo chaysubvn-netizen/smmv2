@@ -146,7 +146,7 @@ export default function ClientLayout({ children, loading = false }: { children: 
   };
 
   const fetchCurrentUser = async () => {
-    const endpoints = ['/auth/api/me', '/auth/api/user', '/client/profile'];
+    const endpoints = ['/auth/api/me', '/client/profile'];
 
     for (const endpoint of endpoints) {
       try {
