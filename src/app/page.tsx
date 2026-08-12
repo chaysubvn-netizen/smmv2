@@ -41,8 +41,8 @@ export default function LandingPage() {
 
   const finishAuth = async (data: AuthPayload) => {
     message.success(data.message || 'Đăng nhập thành công!');
-    const session = await api.get('/auth/api/me');
-    router.replace(session.data.user?.role === 'admin' ? '/admin' : '/new');
+    await api.get('/auth/api/me');
+    router.replace('/new');
   };
   const login = async (values: AuthValues) => {
     setLoading(true);

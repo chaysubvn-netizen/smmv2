@@ -19,7 +19,7 @@ export default function LoginPage() {
   const [twoFactorMethod, setTwoFactorMethod] = useState<'google' | 'telegram'>('google');
 
   useEffect(() => {
-    api.get('/auth/api/me').then(response => router.replace(response.data.user?.role === 'admin' ? '/admin' : '/new')).catch(() => undefined);
+    api.get('/auth/api/me').then(() => router.replace('/new')).catch(() => undefined);
     const googleError = new URLSearchParams(window.location.search).get('google_error');
     if (googleError) message.error(googleError);
     api.get('/client/config').then(response => {
@@ -32,9 +32,9 @@ export default function LoginPage() {
     try {
       const response = await api.post('/auth/api/login', values);
       if (!response.data.status) return message.error(response.data.message);
-      const session = await api.get('/auth/api/me');
+      await api.get('/auth/api/me');
       message.success(response.data.message || 'Đăng nhập thành công');
-      router.replace(session.data.user?.role === 'admin' ? '/admin' : '/new');
+      router.replace('/new');
     } catch (error: unknown) {
       const detail = error as {
         response?: {
