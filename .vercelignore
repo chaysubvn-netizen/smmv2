@@ -1,4 +1,4 @@
 # Laravel/backend artifacts are deployed separately from the Next.js frontend.
-backend/
-docs/
+/backend/
+/docs/
 update-server.php
