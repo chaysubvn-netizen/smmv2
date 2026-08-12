@@ -10,10 +10,11 @@ import Landing2Page from './landing2/page';
 import Landing1Page from './landing1/page';
 import LandingDefaultPage from './landing-default/page';
 import styles from './landing.module.css';
+import { saveFrontendSession } from '@/lib/frontend-session';
 
 type ModalType = 'login' | 'register' | null;
 type AuthValues = Record<string, string>;
-type AuthPayload = { user: Record<string, unknown>; message?: string };
+type AuthPayload = { user: { role?: string }; message?: string; token?: string };
 
 const apiError = (error: unknown, fallback: string) => {
   const candidate = error as { response?: { data?: { message?: string; two_factor_auth?: boolean; two_factor_method?: string } } };
@@ -39,14 +40,17 @@ export default function LandingPage() {
     if (new URLSearchParams(window.location.search).get('register') === '1') void Promise.resolve().then(() => setModal('register'));
   }, []);
 
-  const finishAuth = (data: AuthPayload) => {
-    if ((data as any).token) localStorage.setItem('token', (data as any).token);
+  const finishAuth = async (data: AuthPayload) => {
+    if (data.token) {
+      await saveFrontendSession(data.token);
+      localStorage.setItem('token', data.token);
+    }
     message.success(data.message || 'Đăng nhập thành công!');
-    router.push(data.user.role === 'admin' ? '/new' : '/admin');
+    router.push(data.user.role === 'admin' ? '/admin' : '/new');
   };
   const login = async (values: AuthValues) => {
     setLoading(true);
-    try { const response = await api.post('/auth/api/login', values); if (response.data.status) finishAuth(response.data); else message.error(response.data.message); }
+    try { const response = await api.post('/auth/api/login', values); if (response.data.status) await finishAuth(response.data); else message.error(response.data.message); }
     catch (error: unknown) { const details = apiError(error, 'Không thể đăng nhập.'); if (details.data?.two_factor_auth) { setRequiresTwoFactor(true); setTwoFactorMethod(details.data.two_factor_method === 'telegram' ? 'telegram' : 'google'); } message.error(details.message); }
     finally { setLoading(false); }
   };
@@ -55,7 +59,7 @@ export default function LandingPage() {
     try {
       const refUsername = localStorage.getItem('ref_username');
       const response = await api.post('/auth/api/register', { ...values, ref_username: refUsername || undefined });
-      if (response.data.status) { localStorage.removeItem('ref_username'); finishAuth(response.data); } else message.error(response.data.message);
+      if (response.data.status) { localStorage.removeItem('ref_username'); await finishAuth(response.data); } else message.error(response.data.message);
     }
     catch (error: unknown) { message.error(apiError(error, 'Không thể đăng ký.').message); }
     finally { setLoading(false); }
