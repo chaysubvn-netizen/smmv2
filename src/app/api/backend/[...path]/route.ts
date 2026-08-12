@@ -227,7 +227,7 @@ async function handle(request: NextRequest, context: { params: Promise<{ path: s
   }
 
   const responseHeaders = new Headers({ 'Cache-Control': 'no-store' });
-  for (const name of ['content-type', 'content-disposition', 'content-length']) {
+  for (const name of ['content-type', 'content-disposition']) {
     const value = backendResponse.headers.get(name);
     if (value) responseHeaders.set(name, value);
   }
