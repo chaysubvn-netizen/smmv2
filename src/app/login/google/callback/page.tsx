@@ -22,9 +22,10 @@ export default function GoogleCallbackPage() {
     }
 
     api.post('/auth/google/exchange', { code })
-      .then(response => {
+      .then(async response => {
+        const session = await api.get('/auth/api/me');
         message.success(response.data.message || 'Đăng nhập Google thành công');
-        router.replace(response.data.user?.role === 'admin' ? '/admin' : '/new');
+        router.replace(session.data.user?.role === 'admin' ? '/admin' : '/new');
       })
       .catch(error => {
         message.error(error.response?.data?.message || 'Không thể hoàn tất đăng nhập Google.');

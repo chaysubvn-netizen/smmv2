@@ -34,8 +34,9 @@ export default function RegisterPage() {
         ref_username: localStorage.getItem('ref_username') || undefined,
       });
       if (!response.data.status) return message.error(response.data.message);
+      await api.get('/auth/api/me');
       localStorage.removeItem('ref_username');
-      router.push('/new');
+      router.replace('/new');
     } catch (error: unknown) {
       const detail = error as { response?: { data?: { message?: string } } };
       message.error(detail.response?.data?.message || 'Không thể đăng ký');

@@ -89,6 +89,24 @@ function recordLoginFailure(key: string): void {
   current.failures += 1;
 }
 
+function backendAuthToken(response: Response, data: Record<string, unknown>): string {
+  const jsonToken = typeof data.token === 'string'
+    ? data.token
+    : typeof data.access_token === 'string'
+      ? data.access_token
+      : '';
+  if (jsonToken) return jsonToken.trim();
+
+  const setCookie = response.headers.get('set-cookie') || '';
+  const match = setCookie.match(/(?:^|,\s*)smm_auth_token=([^;,\s]+)/i);
+  if (!match?.[1]) return '';
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
 function clearAuthCookies(response: NextResponse): void {
   response.cookies.delete(SESSION_COOKIE);
   response.cookies.delete(BACKEND_TOKEN_COOKIE);
@@ -180,18 +198,32 @@ async function handle(request: NextRequest, context: { params: Promise<{ path: s
   const isAuthResponse = ['/auth/api/login', '/auth/api/register', '/auth/google/exchange'].includes(backendPath);
   if (isAuthResponse) {
     const data = await backendResponse.json().catch(() => ({ status: false, message: 'Invalid backend response.' })) as Record<string, unknown>;
-    const token = typeof data.token === 'string' ? data.token : '';
+    const token = backendAuthToken(backendResponse, data);
     delete data.token;
-    const response = NextResponse.json(data, { status: backendResponse.status, headers: { 'Cache-Control': 'no-store' } });
-    if (backendResponse.ok && token && data.user && typeof data.user === 'object') {
+    delete data.access_token;
+
+    if (backendResponse.ok) {
+      if (!token || !data.user || typeof data.user !== 'object') {
+        return NextResponse.json(
+          { status: false, message: 'Backend login succeeded without a usable session token.' },
+          { status: 502, headers: { 'Cache-Control': 'no-store' } },
+        );
+      }
+
+      const response = NextResponse.json(data, {
+        status: backendResponse.status,
+        headers: { 'Cache-Control': 'no-store', 'X-SMM-Session': 'established' },
+      });
       try {
         const valid = await setAuthCookies(response, request, token, data.user as BackendUser);
         if (!valid) return NextResponse.json({ status: false, message: 'Invalid account domain.' }, { status: 403 });
       } catch {
         return NextResponse.json({ status: false, message: 'Server session is not configured.' }, { status: 500 });
       }
+      return response;
     }
-    return response;
+
+    return NextResponse.json(data, { status: backendResponse.status, headers: { 'Cache-Control': 'no-store' } });
   }
 
   const responseHeaders = new Headers({ 'Cache-Control': 'no-store' });
