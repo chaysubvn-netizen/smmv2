@@ -1,0 +1,24 @@
+.select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--selected:after {
+    all: unset !important;
+}
+
+.div-details img {
+    width: 100%;
+}
+
+.ql-editor {
+    height: auto !important;
+}
+
+#modal-confirm .modal-footer .btn, #modal-prompt .modal-footer .btn, #modal-alert .modal-footer .btn {
+    border-radius: 25px;
+    transition: all 0.3s ease-in-out;
+}
+
+#modal-confirm .modal-footer .btn:hover, #modal-prompt .modal-footer .btn:hover, #modal-alert .modal-footer .btn:hover {
+    transform: scale(1.1);
+}
+
+ol li[data-list="bullet"] {
+    list-style-type: disc;
+}

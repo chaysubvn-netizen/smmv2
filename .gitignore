@@ -30,9 +30,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# environment files
 .env*
-!.env
 
 # vercel
 .vercel
@@ -40,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+.env*.local
+
+# local runtime files and archives
+.next-server.*.log
+/backend/backend.zip
+/backend/smm.sql
+*.zip

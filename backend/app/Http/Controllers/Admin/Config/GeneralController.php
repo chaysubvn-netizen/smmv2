@@ -129,7 +129,7 @@ class GeneralController extends Controller
 
         $botInfo = Http::timeout(15)->get("https://api.telegram.org/bot{$token}/getMe")->json();
         if (!data_get($botInfo, 'ok')) return response()->json(['success' => false, 'message' => data_get($botInfo, 'description', 'Bot Token không hợp lệ.')], 422);
-        $result = Http::timeout(15)->post("https://api.telegram.org/bot{$token}/setWebhook", ['url' => $webhookUrl])->json();
+        $result = Http::timeout(15)->post("https://api.telegram.org/bot{$token}/setWebhook", ['url' => $webhookUrl, 'secret_token' => hash_hmac('sha256', (string) $token, (string) config('app.key'))])->json();
         if (!data_get($result, 'ok')) return response()->json(['success' => false, 'message' => data_get($result, 'description', 'Không thể đăng ký webhook.')], 422);
 
         $username = data_get($botInfo, 'result.username');

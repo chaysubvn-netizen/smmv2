@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
 
@@ -351,6 +352,7 @@ class ApiAdminController extends Controller
     public function resourceStore(Request $request, string $resource): JsonResponse
     {
         $this->authorizeAdmin($request);
+        abort_if($resource === 'users', 405, 'User accounts must use the dedicated registration flow.');
         abort_if(in_array($resource, self::READ_ONLY, true), 405, 'Module này chỉ cho phép xem.');
         abort_if(in_array($resource, self::SINGLETON, true), 405, 'Cấu hình hệ thống chỉ cho phép cập nhật.');
         $model = $this->resourceModel($resource);
@@ -372,6 +374,7 @@ class ApiAdminController extends Controller
     public function resourceUpdate(Request $request, string $resource, int $id): JsonResponse
     {
         $this->authorizeAdmin($request);
+        abort_if($resource === 'users', 405, 'Use the dedicated user management endpoint.');
         abort_if(in_array($resource, self::READ_ONLY, true), 405, 'Module này chỉ cho phép xem.');
         $model = $this->resourceModel($resource);
         $query = $model->newQuery();
@@ -481,7 +484,27 @@ class ApiAdminController extends Controller
         $query = $model->newQuery();
         $this->applyResourceDomain($query, $model, $resource, $request);
         $item = $query->findOrFail($id);
-        $item->delete();
+        if ($resource === 'users') {
+            abort_if(
+                $item->role === 'admin' || (int) $item->id === (int) $request->user()->id,
+                422,
+                'Administrator accounts cannot be deleted.'
+            );
+            abort_if(
+                \App\Models\Config::where('domain', $this->domain($request))
+                    ->where('user_id', $item->id)
+                    ->exists(),
+                422,
+                'The site owner account cannot be deleted.'
+            );
+
+            DB::transaction(function () use ($item): void {
+                $item->tokens()->delete();
+                $item->delete();
+            });
+        } else {
+            $item->delete();
+        }
         return response()->json(['status' => true, 'message' => 'Đã xóa dữ liệu.']);
     }
 
@@ -753,7 +776,7 @@ class ApiAdminController extends Controller
         try {
             $botInfo = \Illuminate\Support\Facades\Http::timeout(15)->get("https://api.telegram.org/bot{$token}/getMe")->json();
             abort_if(!data_get($botInfo, 'ok'), 422, data_get($botInfo, 'description', 'Bot Token không hợp lệ.'));
-            $result = \Illuminate\Support\Facades\Http::timeout(15)->post("https://api.telegram.org/bot{$token}/setWebhook", ['url' => $data['telegram_webhook_url']])->json();
+            $result = \Illuminate\Support\Facades\Http::timeout(15)->post("https://api.telegram.org/bot{$token}/setWebhook", ['url' => $data['telegram_webhook_url'], 'secret_token' => hash_hmac('sha256', (string) $token, (string) config('app.key'))])->json();
             abort_if(!data_get($result, 'ok'), 422, data_get($result, 'description', 'Không thể đăng ký webhook.'));
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $error) {
             throw $error;

@@ -72,7 +72,7 @@ class ApiClientController extends Controller
     public function getProducts(Request $request)
     {
         $user = $request->user();
-        $query = Product::query()->where('domain', $request->getHost())->where('status', 'active')->with('category:id,name')
+        $query = Product::query()->where('domain', $this->siteHost($request))->where('status', 'active')->with('category:id,name')
             ->withCount(['stocks as available_stock_count' => fn ($stock) => $stock->where('status', 'available')])->withSum('order_products', 'quantity')->withAvg('reviews', 'rating');
         $search = trim((string) $request->input('search', ''));
         if ($search !== '') $query->where(fn ($builder) => $builder->where('name', 'like', "%{$search}%")->orWhere('description', 'like', "%{$search}%"));
@@ -83,22 +83,22 @@ class ApiClientController extends Controller
         $data = $query->paginate(min(48, max(8, (int) $request->input('per_page', 12))));
         $currency = (string) ($user->currency ?: 'VND');
         $data->getCollection()->transform(function ($item) use ($currency) { $item->price_display = convert_currency($item->price, $currency, false); return $item; });
-        $categories = ProductCategory::where('domain', $request->getHost())->where('status', 'active')->orderBy('sort_order')->get(['id', 'name']);
+        $categories = ProductCategory::where('domain', $this->siteHost($request))->where('status', 'active')->orderBy('sort_order')->get(['id', 'name']);
         return response()->json(['status' => true, 'data' => $data, 'categories' => $categories]);
     }
 
     public function getProduct(Request $request, string $slug)
     {
-        $product = Product::where('domain', $request->getHost())->where('status', 'active')->where('slug', $slug)->with('category:id,name')
+        $product = Product::where('domain', $this->siteHost($request))->where('status', 'active')->where('slug', $slug)->with('category:id,name')
             ->withCount(['stocks as available_stock_count' => fn ($stock) => $stock->where('status', 'available')])->withSum('order_products', 'quantity')->withAvg('reviews', 'rating')->firstOrFail();
         $currency = (string) ($request->user()->currency ?: 'VND'); $product->price_display = convert_currency($product->price, $currency, false);
-        $related = Product::where('domain', $request->getHost())->where('status', 'active')->where('category_id', $product->category_id)->where('id', '!=', $product->id)
+        $related = Product::where('domain', $this->siteHost($request))->where('status', 'active')->where('category_id', $product->category_id)->where('id', '!=', $product->id)
             ->withCount(['stocks as available_stock_count' => fn ($stock) => $stock->where('status', 'available')])->orderBy('sort_order')->limit(4)->get();
         $related->each(fn ($item) => $item->price_display = convert_currency($item->price, $currency, false));
-        $reviews = Review::where('domain', $request->getHost())->where('product_id', $product->id)->where('status', 'active')->whereNull('parent_id')
+        $reviews = Review::where('domain', $this->siteHost($request))->where('product_id', $product->id)->where('status', 'active')->whereNull('parent_id')
             ->with(['user:id,username', 'order_product:id,product_id,quantity,created_at', 'replies.user:id,username'])->latest('id')->get();
         $ratingCounts = []; foreach (range(1, 5) as $star) $ratingCounts[$star] = $reviews->where('rating', $star)->count();
-        $purchasedOrders = OrderProduct::where('domain', $request->getHost())->where('user_id', $request->user()->id)->where('product_id', $product->id)->where('status', 'success')
+        $purchasedOrders = OrderProduct::where('domain', $this->siteHost($request))->where('user_id', $request->user()->id)->where('product_id', $product->id)->where('status', 'success')
             ->whereDoesntHave('review')->latest('id')->get(['id', 'quantity', 'created_at']);
         return response()->json(['status' => true, 'data' => $product, 'related' => $related, 'reviews' => $reviews, 'rating_summary' => ['average' => round((float) $reviews->avg('rating'), 1), 'count' => $reviews->count(), 'stars' => $ratingCounts], 'purchased_orders' => $purchasedOrders]);
     }
@@ -106,20 +106,20 @@ class ApiClientController extends Controller
     public function storeProductReview(Request $request, int $id)
     {
         $data = $request->validate(['order_product_id' => ['required', 'integer'], 'rating' => ['required', 'integer', 'min:1', 'max:5'], 'comment' => ['required', 'string', 'max:500']]);
-        $product = Product::where('domain', $request->getHost())->where('status', 'active')->findOrFail($id);
-        $order = OrderProduct::where('domain', $request->getHost())->where('user_id', $request->user()->id)->where('product_id', $product->id)->where('status', 'success')->findOrFail($data['order_product_id']);
+        $product = Product::where('domain', $this->siteHost($request))->where('status', 'active')->findOrFail($id);
+        $order = OrderProduct::where('domain', $this->siteHost($request))->where('user_id', $request->user()->id)->where('product_id', $product->id)->where('status', 'success')->findOrFail($data['order_product_id']);
         abort_if(Review::where('order_product_id', $order->id)->exists(), 422, 'Đơn hàng này đã được đánh giá.');
-        Review::create(['user_id' => $request->user()->id, 'product_id' => $product->id, 'order_product_id' => $order->id, 'rating' => $data['rating'], 'comment' => strip_tags($data['comment']), 'status' => 'active', 'domain' => $request->getHost()]);
+        Review::create(['user_id' => $request->user()->id, 'product_id' => $product->id, 'order_product_id' => $order->id, 'rating' => $data['rating'], 'comment' => strip_tags($data['comment']), 'status' => 'active', 'domain' => $this->siteHost($request)]);
         return response()->json(['status' => true, 'message' => 'Cảm ơn bạn đã đánh giá sản phẩm.']);
     }
 
     public function getProductOrders(Request $request)
     {
-        $query = OrderProduct::where('domain', $request->getHost())->where('user_id', $request->user()->id)->with('product:id,name,slug,image');
+        $query = OrderProduct::where('domain', $this->siteHost($request))->where('user_id', $request->user()->id)->with('product:id,name,slug,image');
         $search = trim((string) $request->input('search', ''));
         if ($search !== '') $query->where(fn ($builder) => $builder->where('id', 'like', "%{$search}%")->orWhereHas('product', fn ($product) => $product->where('name', 'like', "%{$search}%")));
         if ($request->filled('status') && $request->input('status') !== 'all') $query->where('status', $request->string('status'));
-        $base = OrderProduct::where('domain', $request->getHost())->where('user_id', $request->user()->id);
+        $base = OrderProduct::where('domain', $this->siteHost($request))->where('user_id', $request->user()->id);
         $counts = ['all' => (clone $base)->count()]; foreach (['pending', 'processing', 'success', 'cancel'] as $status) $counts[$status] = (clone $base)->where('status', $status)->count();
         $currency = (string) ($request->user()->currency ?: 'VND'); $data = $query->latest('id')->paginate(min(50, max(10, (int) $request->input('per_page', 15))));
         $data->getCollection()->transform(function ($item) use ($currency) { $item->price_display = convert_currency($item->price, $currency, false); $item->total_display = convert_currency($item->total, $currency, false); return $item; });
@@ -129,7 +129,7 @@ class ApiClientController extends Controller
     public function purchaseProduct(Request $request, int $id)
     {
         $validated = $request->validate(['quantity' => ['required', 'integer', 'min:1', 'max:1000'], 'data_input' => ['nullable', 'string', 'max:5000'], 'coupon' => ['nullable', 'string', 'max:100']]);
-        $domain = $request->getHost();
+        $domain = $this->siteHost($request);
         try {
             $order = DB::transaction(function () use ($request, $validated, $domain, $id) {
                 $user = User::whereKey($request->user()->id)->lockForUpdate()->firstOrFail();
@@ -497,9 +497,6 @@ class ApiClientController extends Controller
                 'system_version' => $config ? $config->system_version : null,
                 'developer_name' => $config ? $config->developer_name : null,
                 'developer_url' => $config ? $config->developer_url : null,
-                'script_header' => $config ? $config->script_header : null,
-                'script_body' => $config ? $config->script_body : null,
-                'script_footer' => $config ? $config->script_footer : null,
                 'contact_widgets' => \App\Models\ContactWidget::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get(['id', 'name', 'url', 'image']),
                 'notice_service' => $config ? $config->notice_service : null,
                 'notice_modal' => $config ? $config->notice_modal : null,

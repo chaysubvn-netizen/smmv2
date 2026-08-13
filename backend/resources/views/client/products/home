@@ -1,0 +1,202 @@
+@extends('client.layouts.master')
+@section('title', $product->name)
+@section('content')
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card h-auto radius-12">
+                        <img src="{{ $product->image }}" class="card-img-top w-100" alt="">
+                    </div>
+                </div>
+                <div class="col-md-8 mb-3">
+                    <div class="p-16 bg-white radius-8 border border-start-width-3-px border-info-main">
+                        <h4 class="text-primary-light text-xl mb-3">{{ $product->name }}</h4>
+                        <p class="mb-3 d-flex align-items-center gap-1">
+                            <iconify-icon icon="duo-icons:certificate" width="27" height="27"
+                                class="text-gray-600 text-xl fs-6"></iconify-icon>
+                            <span class="text-gray-600 text-sm fw-bold">{{ $product->category->name }}</span>
+                        </p>
+                        <p class="mb-3 d-flex align-items-center gap-1">
+                            <iconify-icon icon="solar:box-bold-duotone" width="27" height="27"
+                                class="text-gray-600 text-xl fs-6"></iconify-icon>
+                            @if ($product->stocks->where('status', 'available')->count() > 0)
+                                <span class="text-success text-sm fw-bold">{{ __("Còn hàng") }}</span>
+                            @else
+                                <span class="text-danger text-sm fw-bold">{{ __("Hết hàng") }}</span>
+                            @endif
+                        </p>
+                        <h5 class="mb-5 fw-bold text-primary">
+                            {{ convert_currency($product->price, Auth::user()->currency, false) }}
+                        </h5>
+                        <hr class="mb-3">
+                        <p class="mb-3 d-flex align-items-center gap-1">
+                            <iconify-icon icon="ph:seal-check-duotone" width="27" height="27"
+                                class="text-primary text-xl fs-6"></iconify-icon>
+                            <span class="text-gray-600 text-sm fw-bold">{{ __("Lựa chọn") }}: </span>
+                        </p>
+                        <div class="fw-bold mb-3">
+                            @foreach (\App\Models\Product::where('category_id', $product->category_id)->where('status', 'active')->get() as $item)
+                                <a href="{{ route('product.detail', $item->slug) }}"
+                                    class="btn btn-sm {{ $item->id === $product->id ? 'btn-primary' : 'btn-outline-primary' }}">{{ $item->name }}</a>
+                            @endforeach
+                        </div>
+                        @if ($product->data_input != null)
+                            <div class="form-group mb-3">
+                                <label for="data_input" class="form-label">{{ $product->data_input }}</label>
+                                <textarea class="form-control" id="data_input" rows="3" placeholder="Nhập thông tin {{ $product->data_input }}"></textarea>
+                            </div>
+                        @endif
+                        <hr class="mb-3">
+                        <button class="btn btn-primary d-flex justify-content-center align-items-center gap-1 mb-3"
+                            type="button" data-bs-toggle="modal" data-bs-target="#addToCartModal">
+                            <iconify-icon icon="ph:shopping-cart-bold" width="20" height="20"
+                                class="text-white text-xl fs-6"></iconify-icon>
+                            <span class="text-white text-xs fw-bold">{{ __("Mua ngay") }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="text-primary-light text-xl mb-3">{{ __("Mô tả sản phẩm") }}</h4>
+                    <p class="mb-0 text-gray-600">
+                        {!! $product->description !!}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addToCartModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4 class="text-xl mb-3 text-center fw-bold">{{ __("Xác nhận đặt hàng") }}</h4>
+                    <form action="">
+                        <p class="mb-3 text-sm fw-bold">{{ $product->name }}</p>
+                        <div class="table-responsive">
+                            <table class="table clean-table py-1">
+                                <thead>
+                                    <tr>
+                                        <th>{{ __("Giá") }}</th>
+                                        <th>{{ __("Số lượng") }}</th>
+                                        <th>{{ __("Tổng cộng") }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <h5 class="mb-0 fw-bold text-md text-primary">
+                                                {{ convert_currency($product->price, Auth::user()->currency, false) }}
+                                            </h5>
+                                        </td>
+                                        <td>
+                                            <span class="text-md fw-bold text-gray-600">1</span>
+                                        </td>
+                                        <td>
+                                            <h5 class="mb-0 fw-bold text-md text-primary">
+                                                {{ convert_currency($product->price, Auth::user()->currency, false) }}
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="handleBuy()">{{ __("Xác nhận") }}</button>
+                            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{{ __("Đóng") }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('css')
+
+@endsection
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            // $.blockUI({
+            //     message: '<i class="fa fa-spinner fa-spin"></i> Đang xử lý...',
+            //     css: {
+            //         border: 'none',
+            //         backgroundColor: 'transparent',
+            //         color: '#fff'
+            //     },
+            //     overlayCSS: {
+            //         backgroundColor: '#000',
+            //         opacity: 0.5,
+            //         cursor: 'wait'
+            //     }
+            // });
+            // setTimeout(function(){
+            //     $.unblockUI();
+            // }, 2000);
+        });
+    </script>
+    <script>
+        function handleBuy() {
+            let data = {
+                id: {{ $product->id }},
+                quantity: 1,
+                data_input: $('#data_input').val(),
+            }
+            $.ajax({
+                url: '{{ route('request-product') }}',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                beforeSend: function(xhr) {
+                    $.blockUI({
+                        message: '<i class="fa fa-spinner fa-spin"></i> Đang xử lý...',
+                        css: {
+                            border: 'none',
+                            backgroundColor: 'transparent',
+                            color: '#fff',
+                            zIndex: 99999,
+                        },
+                        overlayCSS: {
+                            backgroundColor: '#000',
+                            opacity: 0.5,
+                            cursor: 'wait'
+                        }
+                    });
+                },
+                complete: function() {
+                    $.unblockUI();
+                    $('#addToCartModal').modal('hide');
+                },
+                success: function(response) {
+                    if (response.success == true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Thành công',
+                            text: response.message,
+                        }).then(function() {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi',
+                            text: response.message,
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: xhr.responseJSON.message || 'Có lỗi xảy ra, vui lòng thử lại sau.',
+                    });
+                }
+            });
+        }
+    </script>
+@endsection
